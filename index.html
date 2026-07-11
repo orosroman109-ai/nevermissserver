@@ -477,9 +477,9 @@ var DISCORD_SCOPE = 'identify';
 var DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI) + '&scope=' + DISCORD_SCOPE;
 
 // ===== ADMIN SYSTEM =====
+var WORKER_URL = 'https://yellow-sun-34fe.orosroman109.workers.dev';
 var ADMIN_USERNAMES = ['nevermisssserver_owner', 'nevermissserver_owner', 'orosroman109'];
-var registeredUsers = JSON.parse(localStorage.getItem('np_registered_users') || '[]');
-var bannedUsers = JSON.parse(localStorage.getItem('np_banned_users') || '[]');
+var remoteUsers = []; // fetched from worker
 var pendingBanUser = null;
 
 function isAdmin(user) {
@@ -492,48 +492,56 @@ function isAdmin(user) {
     return false;
 }
 
-function isBanned(userId) {
-    for (var i = 0; i < bannedUsers.length; i++) {
-        if (bannedUsers[i].id === userId) return true;
+function isBannedRemote(userId) {
+    for (var i = 0; i < remoteUsers.length; i++) {
+        if (remoteUsers[i].id === userId && remoteUsers[i].banned) return true;
     }
     return false;
 }
 
-function registerUser(user) {
+async function registerUser(user) {
     if (!user) return;
-    for (var i = 0; i < registeredUsers.length; i++) {
-        if (registeredUsers[i].id === user.id) {
-            registeredUsers[i].username = user.username;
-            registeredUsers[i].global_name = user.global_name || '';
-            registeredUsers[i].avatar = user.avatar || '';
-            registeredUsers[i].lastLogin = new Date().toISOString();
-            localStorage.setItem('np_registered_users', JSON.stringify(registeredUsers));
-            return;
-        }
-    }
-    registeredUsers.push({
-        id: user.id,
-        username: user.username,
-        global_name: user.global_name || '',
-        avatar: user.avatar || '',
-        joinedAt: new Date().toISOString(),
-        lastLogin: new Date().toISOString()
-    });
-    localStorage.setItem('np_registered_users', JSON.stringify(registeredUsers));
+    try {
+        await fetch(WORKER_URL + '/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: { id: user.id, username: user.username, global_name: user.global_name || '', avatar: user.avatar || '' } }),
+        });
+    } catch (e) { /* ignore */ }
+}
+
+async function fetchRemoteUsers() {
+    try {
+        var res = await fetch(WORKER_URL + '/api/users');
+        if (res.ok) remoteUsers = await res.json();
+    } catch (e) { /* ignore */ }
+    return remoteUsers;
 }
 
 // ===== AUTH SYSTEM =====
 var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
 
-// Check ban on load
-if (currentUser && isBanned(currentUser.id)) {
-    alert('Your account has been banned from this site.');
-    currentUser = null;
-    localStorage.removeItem('np_user');
-}
+async function initAuth() {
+    // Fetch remote users first
+    await fetchRemoteUsers();
 
-// Register user on load if logged in
-if (currentUser) registerUser(currentUser);
+    // Check ban
+    if (currentUser && isBannedRemote(currentUser.id)) {
+        alert('Your account has been banned from this site.');
+        currentUser = null;
+        localStorage.removeItem('np_user');
+        renderNavAuth();
+        return;
+    }
+
+    // Register on remote
+    if (currentUser) {
+        registerUser(currentUser);
+        await fetchRemoteUsers(); // refresh after register
+    }
+
+    renderNavAuth();
+}
 
 function renderNavAuth() {
     var navRight = document.getElementById('nav-right');
@@ -923,15 +931,15 @@ function loadDiscordWidget() {
 }
 
 // ===== ADMIN PANEL =====
-function openAdminPanel() {
+async function openAdminPanel() {
     if (!currentUser || !isAdmin(currentUser)) return;
-    registeredUsers = JSON.parse(localStorage.getItem('np_registered_users') || '[]');
-    bannedUsers = JSON.parse(localStorage.getItem('np_banned_users') || '[]');
+    await fetchRemoteUsers();
+    var registered = remoteUsers.length;
+    var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
 
-    // Stats
     document.getElementById('admin-stats-row').innerHTML =
-        '<div class="admin-stat-item"><div class="admin-stat-num">' + registeredUsers.length + '</div><div class="admin-stat-label">Registered</div></div>' +
-        '<div class="admin-stat-item"><div class="admin-stat-num">' + bannedUsers.length + '</div><div class="admin-stat-label">Banned</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + registered + '</div><div class="admin-stat-label">Registered</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + bannedCount + '</div><div class="admin-stat-label">Banned</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + userThreads.length + '</div><div class="admin-stat-label">Threads</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + getTotalComments() + '</div><div class="admin-stat-label">Comments</div></div>';
 
@@ -942,7 +950,7 @@ function openAdminPanel() {
 function renderAdminUsers() {
     var query = (document.getElementById('admin-search').value || '').toLowerCase();
     var list = document.getElementById('admin-users-list');
-    var users = registeredUsers;
+    var users = remoteUsers;
     if (query) {
         users = users.filter(function(u) {
             return (u.username || '').toLowerCase().indexOf(query) !== -1 ||
@@ -954,9 +962,9 @@ function renderAdminUsers() {
         return;
     }
     var html = '<table class="admin-table"><thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Last Login</th><th>Action</th></tr></thead><tbody>';
-    for (var i =  users.length - 1; i >= 0; i--) {
+    for (var i = users.length - 1; i >= 0; i--) {
         var u = users[i];
-        var banned = isBanned(u.id);
+        var banned = u.banned;
         var roleLabel = isAdmin(u)
             ? '<span class="admin-badge admin">Admin</span>'
             : (banned ? '<span class="admin-badge banned">Banned</span>' : '<span class="admin-badge user">User</span>');
@@ -965,7 +973,7 @@ function renderAdminUsers() {
         var actionHtml = '';
         if (u.id !== currentUser.id) {
             if (banned) {
-                actionHtml = '<button class="ban-btn unban" onclick="unbanUser(\'' + u.id + '\')">Unban</button>';
+                actionHtml = '<button class="ban-btn unban" onclick="doUnbanUser(\'' + u.id + '\')">Unban</button>';
             } else {
                 actionHtml = '<button class="ban-btn ban" onclick="confirmBan(\'' + u.id + '\', \'' + (u.username || '').replace(/'/g, "\\'") + '\')">Ban</button>';
             }
@@ -996,27 +1004,41 @@ function confirmBan(userId, username) {
     showModal('ban-confirm-modal');
 }
 
-function doBanUser() {
+async function doBanUser() {
     if (!pendingBanUser) return;
     var reason = document.getElementById('ban-reason').value.trim();
-    bannedUsers.push({ id: pendingBanUser.id, username: pendingBanUser.username, reason: reason, bannedAt: new Date().toISOString(), bannedBy: currentUser.username });
-    localStorage.setItem('np_banned_users', JSON.stringify(bannedUsers));
+    try {
+        await fetch(WORKER_URL + '/api/ban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: pendingBanUser.id, bannedBy: currentUser.username, reason: reason }),
+        });
+        await fetchRemoteUsers();
+    } catch (e) { /* ignore */ }
     pendingBanUser = null;
     closeModal('ban-confirm-modal');
     renderAdminUsers();
     // Refresh stats
-    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedUsers.length;
+    var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
+    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
 }
 
-function unbanUser(userId) {
-    bannedUsers = bannedUsers.filter(function(b) { return b.id !== userId; });
-    localStorage.setItem('np_banned_users', JSON.stringify(bannedUsers));
+async function doUnbanUser(userId) {
+    try {
+        await fetch(WORKER_URL + '/api/unban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userId, unbannedBy: currentUser.username }),
+        });
+        await fetchRemoteUsers();
+    } catch (e) { /* ignore */ }
     renderAdminUsers();
-    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedUsers.length;
+    var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
+    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
 }
 
 // ===== INIT =====
-renderNavAuth();
+initAuth();
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
 
