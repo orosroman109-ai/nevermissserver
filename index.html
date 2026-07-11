@@ -67,42 +67,6 @@
         /* LAYOUT */
         .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
 
-        /* TABS */
-        .tabs-widget { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        .tabs-header { display: flex; overflow-x: auto; scrollbar-width: none; border-bottom: 1px solid var(--border); }
-        .tabs-header::-webkit-scrollbar { display: none; }
-        .tab-btn { padding: 14px 20px; background: none; border: none; color: var(--text-muted); font-family: inherit; font-size: 0.85rem; font-weight: 500; cursor: pointer; white-space: nowrap; position: relative; transition: color 0.2s; }
-        .tab-btn:hover { color: var(--text-secondary); }
-        .tab-btn.active { color: var(--accent); }
-        .tab-btn.active::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--accent); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        /* Threads */
-        .thread-list { list-style: none; }
-        .thread-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s; cursor: pointer; }
-        .thread-item:last-child { border-bottom: none; }
-        .thread-item:hover { background: var(--bg-card-hover); }
-        .thread-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .thread-icon.pinned { background: var(--bg-tertiary); color: var(--yellow); }
-        .thread-icon.default { background: var(--bg-tertiary); color: var(--text-muted); }
-        .thread-info { flex: 1; min-width: 0; }
-        .thread-title { font-weight: 500; font-size: 0.9rem; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .thread-title a { color: var(--text-primary); }
-        .thread-title a:hover { color: var(--accent); }
-        .tag { display: inline-block; padding: 1px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
-        .tag-green { background: var(--tag-green); color: #8fdf9f; }
-        .tag-red { background: var(--tag-red); color: #f09090; }
-        .tag-blue { background: var(--tag-blue); color: #90c0f0; }
-        .tag-orange { background: var(--tag-orange); color: #f0d090; }
-        .tag-purple { background: var(--tag-purple); color: #d090f0; }
-        .tag-pinned { background: var(--yellow); color: #000; }
-        .thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
-        .thread-meta .author { color: var(--accent); }
-        .thread-forum { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
-        .thread-stats { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
-        .thread-replies { background: var(--bg-tertiary); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; }
-
         /* CATEGORIES */
         .category-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-top: 24px; overflow: hidden; }
         .category-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
@@ -290,19 +254,7 @@
             </div>
         </div>
 
-        <!-- Tabs Widget -->
-        <div class="tabs-widget" id="forum">
-            <div class="tabs-header">
-                <button class="tab-btn active" data-tab="new">New threads</button>
-                <button class="tab-btn" data-tab="hottest">Hottest threads</button>
-            </div>
-            <div class="tab-content active" id="tab-new">
-                <ul class="thread-list" id="thread-list-new"></ul>
-            </div>
-            <div class="tab-content" id="tab-hottest">
-                <ul class="thread-list" id="thread-list-hottest"></ul>
-            </div>
-        </div>
+
 
         <!-- Forum Categories -->
         <div class="category-block">
@@ -495,55 +447,6 @@ document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
     overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('show'); });
 });
 
-// ===== TABS =====
-document.querySelectorAll('.tab-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
-        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
-        btn.classList.add('active');
-        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-    });
-});
-
-// ===== THREAD DATA =====
-var userThreads = JSON.parse(localStorage.getItem('np_user_threads') || '[]');
-var baseThreads = {
-    new: [
-        { title: "My first experience with Neverpost", author: "NewUser2026", time: "5 min ago", replies: 2, forum: "Offtopic", tag: null },
-        { title: "Can someone help with injection?", author: "heisenberg07", time: "12 min ago", replies: 5, forum: "Offtopic", tag: null },
-        { title: "Best skins for budget loadout", author: "skincollector", time: "28 min ago", replies: 3, forum: "Offtopic", tag: null },
-        { title: "Looking for Lua scripts", author: "luaFan99", time: "45 min ago", replies: 7, forum: "Offtopic", tag: null },
-    ],
-    hottest: [
-        { title: "Community HvH CFG | BEST POSSIBLE SETTINGS", author: "mortyyyZ222", time: "22 min ago", replies: 342, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
-        { title: "Superior HvH and Legit Pack", author: "ladro_xd", time: "Yesterday", replies: 287, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
-        { title: "Nixware is best cheat for 5usd", author: "L4ngossss", time: "Monday", replies: 198, forum: "Reviews", tag: "Review", tagClass: "tag-orange" },
-        { title: "HVH CFG PREMIERE | MEDIA", author: "cheliktvjj", time: "May 1", replies: 156, forum: "Media", tag: "Rage", tagClass: "tag-red" },
-        { title: "Software updated — Loader & Site", author: "whitey", time: "Dec 20", replies: 134, forum: "News & Updates", tag: "News", tagClass: "tag-blue" },
-    ]
-};
-
-function renderThread(thread) {
-    var tagClass = thread.tagClass || 'tag-blue';
-    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span>' : '';
-    return '<li class="thread-item">' +
-        '<div class="thread-icon default"><span class="material-symbols-outlined" style="font-size:18px;">chat_bubble_outline</span></div>' +
-        '<div class="thread-info">' +
-            '<div class="thread-title">' + tagHtml + '<a href="' + (thread.link || '#') + '" target="' + (thread.link ? '_blank' : '') + '">' + thread.title + '</a></div>' +
-            '<div class="thread-meta"><span class="author">' + thread.author + '</span><span>' + thread.time + '</span></div>' +
-            '<div class="thread-forum">' + thread.forum + '</div>' +
-        '</div>' +
-        '<div class="thread-stats"><div class="thread-replies">&#128172; ' + (thread.replies || 0) + '</div></div>' +
-    '</li>';
-}
-
-function renderThreads() {
-    var newThreads = userThreads.slice().reverse().concat(baseThreads.new);
-    document.getElementById('thread-list-new').innerHTML = newThreads.map(renderThread).join('');
-    document.getElementById('thread-list-hottest').innerHTML = baseThreads.hottest.map(renderThread).join('');
-}
-renderThreads();
-
 // ===== CREATE THREAD =====
 var selectedTags = [];
 function toggleTag(el) {
@@ -593,7 +496,6 @@ function createThread() {
     document.getElementById('thread-title-input').style.borderColor = '';
 
     closeModal('create-thread-modal');
-    renderThreads();
 }
 
 // ===== FORUM CATEGORIES =====
