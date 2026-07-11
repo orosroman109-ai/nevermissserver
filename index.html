@@ -3,386 +3,989 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neverpost Ctrl+C - Discord Widget</title>
+    <title>Neverpost Ctrl+C — Forum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #121218;
+            --bg-secondary: #1a1a24;
+            --bg-tertiary: #22222e;
+            --bg-card: #1e1e2a;
+            --bg-card-hover: #262636;
+            --bg-input: #2a2a3a;
+            --text-primary: #e8e8ee;
+            --text-secondary: #9a9ab0;
+            --text-muted: #6a6a80;
+            --accent: #5865f2;
+            --accent-hover: #4752c4;
+            --green: #3ba55d;
+            --red: #ed4245;
+            --yellow: #faa61a;
+            --orange: #e67e22;
+            --border: #2a2a3a;
+            --tag-green: #2d7d46;
+            --tag-red: #8b2e2e;
+            --tag-blue: #2e5d8b;
+            --tag-orange: #8b6a2e;
+            --tag-purple: #6a2e8b;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
             min-height: 100vh;
+        }
+
+        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
+        a:hover { color: var(--accent-hover); }
+
+        /* ===== HEADER / NAV ===== */
+        .nav {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
+            align-items: center;
+            padding: 0 20px;
+            height: 56px;
+            gap: 24px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+        .nav-logo .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .widget-container {
-            background: #2f3136;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            width: 100%;
-            max-width: 400px;
-            overflow: hidden;
-        }
-
-        .widget-header {
-            background: #202225;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .widget-header h1 {
-            color: #ffffff;
-            font-size: 1.4rem;
-            margin-bottom: 8px;
-        }
-
-        .online-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #3ba55d;
+            font-size: 18px;
             color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 4px;
+            list-style: none;
+        }
+        .nav-links a {
+            padding: 8px 14px;
+            border-radius: 6px;
+            color: var(--text-secondary);
             font-size: 0.9rem;
-            font-weight: 600;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-
-        .online-badge::before {
-            content: '';
-            width: 10px;
-            height: 10px;
-            background: white;
-            border-radius: 50%;
-            animation: pulse 2s infinite;
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .widget-body {
-            padding: 16px;
-        }
-
-        .member-list {
-            max-height: 400px;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: #202225 #2f3136;
-        }
-
-        .member-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .member-list::-webkit-scrollbar-track {
-            background: #2f3136;
-        }
-
-        .member-list::-webkit-scrollbar-thumb {
-            background: #202225;
-            border-radius: 4px;
-        }
-
-        .member-card {
+        .nav-right {
+            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 12px;
-            background: #292b2f;
+        }
+        .nav-discord-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--accent);
+            color: white;
+            padding: 8px 16px;
             border-radius: 8px;
-            margin-bottom: 8px;
-            transition: all 0.2s ease;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .nav-discord-btn:hover { background: var(--accent-hover); color: white; }
+        .nav-discord-btn svg { width: 18px; height: 18px; }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
         }
 
-        .member-card:hover {
-            background: #36393f;
-            transform: translateX(4px);
+        /* ===== LAYOUT ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 24px 20px;
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 24px;
         }
 
-        .avatar-container {
+        /* ===== TABS WIDGET ===== */
+        .tabs-widget {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .tabs-header {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            border-bottom: 1px solid var(--border);
+        }
+        .tabs-header::-webkit-scrollbar { display: none; }
+        .tab-btn {
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
             position: relative;
-            flex-shrink: 0;
+            transition: color 0.2s;
         }
-
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
+        .tab-btn:hover { color: var(--text-secondary); }
+        .tab-btn.active {
+            color: var(--accent);
         }
-
-        .status-indicator {
+        .tab-btn.active::after {
+            content: '';
             position: absolute;
             bottom: 0;
+            left: 0;
             right: 0;
-            width: 14px;
-            height: 14px;
+            height: 2px;
+            background: var(--accent);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Thread items */
+        .thread-list { list-style: none; }
+        .thread-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .thread-item:last-child { border-bottom: none; }
+        .thread-item:hover { background: var(--bg-card-hover); }
+
+        .thread-icon {
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            border: 3px solid #292b2f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+        .thread-icon.pinned {
+            background: var(--bg-tertiary);
+            color: var(--yellow);
+        }
+        .thread-icon.default {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
         }
 
-        .status-online { background: #3ba55d; }
-        .status-dnd { background: #ed4245; }
-        .status-idle { background: #faa61a; }
-        .status-offline { background: #747f8d; }
+        .thread-info { flex: 1; min-width: 0; }
+        .thread-title {
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .thread-title a { color: var(--text-primary); }
+        .thread-title a:hover { color: var(--accent); }
 
-        .member-info {
-            flex: 1;
-            min-width: 0;
+        .tag {
+            display: inline-block;
+            padding: 1px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .tag-green { background: var(--tag-green); color: #8fdf9f; }
+        .tag-red { background: var(--tag-red); color: #f09090; }
+        .tag-blue { background: var(--tag-blue); color: #90c0f0; }
+        .tag-orange { background: var(--tag-orange); color: #f0d090; }
+        .tag-purple { background: var(--tag-purple); color: #d090f0; }
+        .tag-pinned { background: var(--yellow); color: #000; }
+
+        .thread-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .thread-meta .author { color: var(--accent); }
+        .thread-forum {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
 
-        .member-name {
-            color: #ffffff;
+        .thread-stats {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .thread-replies {
+            background: var(--bg-tertiary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+
+        /* ===== FORUM CATEGORIES ===== */
+        .category-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+        .category-header {
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+        }
+        .category-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .node-list { list-style: none; }
+        .node-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.2s;
+        }
+        .node-item:last-child { border-bottom: none; }
+        .node-item:hover { background: var(--bg-card-hover); }
+
+        .node-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: var(--bg-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+
+        .node-main { flex: 1; min-width: 0; }
+        .node-title {
             font-weight: 600;
             font-size: 0.95rem;
+            margin-bottom: 2px;
+        }
+        .node-title a { color: var(--text-primary); }
+        .node-title a:hover { color: var(--accent); }
+        .node-new { 
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            font-size: 0.65rem;
+            padding: 1px 6px;
+            border-radius: 4px;
+            margin-left: 6px;
+            font-weight: 600;
+            vertical-align: middle;
+        }
+        .node-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .node-stats-col {
+            display: flex;
+            gap: 20px;
+            flex-shrink: 0;
+        }
+        .node-stat {
+            text-align: center;
+        }
+        .node-stat-val {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-primary);
+        }
+        .node-stat-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .node-extra {
+            flex-shrink: 0;
+            max-width: 250px;
+            display: none;
+        }
+        .node-extra-title {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-
-        .member-game {
-            color: #b9bbbe;
-            font-size: 0.8rem;
-            display: flex;
-            align-items: center;
-            gap: 4px;
+        .node-extra-date {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
-        .member-game::before {
-            content: '🎮';
-            font-size: 0.75rem;
-        }
+        /* ===== SIDEBAR ===== */
+        .sidebar { display: flex; flex-direction: column; gap: 20px; }
 
-        .widget-footer {
-            padding: 16px;
-            background: #202225;
-            display: flex;
-            justify-content: center;
+        .sidebar-block {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
         }
-
-        .join-btn {
-            background: #5865f2;
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-size: 1rem;
+        .sidebar-title {
+            padding: 14px 16px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-            display: inline-flex;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
             align-items: center;
             gap: 8px;
         }
+        .sidebar-body { padding: 12px 16px; }
 
-        .join-btn:hover {
-            background: #4752c4;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+        /* Discord Widget */
+        .discord-online {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
         }
-
-        .join-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #b9bbbe;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 3px solid #202225;
-            border-top-color: #5865f2;
+        .discord-online-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--green);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 16px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .discord-online-count {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .discord-members { list-style: none; }
+        .discord-member {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 0;
+        }
+        .discord-avatar-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .discord-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .discord-avatar-placeholder {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+        }
+        .discord-status {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-card);
+        }
+        .discord-status.online { background: var(--green); }
+        .discord-status.dnd { background: var(--red); }
+        .discord-status.idle { background: var(--yellow); }
+        .discord-status.offline { background: #747f8d; }
+
+        .discord-name {
+            font-size: 0.82rem;
+            color: var(--text-primary);
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .discord-game {
+            font-size: 0.72rem;
+            color: var(--text-muted);
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .error {
-            text-align: center;
-            padding: 40px;
-            color: #ed4245;
-        }
-
-        .refresh-info {
-            text-align: center;
-            color: #72767d;
-            font-size: 0.75rem;
-            padding: 8px;
-        }
-
-        .games-section {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #202225;
-        }
-
-        .games-title {
-            color: #b9bbbe;
+        .discord-join-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 10px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
             font-size: 0.85rem;
-            margin-bottom: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background 0.2s;
+            text-decoration: none;
+        }
+        .discord-join-btn:hover { background: var(--accent-hover); color: white; }
+        .discord-join-btn svg { width: 18px; height: 18px; }
+
+        .discord-more {
+            text-align: center;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Stats sidebar */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.85rem;
+        }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { color: var(--text-muted); }
+        .stat-value { font-weight: 600; color: var(--text-primary); }
+
+        /* Online users */
+        .online-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .online-user {
+            font-size: 0.8rem;
+            color: var(--accent);
+            padding: 2px 6px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        .online-user:hover {
+            background: var(--bg-tertiary);
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            padding: 24px 20px;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+        .footer-links a {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        .footer-links a:hover { color: var(--text-primary); }
+        .footer-copy {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* ===== LIVE STATS BAR ===== */
+        .live-stats {
+            display: flex;
+            gap: 16px;
+            padding: 12px 20px;
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .live-stat {
             display: flex;
             align-items: center;
             gap: 6px;
+            font-size: 0.82rem;
+        }
+        .live-stat-icon { font-size: 16px; color: var(--accent); }
+        .live-stat-val { font-weight: 700; color: var(--text-primary); }
+        .live-stat-label { color: var(--text-muted); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            .sidebar { order: -1; }
+            .node-extra { display: none !important; }
+            .node-stats-col { gap: 12px; }
+            .nav-links { display: none; }
+            .hamburger { display: block; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 56px;
+                left: 0;
+                right: 0;
+                background: var(--bg-secondary);
+                border-bottom: 1px solid var(--border);
+                padding: 12px;
+                z-index: 99;
+            }
         }
 
-        .game-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: #5865f2;
-            color: white;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            margin: 2px;
+        @media (min-width: 901px) {
+            .node-extra { display: block !important; }
+        }
+
+        @media (max-width: 600px) {
+            .node-item {
+                flex-wrap: wrap;
+            }
+            .node-stats-col {
+                width: 100%;
+                justify-content: flex-start;
+                margin-left: 60px;
+            }
+            .live-stats {
+                gap: 10px;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+
+        /* Loading */
+        .loading-spinner {
+            width: 24px;
+            height: 24px;
+            border: 3px solid var(--bg-tertiary);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .discord-loading {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
     </style>
 </head>
 <body>
-    <div class="widget-container">
-        <div class="widget-header">
-            <h1 id="server-name">Загрузка...</h1>
-            <div class="online-badge" id="online-count">
-                <span>0 онлайн</span>
+
+<!-- NAV -->
+<nav class="nav">
+    <div class="nav-inner">
+        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
+        <div class="nav-logo">
+            <div class="logo-icon">N</div>
+            <span>Neverpost Ctrl+C</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#forum">Forum</a></li>
+            <li><a href="#members">Members</a></li>
+            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Support</a></li>
+        </ul>
+        <div class="nav-right">
+            <a href="https://discord.com/invite/mS8Je49C" target="_blank" class="nav-discord-btn">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                Discord
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+    <!-- CONTENT -->
+    <main>
+
+        <!-- Live Stats -->
+        <div class="live-stats" id="live-stats">
+            <div class="live-stat">
+                <span class="material-symbols-outlined live-stat-icon">group</span>
+                <span class="live-stat-val" id="stat-online">...</span>
+                <span class="live-stat-label">online</span>
+            </div>
+            <div class="live-stat">
+                <span class="material-symbols-outlined live-stat-icon">forum</span>
+                <span class="live-stat-val">19,867</span>
+                <span class="live-stat-label">threads</span>
+            </div>
+            <div class="live-stat">
+                <span class="material-symbols-outlined live-stat-icon">chat</span>
+                <span class="live-stat-val">147,827</span>
+                <span class="live-stat-label">messages</span>
+            </div>
+            <div class="live-stat">
+                <span class="material-symbols-outlined live-stat-icon">person</span>
+                <span class="live-stat-val">599,451</span>
+                <span class="live-stat-label">members</span>
             </div>
         </div>
 
-        <div class="widget-body">
-            <div id="content">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <p>Загрузка данных...</p>
+        <!-- Tabs Widget -->
+        <div class="tabs-widget" id="forum">
+            <div class="tabs-header">
+                <button class="tab-btn active" data-tab="latest">Latest posts</button>
+                <button class="tab-btn" data-tab="new">New threads</button>
+                <button class="tab-btn" data-tab="hottest">Hottest threads</button>
+                <button class="tab-btn" data-tab="views">Most viewed</button>
+                <button class="tab-btn" data-tab="my">My threads</button>
+            </div>
+
+            <div class="tab-content active" id="tab-latest">
+                <ul class="thread-list" id="thread-list-latest"></ul>
+            </div>
+            <div class="tab-content" id="tab-new">
+                <ul class="thread-list" id="thread-list-new"></ul>
+            </div>
+            <div class="tab-content" id="tab-hottest">
+                <ul class="thread-list" id="thread-list-hottest"></ul>
+            </div>
+            <div class="tab-content" id="tab-views">
+                <ul class="thread-list" id="thread-list-views"></ul>
+            </div>
+            <div class="tab-content" id="tab-my">
+                <ul class="thread-list" id="thread-list-my"></ul>
+            </div>
+        </div>
+
+        <!-- Forum Categories -->
+        <div class="category-block">
+            <div class="category-header">
+                <h2>Public Area</h2>
+            </div>
+            <ul class="node-list" id="node-list"></ul>
+        </div>
+
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <!-- Discord Widget -->
+        <div class="sidebar-block">
+            <div class="sidebar-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+                Discord Server
+            </div>
+            <div class="sidebar-body" id="discord-widget-body">
+                <div class="discord-loading">
+                    <div class="loading-spinner"></div>
+                    Loading...
                 </div>
             </div>
         </div>
 
-        <div class="widget-footer">
-            <a href="#" class="join-btn" id="join-btn" target="_blank" rel="noopener">
-                <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
-                </svg>
-                Вступить в сервер
-            </a>
+        <!-- Forum Stats -->
+        <div class="sidebar-block">
+            <div class="sidebar-title">
+                <span class="material-symbols-outlined" style="font-size:18px;">bar_chart</span>
+                Forum statistics
+            </div>
+            <div class="sidebar-body">
+                <div class="stat-row"><span class="stat-label">Threads</span><span class="stat-value">19,867</span></div>
+                <div class="stat-row"><span class="stat-label">Messages</span><span class="stat-value">147,827</span></div>
+                <div class="stat-row"><span class="stat-label">Members</span><span class="stat-value">599,451</span></div>
+                <div class="stat-row"><span class="stat-label">Latest member</span><span class="stat-value" style="color:var(--accent);">dashivdan</span></div>
+            </div>
         </div>
 
-        <div class="refresh-info" id="refresh-info">
-            Авто-обновление через 30 сек
+        <!-- Online Now -->
+        <div class="sidebar-block" id="members">
+            <div class="sidebar-title">
+                <span class="material-symbols-outlined" style="font-size:18px;color:var(--green);">circle</span>
+                Members online
+            </div>
+            <div class="sidebar-body">
+                <div class="online-list">
+                    <a class="online-user" href="#">SoftGlow</a>
+                    <a class="online-user" href="#">Clabik</a>
+                    <a class="online-user" href="#">mortyyyZ222</a>
+                    <a class="online-user" href="#">DoraDarg</a>
+                    <a class="online-user" href="#">underOff</a>
+                    <a class="online-user" href="#">pruvet</a>
+                    <a class="online-user" href="#">Nokeew</a>
+                </div>
+                <div style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);">
+                    Total: 854 (members: 190, guests: 664)
+                </div>
+            </div>
         </div>
+
+    </aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <ul class="footer-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Support</a></li>
+            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Discord</a></li>
+        </ul>
+        <div class="footer-copy">&copy; 2026 Neverpost Ctrl+C</div>
     </div>
+</footer>
 
-    <script>
-        const GUILD_ID = '1512530980177711325';
-        const CORS_PROXY = 'https://corsproxy.io/?';
-        const WIDGET_URL = `https://discord.com/api/guilds/${GUILD_ID}/widget.json`;
-        let countdown = 30;
+<script>
+// ===== TABS =====
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+});
 
-        async function fetchWidget() {
-            try {
-                const response = await fetch(CORS_PROXY + encodeURIComponent(WIDGET_URL));
-                if (!response.ok) throw new Error('Ошибка загрузки');
-                const data = await response.json();
-                renderWidget(data);
-            } catch (error) {
-                console.error('Ошибка:', error);
-                document.getElementById('content').innerHTML = `
-                    <div class="error">
-                        <p>Не удалось загрузить данные</p>
-                        <p style="font-size: 0.8rem; margin-top: 8px; color: #72767d;">Проверьте настройки виджета в Discord</p>
-                    </div>
-                `;
-            }
-        }
+// ===== THREAD DATA =====
+const threads = {
+    latest: [
+        { title: "Discord Server Online Stats", pinned: true, author: "SoftGlow", time: "2 min ago", replies: 24, forum: "News & Updates", tag: "News", tagClass: "tag-blue" },
+        { title: "Best legit settings for 2026", pinned: false, author: "Clabik", time: "15 min ago", replies: 67, forum: "Offtopic", tag: "Legit", tagClass: "tag-green" },
+        { title: "New update incoming — changelog", pinned: false, author: "mortyyyZ222", time: "32 min ago", replies: 18, forum: "News & Updates", tag: "News", tagClass: "tag-blue" },
+        { title: "Looking for team for Faceit", pinned: false, author: "DoraDarg", time: "1 hour ago", replies: 12, forum: "Offtopic", tag: null },
+        { title: "Rate my HvH config", pinned: false, author: "underOff", time: "2 hours ago", replies: 45, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
+        { title: "Agent changer + skybox changer", pinned: false, author: "pruvet", time: "3 hours ago", replies: 31, forum: "Offtopic", tag: "Visuals", tagClass: "tag-green" },
+        { title: "How to setup Lua scripts", pinned: false, author: "Nokeew", time: "4 hours ago", replies: 8, forum: "Offtopic", tag: null },
+        { title: "Safe HvH config for Premier", pinned: false, author: "volfasik", time: "5 hours ago", replies: 52, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
+    ],
+    new: [
+        { title: "My first experience with Neverpost", pinned: false, author: "NewUser2026", time: "5 min ago", replies: 2, forum: "Offtopic", tag: null },
+        { title: "Can someone help with injection?", pinned: false, author: "heisenberg07", time: "12 min ago", replies: 5, forum: "Offtopic", tag: null },
+        { title: "Best skins for budget loadout", pinned: false, author: "skincollector", time: "28 min ago", replies: 3, forum: "Offtopic", tag: null },
+        { title: "Looking for Lua scripts", pinned: false, author: "luaFan99", time: "45 min ago", replies: 7, forum: "Offtopic", tag: null },
+    ],
+    hottest: [
+        { title: "Community HvH CFG | BEST POSSIBLE SETTINGS", pinned: false, author: "mortyyyZ222", time: "22 min ago", replies: 342, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
+        { title: "Superior HvH and Legit Pack", pinned: false, author: "ladro_xd", time: "Yesterday", replies: 287, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
+        { title: "is best cheat going to buy again ;)", pinned: false, author: "L4ngossss", time: "Monday", replies: 198, forum: "Reviews", tag: "Review", tagClass: "tag-orange" },
+        { title: "HVH CFG PREMIERE | MEDIA", pinned: false, author: "cheliktvjj", time: "May 1", replies: 156, forum: "Media", tag: "Rage", tagClass: "tag-red" },
+        { title: "Software updated — Loader & Site", pinned: false, author: "whitey", time: "Dec 20", replies: 134, forum: "News & Updates", tag: "News", tagClass: "tag-blue" },
+    ],
+    views: [
+        { title: "Discord Community Official Server", pinned: true, author: "SoftGlow", time: "Aug 16, 2020", replies: 89, forum: "News & Updates", tag: "Pinned", tagClass: "tag-pinned" },
+        { title: "Unicore for Grand Theft Auto V", pinned: false, author: "wh1teend", time: "May 12, 2024", replies: 67, forum: "Offtopic", tag: null },
+        { title: "Community HVH CFG Premiere", pinned: false, author: "mortyyyZ222", time: "2 weeks ago", replies: 342, forum: "Offtopic", tag: "Rage", tagClass: "tag-red" },
+    ],
+    my: [
+        { title: "Discord Server Online Stats", pinned: true, author: "SoftGlow", time: "2 min ago", replies: 24, forum: "News & Updates", tag: "News", tagClass: "tag-blue" },
+        { title: "Rate my settings please", pinned: false, author: "SoftGlow", time: "3 days ago", replies: 11, forum: "Offtopic", tag: null },
+    ]
+};
 
-        function renderWidget(data) {
-            document.getElementById('server-name').textContent = data.name;
-            document.getElementById('online-count').innerHTML = `<span>${data.presence_count} онлайн</span>`;
-            document.getElementById('join-btn').href = data.instant_invite;
+function renderThread(thread) {
+    const icon = thread.pinned 
+        ? '<div class="thread-icon pinned"><span class="material-symbols-outlined" style="font-size:18px;">push_pin</span></div>'
+        : '<div class="thread-icon default"><span class="material-symbols-outlined" style="font-size:18px;">chat_bubble_outline</span></div>';
+    
+    const tagHtml = thread.tag 
+        ? '<span class="tag ' + thread.tagClass + '">' + thread.tag + '</span>' 
+        : '';
 
-            const content = document.getElementById('content');
-            
-            if (data.members.length === 0) {
-                content.innerHTML = '<div class="loading"><p>Нет данных об участниках</p></div>';
-                return;
-            }
+    return '<li class="thread-item">' + icon +
+        '<div class="thread-info">' +
+            '<div class="thread-title">' + tagHtml + '<a href="#">' + thread.title + '</a></div>' +
+            '<div class="thread-meta"><span class="author">' + thread.author + '</span><span>' + thread.time + '</span></div>' +
+            '<div class="thread-forum">' + thread.forum + '</div>' +
+        '</div>' +
+        '<div class="thread-stats"><div class="thread-replies">&#128172; ' + thread.replies + '</div></div>' +
+    '</li>';
+}
 
-            // Separate members by status
-            const online = data.members.filter(m => m.status === 'online');
-            const dnd = data.members.filter(m => m.status === 'dnd');
-            const idle = data.members.filter(m => m.status === 'idle');
-            const allMembers = [...online, ...dnd, ...idle];
+Object.keys(threads).forEach(function(key) {
+    var list = document.getElementById('thread-list-' + key);
+    if (list) list.innerHTML = threads[key].map(renderThread).join('');
+});
 
-            let html = '<div class="member-list">';
-            
-            allMembers.forEach(member => {
-                const statusClass = `status-${member.status}`;
-                const gameHtml = member.game ? `<div class="member-game">${member.game.name}</div>` : '';
-                
-                html += `
-                    <div class="member-card">
-                        <div class="avatar-container">
-                            <img class="avatar" src="${member.avatar_url}" alt="${member.username}">
-                            <div class="status-indicator ${statusClass}"></div>
-                        </div>
-                        <div class="member-info">
-                            <div class="member-name">${member.username}</div>
-                            ${gameHtml}
-                        </div>
-                    </div>
-                `;
+// ===== FORUM CATEGORIES =====
+var categories = [
+    { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "94", messages: "102", latest: "Software updated", latestUser: "whitey", latestTime: "Dec 20, 2025", tag: "Loader & Site", tagClass: "tag-orange", unread: true },
+    { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: "527", messages: "7.9K", latest: "Superior HvH and Legit Pack", latestUser: "ladro_xd", latestTime: "Yesterday", tag: "Rage", tagClass: "tag-red", unread: true },
+    { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "108", messages: "7.6K", latest: "OFFICIAL CHEAPEST RESELLER", latestUser: "apfiora", latestTime: "Today at 11:11 AM", tag: null, unread: true },
+    { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "385", messages: "1.6K", latest: "HVH CFG PREMIERE", latestUser: "cheliktvjj", latestTime: "May 1, 2026", tag: null, unread: true },
+    { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "204", messages: "788", latest: "is best cheat for 5usd", latestUser: "L4ngossss", latestTime: "Monday", tag: "English", tagClass: "tag-blue", unread: true },
+    { icon: "forum", name: "Offtopic", desc: "Free communication.", threads: "8.6K", messages: "53.7K", latest: "lua", latestUser: "Clabik", latestTime: "13 min ago", tag: null, unread: true },
+];
+
+var nodeList = document.getElementById('node-list');
+nodeList.innerHTML = categories.map(function(cat) {
+    var tagHtml = cat.tag ? '<span class="tag ' + cat.tagClass + '">' + cat.tag + '</span> ' : '';
+    return '<li class="node-item">' +
+        '<div class="node-icon"><span class="material-symbols-outlined">' + cat.icon + '</span></div>' +
+        '<div class="node-main">' +
+            '<h3 class="node-title"><a href="#">' + cat.name + '</a>' +
+            (cat.unread ? '<span class="node-new">New</span>' : '') +
+            '</h3>' +
+            '<div class="node-desc">' + cat.desc + '</div>' +
+        '</div>' +
+        '<div class="node-stats-col">' +
+            '<div class="node-stat"><div class="node-stat-val">' + cat.threads + '</div><div class="node-stat-label">Threads</div></div>' +
+            '<div class="node-stat"><div class="node-stat-val">' + cat.messages + '</div><div class="node-stat-label">Messages</div></div>' +
+        '</div>' +
+        '<div class="node-extra">' +
+            '<div class="node-extra-title">' + tagHtml + cat.latest + '</div>' +
+            '<div class="node-extra-date">' + cat.latestUser + ' &middot; ' + cat.latestTime + '</div>' +
+        '</div>' +
+    '</li>';
+}).join('');
+
+// ===== DISCORD WIDGET =====
+var GUILD_ID = '1512530980177711325';
+var CORS_PROXY = 'https://corsproxy.io/?';
+var WIDGET_URL = 'https://discord.com/api/guilds/' + GUILD_ID + '/widget.json';
+
+function loadDiscordWidget() {
+    var body = document.getElementById('discord-widget-body');
+    fetch(CORS_PROXY + encodeURIComponent(WIDGET_URL))
+        .then(function(resp) {
+            if (!resp.ok) throw new Error('Failed');
+            return resp.json();
+        })
+        .then(function(data) {
+            document.getElementById('stat-online').textContent = data.presence_count;
+
+            var sortedMembers = data.members.slice().sort(function(a, b) {
+                var order = { online: 0, dnd: 1, idle: 2, offline: 3 };
+                return (order[a.status] || 3) - (order[b.status] || 3);
             });
 
-            html += '</div>';
+            var maxShow = 15;
+            var shown = sortedMembers.slice(0, maxShow);
+            var remaining = sortedMembers.length - maxShow;
 
-            // Games section
-            const playing = data.members.filter(m => m.game);
-            if (playing.length > 0) {
-                const games = [...new Set(playing.map(m => m.game.name))];
-                html += `
-                    <div class="games-section">
-                        <div class="games-title">🎮 Сейчас играют:</div>
-                        <div>
-                            ${games.map(game => `<span class="game-tag">${game}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            }
+            var html = '<div class="discord-online">' +
+                '<div class="discord-online-dot"></div>' +
+                '<span class="discord-online-count">' + data.presence_count + ' online</span>' +
+            '</div>' +
+            '<ul class="discord-members">' +
+            shown.map(function(m) {
+                var initials = m.username.charAt(0).toUpperCase();
+                var gameHtml = m.game ? '<div class="discord-game">🎮 ' + m.game.name + '</div>' : '';
+                var avatarContent = m.avatar_url 
+                    ? '<img class="discord-avatar" src="' + m.avatar_url + '" alt="' + m.username + '">'
+                    : '<div class="discord-avatar-placeholder">' + initials + '</div>';
+                return '<li class="discord-member">' +
+                    '<div class="discord-avatar-wrap">' + avatarContent +
+                        '<div class="discord-status ' + m.status + '"></div>' +
+                    '</div>' +
+                    '<div><div class="discord-name">' + m.username + '</div>' + gameHtml + '</div>' +
+                '</li>';
+            }).join('') +
+            '</ul>' +
+            (remaining > 0 ? '<div class="discord-more">... and ' + remaining + ' more</div>' : '') +
+            '<a href="' + data.instant_invite + '" target="_blank" class="discord-join-btn">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>' +
+                'Join Discord' +
+            '</a>';
 
-            content.innerHTML = html;
-        }
+            body.innerHTML = html;
+        })
+        .catch(function() {
+            body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem;">' +
+                'Failed to load widget<br>' +
+                '<a href="https://discord.com/invite/mS8Je49C" target="_blank" class="discord-join-btn" style="margin-top:12px;display:inline-flex;width:auto;padding:8px 20px;">' +
+                'Join Discord</a></div>';
+        });
+}
 
-        function updateCountdown() {
-            countdown--;
-            if (countdown <= 0) {
-                countdown = 30;
-                fetchWidget();
-            }
-            document.getElementById('refresh-info').textContent = `Авто-обновление через ${countdown} сек`;
-        }
+loadDiscordWidget();
+setInterval(loadDiscordWidget, 60000);
+</script>
 
-        // Initial load
-        fetchWidget();
-
-        // Auto refresh
-        setInterval(updateCountdown, 1000);
-    </script>
 </body>
 </html>
