@@ -521,24 +521,29 @@ async function fetchRemoteUsers() {
 // ===== AUTH SYSTEM =====
 var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
 
+// Show login button immediately
+renderNavAuth();
+
 async function initAuth() {
-    // Fetch remote users first
-    await fetchRemoteUsers();
+    try {
+        // Fetch remote users first
+        await fetchRemoteUsers();
 
-    // Check ban
-    if (currentUser && isBannedRemote(currentUser.id)) {
-        alert('Your account has been banned from this site.');
-        currentUser = null;
-        localStorage.removeItem('np_user');
-        renderNavAuth();
-        return;
-    }
+        // Check ban
+        if (currentUser && isBannedRemote(currentUser.id)) {
+            alert('Your account has been banned from this site.');
+            currentUser = null;
+            localStorage.removeItem('np_user');
+            renderNavAuth();
+            return;
+        }
 
-    // Register on remote
-    if (currentUser) {
-        registerUser(currentUser);
-        await fetchRemoteUsers(); // refresh after register
-    }
+        // Register on remote
+        if (currentUser) {
+            registerUser(currentUser);
+            await fetchRemoteUsers(); // refresh after register
+        }
+    } catch (e) { /* ignore */ }
 
     renderNavAuth();
 }
