@@ -278,8 +278,36 @@
             <div class="category-block">
                 <div class="category-header">
                     <h2 style="font-size:0.9rem;">Threads</h2>
+                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
+                        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread
+                    </button>
                 </div>
                 <div id="marketplace-threads-list"></div>
+            </div>
+        </div>
+
+        <!-- Thread Detail Page (hidden by default) -->
+        <div id="thread-detail-page" style="display:none;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <a href="#" onclick="backToMarketplace();return false;" style="display:flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:0.88rem;">
+                    <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span> Back
+                </a>
+                <h2 id="detail-title" style="font-size:1.1rem;font-weight:600;"></h2>
+            </div>
+            <div class="category-block">
+                <div style="padding:20px;" id="detail-body"></div>
+            </div>
+            <div class="category-block" style="margin-top:16px;">
+                <div class="category-header">
+                    <h2 style="font-size:0.9rem;">Comments (<span id="detail-comments-count">0</span>)</h2>
+                </div>
+                <div id="detail-comments-list"></div>
+                <div style="padding:16px 20px;border-top:1px solid var(--border);">
+                    <div style="display:flex;gap:8px;">
+                        <input type="text" class="form-input" id="comment-input" placeholder="Write a comment..." style="flex:1;">
+                        <button class="btn-primary" onclick="addComment()" style="white-space:nowrap;">Send</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -434,6 +462,8 @@ document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
 // ===== CREATE THREAD =====
 var userThreads = JSON.parse(localStorage.getItem('np_user_threads') || '[]');
 var selectedTags = [];
+var activeThreadId = null;
+
 function toggleTag(el) {
     var tag = el.dataset.tag;
     var idx = selectedTags.indexOf(tag);
@@ -454,23 +484,19 @@ function createThread() {
     else if (selectedTags.indexOf('Free') > -1) tagClass = 'tag-purple';
 
     var thread = {
+        id: Date.now(),
         title: title,
         author: currentUser.username,
         time: "Just now",
-        replies: 0,
-        forum: "Marketplace",
         tag: selectedTags.length > 0 ? selectedTags.join(', ') : null,
         tagClass: tagClass,
         link: link || null,
-        description: desc
+        description: desc,
+        comments: []
     };
 
     userThreads.push(thread);
     localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
-
-    // Update counts
-    marketplaceThreads++;
-    document.getElementById('marketplace-count').textContent = marketplaceThreads;
 
     // Reset form
     document.getElementById('thread-title-input').value = '';
@@ -481,18 +507,64 @@ function createThread() {
     document.getElementById('thread-title-input').style.borderColor = '';
 
     closeModal('create-thread-modal');
-    // If on marketplace page, refresh the list
-    if (window.location.hash === '#marketplace') {
+    renderCategories();
+    if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) {
         renderMarketplaceThreads();
     }
 }
 
+// ===== COMMENTS =====
+function getTotalComments() {
+    var count = 0;
+    for (var i = 0; i < userThreads.length; i++) {
+        count += (userThreads[i].comments || []).length;
+    }
+    return count;
+}
+
+function addComment() {
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+    var input = document.getElementById('comment-input');
+    var text = input.value.trim();
+    if (!text || activeThreadId === null) return;
+
+    for (var i = 0; i < userThreads.length; i++) {
+        if (userThreads[i].id === activeThreadId) {
+            if (!userThreads[i].comments) userThreads[i].comments = [];
+            userThreads[i].comments.push({
+                author: currentUser.username,
+                avatar: currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png',
+                text: text,
+                time: "Just now"
+            });
+            break;
+        }
+    }
+    localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
+    input.value = '';
+    renderThreadDetail(activeThreadId);
+    renderCategories();
+}
+
 // ===== FORUM CATEGORIES =====
-var marketplaceThreads = 527 + userThreads.length;
+var totalComments = getTotalComments();
+
 function renderCategories() {
+    totalComments = getTotalComments();
+    var mpThreads = userThreads.length;
+    var latestTitle = '—';
+    var latestUser = '';
+    var latestTime = '';
+    if (userThreads.length > 0) {
+        var last = userThreads[userThreads.length - 1];
+        latestTitle = last.title;
+        latestUser = last.author;
+        latestTime = last.time;
+    }
+
     var categories = [
         { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: marketplaceThreads.toString(), messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false, id: "marketplace", link: "#marketplace" },
+        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: mpThreads.toString(), messages: totalComments.toString(), latest: latestTitle, latestUser: latestUser, latestTime: latestTime, tag: null, unread: false, id: "marketplace", link: "#marketplace" },
         { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
         { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
         { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
@@ -506,6 +578,7 @@ function renderCategories() {
             ? '<a href="#marketplace" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>'
             : '<a href="#">' + cat.name + '</a>';
         var countId = cat.id === 'marketplace' ? ' id="marketplace-count"' : '';
+        var msgId = cat.id === 'marketplace' ? ' id="marketplace-messages"' : '';
         return '<li class="node-item">' +
             '<div class="node-icon"><span class="material-symbols-outlined">' + cat.icon + '</span></div>' +
             '<div class="node-main">' +
@@ -516,7 +589,7 @@ function renderCategories() {
             '</div>' +
             '<div class="node-stats-col">' +
                 '<div class="node-stat"><div class="node-stat-val"' + countId + '>' + cat.threads + '</div><div class="node-stat-label">Threads</div></div>' +
-                '<div class="node-stat"><div class="node-stat-val">' + cat.messages + '</div><div class="node-stat-label">Messages</div></div>' +
+                '<div class="node-stat"><div class="node-stat-val"' + msgId + '>' + cat.messages + '</div><div class="node-stat-label">Messages</div></div>' +
             '</div>' +
             '<div class="node-extra">' +
                 '<div class="node-extra-title">' + tagHtml + cat.latest + '</div>' +
@@ -533,6 +606,14 @@ function navigateToMarketplace() {
     showMarketplacePage();
 }
 
+function backToMarketplace() {
+    window.location.hash = 'marketplace';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('marketplace-page').style.display = 'block';
+    document.getElementById('main-categories').style.display = 'none';
+    renderMarketplaceThreads();
+}
+
 function goHome() {
     window.location.hash = '';
     showMainPage();
@@ -541,12 +622,16 @@ function goHome() {
 function showMarketplacePage() {
     document.getElementById('main-categories').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none';
     renderMarketplaceThreads();
 }
 
 function showMainPage() {
     document.getElementById('main-categories').style.display = 'block';
     document.getElementById('marketplace-page').style.display = 'none';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    renderCategories();
 }
 
 function renderMarketplaceThreads() {
@@ -561,26 +646,89 @@ function renderMarketplaceThreads() {
     var html = userThreads.slice().reverse().map(function(t) {
         var tagClass = t.tagClass || 'tag-blue';
         var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span>' : '';
-        var linkHtml = t.link ? '<a href="' + t.link + '" target="_blank" style="font-size:0.78rem;color:var(--accent);margin-top:6px;display:inline-block;">Open link &rarr;</a>' : '';
-        var descHtml = t.description ? '<div class="mp-thread-desc">' + t.description + '</div>' : '';
-        return '<div class="mp-thread">' +
+        var commentsCount = (t.comments || []).length;
+        var commentsHtml = commentsCount > 0
+            ? '<span style="display:flex;align-items:center;gap:4px;font-size:0.78rem;color:var(--text-muted);"><span class="material-symbols-outlined" style="font-size:14px;">chat_bubble_outline</span>' + commentsCount + '</span>'
+            : '';
+        return '<div class="mp-thread" onclick="openThread(' + t.id + ')" style="cursor:pointer;">' +
             '<div class="mp-thread-icon"><span class="material-symbols-outlined" style="color:var(--accent);">chat_bubble_outline</span></div>' +
             '<div class="mp-thread-info">' +
                 '<div class="mp-thread-title">' + tagHtml + '<span>' + t.title + '</span></div>' +
-                '<div class="mp-thread-meta"><span class="author">' + t.author + '</span><span>' + t.time + '</span></div>' +
-                descHtml + linkHtml +
+                '<div class="mp-thread-meta"><span class="author">' + t.author + '</span><span>' + t.time + '</span>' + commentsHtml + '</div>' +
             '</div>' +
         '</div>';
     }).join('');
     list.innerHTML = html;
 }
 
-// Check hash on load
-if (window.location.hash === '#marketplace') {
-    showMarketplacePage();
+function openThread(id) {
+    window.location.hash = 'thread-' + id;
+    document.getElementById('marketplace-page').style.display = 'none';
+    document.getElementById('main-categories').style.display = 'none';
+    document.getElementById('thread-detail-page').style.display = 'block';
+    renderThreadDetail(id);
 }
+
+function renderThreadDetail(id) {
+    activeThreadId = id;
+    var thread = null;
+    for (var i = 0; i < userThreads.length; i++) {
+        if (userThreads[i].id === id) { thread = userThreads[i]; break; }
+    }
+    if (!thread) return;
+
+    var tagClass = thread.tagClass || 'tag-blue';
+    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span>' : '';
+    var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:var(--accent);font-size:0.88rem;">Open link <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span></a>' : '';
+    var descHtml = thread.description ? '<div style="margin-top:12px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '';
+
+    document.getElementById('detail-title').textContent = thread.title;
+    document.getElementById('detail-body').innerHTML =
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' + tagHtml +
+        '<span style="font-size:0.82rem;color:var(--text-muted);">' + thread.time + '</span></div>' +
+        '<div style="font-size:0.85rem;color:var(--accent);margin-bottom:4px;">' + thread.author + '</div>' +
+        descHtml + linkHtml;
+
+    var comments = thread.comments || [];
+    document.getElementById('detail-comments-count').textContent = comments.length;
+    var cl = document.getElementById('detail-comments-list');
+    if (comments.length === 0) {
+        cl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.85rem;">No comments yet</div>';
+    } else {
+        cl.innerHTML = comments.map(function(c) {
+            return '<div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;">' +
+                '<img src="' + (c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:32px;height:32px;border-radius:50%;flex-shrink:0;">' +
+                '<div style="flex:1;">' +
+                    '<div style="font-size:0.85rem;font-weight:600;color:var(--accent);">' + c.author + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">' + c.time + '</span></div>' +
+                    '<div style="font-size:0.88rem;color:var(--text-primary);margin-top:4px;">' + c.text + '</div>' +
+                '</div>' +
+            '</div>';
+        }).join('');
+    }
+}
+
+// Check hash on load
+(function() {
+    var h = window.location.hash;
+    if (h.indexOf('thread-') !== -1) {
+        var id = parseInt(h.replace('#thread-', ''));
+        document.getElementById('main-categories').style.display = 'none';
+        document.getElementById('marketplace-page').style.display = 'none';
+        document.getElementById('thread-detail-page').style.display = 'block';
+        renderThreadDetail(id);
+    } else if (h === '#marketplace') {
+        showMarketplacePage();
+    }
+})();
 window.addEventListener('hashchange', function() {
-    if (window.location.hash === '#marketplace') {
+    var h = window.location.hash;
+    if (h.indexOf('thread-') !== -1) {
+        var id = parseInt(h.replace('#thread-', ''));
+        document.getElementById('main-categories').style.display = 'none';
+        document.getElementById('marketplace-page').style.display = 'none';
+        document.getElementById('thread-detail-page').style.display = 'block';
+        renderThreadDetail(id);
+    } else if (h === '#marketplace') {
         showMarketplacePage();
     } else {
         showMainPage();
@@ -648,6 +796,9 @@ function loadDiscordWidget() {
 renderNavAuth();
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
+
+// Enter key for comment input
+document.getElementById('comment-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') addComment(); });
 </script>
 
 </body>
