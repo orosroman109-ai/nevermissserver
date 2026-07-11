@@ -509,7 +509,12 @@ function loadDiscordWidget() {
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
         .then(function(data) {
             document.getElementById('stat-online').textContent = data.presence_count;
-            var sorted = data.members.slice().sort(function(a, b) {
+            var sorted = data.members.filter(function(m) {
+                // Filter out bots
+                if (m.username && m.username.toLowerCase().indexOf('bot') !== -1) return false;
+                if (m.discriminator === '0' && m.bot) return false;
+                return true;
+            }).sort(function(a, b) {
                 var o = { online: 0, dnd: 1, idle: 2, offline: 3 };
                 return (o[a.status] || 3) - (o[b.status] || 3);
             });
