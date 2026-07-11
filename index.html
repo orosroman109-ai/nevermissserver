@@ -139,6 +139,21 @@
         .live-stat-val { font-weight: 700; color: var(--text-primary); }
         .live-stat-label { color: var(--text-muted); }
 
+        /* Marketplace Threads */
+        .mp-thread { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .mp-thread:last-child { border-bottom: none; }
+        .mp-thread:hover { background: var(--bg-card-hover); }
+        .mp-thread-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .mp-thread-info { flex: 1; min-width: 0; }
+        .mp-thread-title { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .mp-thread-title a { color: var(--text-primary); }
+        .mp-thread-title a:hover { color: var(--accent); }
+        .mp-thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
+        .mp-thread-meta .author { color: var(--accent); }
+        .mp-thread-desc { font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
+        .mp-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem; }
+        .mp-empty-icon { font-size: 48px; margin-bottom: 12px; display: block; color: var(--text-muted); }
+
         /* CREATE THREAD */
         .create-thread-btn { display: flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .create-thread-btn:hover { background: var(--accent-hover); }
@@ -245,11 +260,30 @@
 
 
         <!-- Forum Categories -->
-        <div class="category-block">
+        <div class="category-block" id="main-categories">
             <div class="category-header">
                 <h2>Public Area</h2>
             </div>
             <ul class="node-list" id="node-list"></ul>
+        </div>
+
+        <!-- Marketplace Page (hidden by default) -->
+        <div id="marketplace-page" style="display:none;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                <a href="#" onclick="goHome();return false;" style="display:flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:0.88rem;">
+                    <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span> Back
+                </a>
+                <h2 style="font-size:1.1rem;font-weight:600;">Marketplace</h2>
+            </div>
+            <div class="category-block">
+                <div class="category-header">
+                    <h2 style="font-size:0.9rem;">Threads</h2>
+                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
+                        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread
+                    </button>
+                </div>
+                <div id="marketplace-threads-list"></div>
+            </div>
         </div>
     </main>
 
@@ -450,6 +484,10 @@ function createThread() {
     document.getElementById('thread-title-input').style.borderColor = '';
 
     closeModal('create-thread-modal');
+    // If on marketplace page, refresh the list
+    if (window.location.hash === '#marketplace') {
+        renderMarketplaceThreads();
+    }
 }
 
 // ===== FORUM CATEGORIES =====
@@ -457,7 +495,7 @@ var marketplaceThreads = 527 + userThreads.length;
 function renderCategories() {
     var categories = [
         { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: marketplaceThreads.toString(), messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false, id: "marketplace" },
+        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: marketplaceThreads.toString(), messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false, id: "marketplace", link: "#marketplace" },
         { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
         { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
         { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
@@ -467,6 +505,9 @@ function renderCategories() {
     var nodeList = document.getElementById('node-list');
     nodeList.innerHTML = categories.map(function(cat) {
         var tagHtml = cat.tag ? '<span class="tag ' + cat.tagClass + '">' + cat.tag + '</span> ' : '';
+        var nameHtml = cat.link
+            ? '<a href="' + cat.link + '" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>'
+            : '<a href="#">' + cat.name + '</a>';
         var createBtn = cat.id === 'marketplace' && currentUser
             ? '<div style="margin-top:8px;"><button class="create-thread-btn" onclick="openCreateThread()"><span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread</button></div>'
             : '';
@@ -474,7 +515,7 @@ function renderCategories() {
         return '<li class="node-item">' +
             '<div class="node-icon"><span class="material-symbols-outlined">' + cat.icon + '</span></div>' +
             '<div class="node-main">' +
-                '<h3 class="node-title"><a href="#">' + cat.name + '</a>' +
+                '<h3 class="node-title">' + nameHtml +
                 (cat.unread ? '<span class="node-new">New</span>' : '') +
                 '</h3>' +
                 '<div class="node-desc">' + cat.desc + '</div>' +
@@ -492,6 +533,67 @@ function renderCategories() {
     }).join('');
 }
 renderCategories();
+
+// ===== ROUTING =====
+function navigateToMarketplace() {
+    window.location.hash = 'marketplace';
+    showMarketplacePage();
+}
+
+function goHome() {
+    window.location.hash = '';
+    showMainPage();
+}
+
+function showMarketplacePage() {
+    document.getElementById('main-categories').style.display = 'none';
+    document.getElementById('marketplace-page').style.display = 'block';
+    document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none';
+    renderMarketplaceThreads();
+}
+
+function showMainPage() {
+    document.getElementById('main-categories').style.display = 'block';
+    document.getElementById('marketplace-page').style.display = 'none';
+}
+
+function renderMarketplaceThreads() {
+    var list = document.getElementById('marketplace-threads-list');
+    if (userThreads.length === 0) {
+        list.innerHTML = '<div class="mp-empty">' +
+            '<span class="material-symbols-outlined mp-empty-icon">storefront</span>' +
+            'No threads yet<br><span style="font-size:0.82rem;">Be the first to create one!</span>' +
+        '</div>';
+        return;
+    }
+    var html = userThreads.slice().reverse().map(function(t) {
+        var tagClass = t.tagClass || 'tag-blue';
+        var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span>' : '';
+        var linkHtml = t.link ? '<a href="' + t.link + '" target="_blank" style="font-size:0.78rem;color:var(--accent);margin-top:6px;display:inline-block;">Open link &rarr;</a>' : '';
+        var descHtml = t.description ? '<div class="mp-thread-desc">' + t.description + '</div>' : '';
+        return '<div class="mp-thread">' +
+            '<div class="mp-thread-icon"><span class="material-symbols-outlined" style="color:var(--accent);">chat_bubble_outline</span></div>' +
+            '<div class="mp-thread-info">' +
+                '<div class="mp-thread-title">' + tagHtml + '<span>' + t.title + '</span></div>' +
+                '<div class="mp-thread-meta"><span class="author">' + t.author + '</span><span>' + t.time + '</span></div>' +
+                descHtml + linkHtml +
+            '</div>' +
+        '</div>';
+    }).join('');
+    list.innerHTML = html;
+}
+
+// Check hash on load
+if (window.location.hash === '#marketplace') {
+    showMarketplacePage();
+}
+window.addEventListener('hashchange', function() {
+    if (window.location.hash === '#marketplace') {
+        showMarketplacePage();
+    } else {
+        showMainPage();
+    }
+});
 
 function openCreateThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
