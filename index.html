@@ -170,8 +170,6 @@
         .btn-primary:hover { background: var(--accent-hover); }
         .btn-secondary { padding: 10px 24px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; }
         .btn-secondary:hover { color: var(--text-primary); }
-        .btn-google { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 24px; background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: background 0.2s; }
-        .btn-google:hover { background: var(--bg-tertiary); }
 
         /* Loading */
         .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
@@ -194,8 +192,6 @@
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
     </style>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -307,88 +303,6 @@
     </div>
 </footer>
 
-<!-- Auth Modal -->
-<div class="modal-overlay" id="auth-modal">
-    <div class="modal" style="max-width:420px;">
-        <div class="modal-header">
-            <h2 id="auth-modal-title">Login</h2>
-            <button class="modal-close" onclick="closeModal('auth-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <!-- Login Form -->
-            <div id="auth-login-form">
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="auth-email" placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="auth-password" placeholder="Your password">
-                </div>
-                <div class="form-group" style="display:flex;align-items:center;gap:8px;">
-                    <input type="checkbox" id="auth-remember" style="accent-color:var(--accent);">
-                    <label for="auth-remember" style="font-size:0.85rem;color:var(--text-secondary);cursor:pointer;">Remember me</label>
-                </div>
-                <div id="auth-error" style="color:var(--red);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
-                <button class="btn-primary" style="width:100%;" onclick="doEmailLogin()">Login</button>
-                <div style="text-align:center;margin:16px 0;font-size:0.82rem;color:var(--text-muted);">or</div>
-                <button class="btn-google" style="width:100%;" onclick="doGoogleLogin()">
-                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    Login with Google
-                </button>
-                <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--text-muted);">
-                    Don't have an account? <a href="#" onclick="switchToRegister();return false;" style="font-weight:600;">Register</a>
-                </div>
-            </div>
-            <!-- Register Form -->
-            <div id="auth-register-form" style="display:none;">
-                <div class="form-group">
-                    <label class="form-label">Username</label>
-                    <input type="text" class="form-input" id="auth-username" placeholder="Choose a username">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <input type="email" class="form-input" id="auth-reg-email" placeholder="your@email.com">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Password</label>
-                    <input type="password" class="form-input" id="auth-reg-password" placeholder="Min 6 characters">
-                </div>
-                <div class="form-group" style="display:flex;align-items:center;gap:8px;">
-                    <input type="checkbox" id="auth-reg-remember" checked style="accent-color:var(--accent);">
-                    <label for="auth-reg-remember" style="font-size:0.85rem;color:var(--text-secondary);cursor:pointer;">Remember me</label>
-                </div>
-                <div id="auth-reg-error" style="color:var(--red);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
-                <button class="btn-primary" style="width:100%;" onclick="doEmailRegister()">Create Account</button>
-                <div style="text-align:center;margin:16px 0;font-size:0.82rem;color:var(--text-muted);">or</div>
-                <button class="btn-google" style="width:100%;" onclick="doGoogleLogin()">
-                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-                    Sign up with Google
-                </button>
-                <div style="text-align:center;margin-top:16px;font-size:0.85rem;color:var(--text-muted);">
-                    Already have an account? <a href="#" onclick="switchToLogin();return false;" style="font-weight:600;">Login</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Username Prompt Modal (for Google sign-in first time) -->
-<div class="modal-overlay" id="username-modal">
-    <div class="modal" style="max-width:380px;text-align:center;">
-        <div class="modal-body" style="padding:32px;">
-            <span class="material-symbols-outlined" style="font-size:48px;color:var(--accent);margin-bottom:16px;display:block;">person_add</span>
-            <h2 style="font-size:1.1rem;margin-bottom:8px;">Choose your username</h2>
-            <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px;">This will be your display name on the forum</p>
-            <div class="form-group" style="text-align:left;">
-                <input type="text" class="form-input" id="username-prompt-input" placeholder="Username" style="text-align:center;">
-            </div>
-            <div id="username-prompt-error" style="color:var(--red);font-size:0.82rem;margin-bottom:12px;display:none;"></div>
-            <button class="btn-primary" style="width:100%;" onclick="saveUsername()">Continue</button>
-        </div>
-    </div>
-</div>
-
 <!-- Create Thread Modal -->
 <div class="modal-overlay" id="create-thread-modal">
     <div class="modal">
@@ -426,161 +340,14 @@
 </div>
 
 <script>
-// ===== FIREBASE INIT =====
-var firebaseConfig = {
-    apiKey: "AIzaSyA-UJCXwGp3ZSI7mxAn-aQP56HZpOEMUBw",
-    authDomain: "nevermisssserver.firebaseapp.com",
-    projectId: "nevermisssserver",
-    storageBucket: "nevermisssserver.firebasestorage.app",
-    messagingSenderId: "647671196469",
-    appId: "1:647671196469:web:fbca5d17d49a474d957a7c"
-};
-firebase.initializeApp(firebaseConfig);
-var auth = firebase.auth();
+// ===== DISCORD OAUTH CONFIG =====
+var DISCORD_CLIENT_ID = '1525497038094209164';
+var DISCORD_REDIRECT_URI = 'https://orosroman109-ai.github.io/nevermissserver/callback.html';
+var DISCORD_SCOPE = 'identify';
+var DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI) + '&scope=' + DISCORD_SCOPE;
 
 // ===== AUTH SYSTEM =====
-var currentUser = null;
-
-function showAuthError(id, msg) {
-    var el = document.getElementById(id);
-    el.textContent = msg;
-    el.style.display = 'block';
-}
-function hideAuthError(id) {
-    document.getElementById(id).style.display = 'none';
-}
-
-function switchToRegister() {
-    document.getElementById('auth-login-form').style.display = 'none';
-    document.getElementById('auth-register-form').style.display = 'block';
-    document.getElementById('auth-modal-title').textContent = 'Register';
-    hideAuthError('auth-error');
-    hideAuthError('auth-reg-error');
-}
-function switchToLogin() {
-    document.getElementById('auth-login-form').style.display = 'block';
-    document.getElementById('auth-register-form').style.display = 'none';
-    document.getElementById('auth-modal-title').textContent = 'Login';
-    hideAuthError('auth-error');
-    hideAuthError('auth-reg-error');
-}
-
-function doEmailLogin() {
-    var email = document.getElementById('auth-email').value.trim();
-    var pass = document.getElementById('auth-password').value;
-    var remember = document.getElementById('auth-remember').checked;
-    if (!email || !pass) { showAuthError('auth-error', 'Fill in all fields'); return; }
-    hideAuthError('auth-error');
-
-    var persistence = remember ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-    auth.setPersistence(persistence).then(function() {
-        return auth.signInWithEmailAndPassword(email, pass);
-    }).then(function() {
-        closeModal('auth-modal');
-    }).catch(function(err) {
-        var msg = 'Login failed';
-        if (err.code === 'auth/user-not-found') msg = 'No account found with this email';
-        else if (err.code === 'auth/wrong-password') msg = 'Wrong password';
-        else if (err.code === 'auth/invalid-credential') msg = 'Invalid email or password';
-        else if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Try later';
-        showAuthError('auth-error', msg);
-    });
-}
-
-function doEmailRegister() {
-    var username = document.getElementById('auth-username').value.trim();
-    var email = document.getElementById('auth-reg-email').value.trim();
-    var pass = document.getElementById('auth-reg-password').value;
-    var remember = document.getElementById('auth-reg-remember').checked;
-    if (!username || !email || !pass) { showAuthError('auth-reg-error', 'Fill in all fields'); return; }
-    if (pass.length < 6) { showAuthError('auth-reg-error', 'Password must be at least 6 characters'); return; }
-    if (username.length < 2) { showAuthError('auth-reg-error', 'Username must be at least 2 characters'); return; }
-    hideAuthError('auth-reg-error');
-
-    var persistence = remember ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION;
-    auth.setPersistence(persistence).then(function() {
-        return auth.createUserWithEmailAndPassword(email, pass);
-    }).then(function(cred) {
-        return cred.user.updateProfile({ displayName: username }).then(function() {
-            localStorage.setItem('np_username', username);
-            closeModal('auth-modal');
-        });
-    }).catch(function(err) {
-        var msg = 'Registration failed';
-        if (err.code === 'auth/email-already-in-use') msg = 'This email is already registered';
-        else if (err.code === 'auth/weak-password') msg = 'Password too weak';
-        showAuthError('auth-reg-error', msg);
-    });
-}
-
-function doGoogleLogin() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    var persistence = firebase.auth.Auth.Persistence.LOCAL;
-    auth.setPersistence(persistence).then(function() {
-        return auth.signInWithPopup(provider);
-    }).then(function(result) {
-        var user = result.user;
-        var savedName = localStorage.getItem('np_username_' + user.uid);
-        if (savedName) {
-            closeModal('auth-modal');
-        } else if (user.displayName) {
-            localStorage.setItem('np_username_' + user.uid, user.displayName);
-            closeModal('auth-modal');
-        } else {
-            // No username — ask for one
-            closeModal('auth-modal');
-            setTimeout(function() { showModal('username-modal'); }, 300);
-        }
-    }).catch(function(err) {
-        if (err.code === 'auth/popup-closed-by-user') return;
-        showAuthError('auth-error', 'Google login failed: ' + err.message);
-    });
-}
-
-function saveUsername() {
-    var name = document.getElementById('username-prompt-input').value.trim();
-    if (!name || name.length < 2) {
-        showAuthError('username-prompt-error', 'Username must be at least 2 characters');
-        return;
-    }
-    var user = auth.currentUser;
-    if (user) {
-        user.updateProfile({ displayName: name }).then(function() {
-            localStorage.setItem('np_username_' + user.uid, name);
-            closeModal('username-modal');
-        });
-    }
-}
-
-function logout() {
-    auth.signOut().then(function() {
-        currentUser = null;
-        renderNavAuth();
-    });
-}
-
-// ===== AUTH STATE LISTENER =====
-auth.onAuthStateChanged(function(user) {
-    if (user) {
-        var savedName = localStorage.getItem('np_username_' + user.uid);
-        var displayName = savedName || user.displayName || user.email.split('@')[0];
-        currentUser = {
-            uid: user.uid,
-            email: user.email,
-            username: displayName,
-            avatar: user.photoURL || 'https://cdn.discordapp.com/embed/avatars/0.png',
-            provider: user.providerData[0] ? user.providerData[0].providerId : 'password'
-        };
-        // If Google user with no saved name and no displayName, prompt
-        if (!savedName && !user.displayName && user.providerData[0] && user.providerData[0].providerId === 'google.com') {
-            setTimeout(function() { showModal('username-modal'); }, 500);
-        }
-    } else {
-        currentUser = null;
-    }
-    renderNavAuth();
-    renderCategories();
-});
+var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
 
 function renderNavAuth() {
     var navRight = document.getElementById('nav-right');
@@ -590,27 +357,28 @@ function renderNavAuth() {
             '<div class="user-dropdown">' +
                 '<div class="user-profile" onclick="toggleDropdown()">' +
                     '<div class="user-avatar"><img src="' + avatarSrc + '" alt=""></div>' +
-                    '<span class="user-name">' + currentUser.username + '</span>' +
+                    '<span class="user-name">' + (currentUser.global_name || currentUser.username) + '</span>' +
                     '<span class="material-symbols-outlined" style="font-size:18px;color:var(--text-muted);">expand_more</span>' +
                 '</div>' +
                 '<div class="user-dropdown-menu" id="user-dropdown">' +
-                    '<a href="#">My Profile</a>' +
+                    '<a href="https://discord.com/users/' + (currentUser.id || '') + '" target="_blank">My Profile</a>' +
                     '<hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">' +
                     '<button onclick="logout()">Logout</button>' +
                 '</div>' +
             '</div>';
     } else {
         navRight.innerHTML =
-            '<button class="auth-btn auth-login" onclick="openAuth()">' +
-                '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>' +
-                'Login' +
-            '</button>';
+            '<a href="' + DISCORD_AUTH_URL + '" class="auth-btn auth-login">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>' +
+                'Login with Discord' +
+            '</a>';
     }
 }
 
-function openAuth() {
-    switchToLogin();
-    showModal('auth-modal');
+function logout() {
+    currentUser = null;
+    localStorage.removeItem('np_user');
+    renderNavAuth();
 }
 
 function toggleDropdown() {
@@ -643,7 +411,7 @@ function toggleTag(el) {
 }
 
 function createThread() {
-    if (!currentUser) { openAuth(); return; }
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
     var title = document.getElementById('thread-title-input').value.trim();
     var desc = document.getElementById('thread-desc-input').value.trim();
     var link = document.getElementById('thread-link-input').value.trim();
@@ -726,7 +494,7 @@ function renderCategories() {
 renderCategories();
 
 function openCreateThread() {
-    if (!currentUser) { openAuth(); return; }
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
     showModal('create-thread-modal');
 }
 
@@ -783,13 +551,9 @@ function loadDiscordWidget() {
 }
 
 // ===== INIT =====
+renderNavAuth();
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
-
-// Enter key support for auth forms
-document.getElementById('auth-password').addEventListener('keydown', function(e) { if (e.key === 'Enter') doEmailLogin(); });
-document.getElementById('auth-reg-password').addEventListener('keydown', function(e) { if (e.key === 'Enter') doEmailRegister(); });
-document.getElementById('username-prompt-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') saveUsername(); });
 </script>
 
 </body>
