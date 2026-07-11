@@ -448,6 +448,7 @@ document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
 });
 
 // ===== CREATE THREAD =====
+var userThreads = JSON.parse(localStorage.getItem('np_user_threads') || '[]');
 var selectedTags = [];
 function toggleTag(el) {
     var tag = el.dataset.tag;
