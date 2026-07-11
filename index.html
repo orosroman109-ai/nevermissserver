@@ -278,9 +278,6 @@
             <div class="category-block">
                 <div class="category-header">
                     <h2 style="font-size:0.9rem;">Threads</h2>
-                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread
-                    </button>
                 </div>
                 <div id="marketplace-threads-list"></div>
             </div>
@@ -506,11 +503,8 @@ function renderCategories() {
     nodeList.innerHTML = categories.map(function(cat) {
         var tagHtml = cat.tag ? '<span class="tag ' + cat.tagClass + '">' + cat.tag + '</span> ' : '';
         var nameHtml = cat.link
-            ? '<a href="' + cat.link + '" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>'
+            ? '<a href="#marketplace" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>'
             : '<a href="#">' + cat.name + '</a>';
-        var createBtn = cat.id === 'marketplace' && currentUser
-            ? '<div style="margin-top:8px;"><button class="create-thread-btn" onclick="openCreateThread()"><span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread</button></div>'
-            : '';
         var countId = cat.id === 'marketplace' ? ' id="marketplace-count"' : '';
         return '<li class="node-item">' +
             '<div class="node-icon"><span class="material-symbols-outlined">' + cat.icon + '</span></div>' +
@@ -519,7 +513,6 @@ function renderCategories() {
                 (cat.unread ? '<span class="node-new">New</span>' : '') +
                 '</h3>' +
                 '<div class="node-desc">' + cat.desc + '</div>' +
-                createBtn +
             '</div>' +
             '<div class="node-stats-col">' +
                 '<div class="node-stat"><div class="node-stat-val"' + countId + '>' + cat.threads + '</div><div class="node-stat-label">Threads</div></div>' +
@@ -548,7 +541,6 @@ function goHome() {
 function showMarketplacePage() {
     document.getElementById('main-categories').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
-    document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none';
     renderMarketplaceThreads();
 }
 
