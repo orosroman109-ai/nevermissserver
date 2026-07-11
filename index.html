@@ -203,6 +203,35 @@
         @media (min-width: 901px) { .node-extra { display: block !important; } }
         @media (max-width: 600px) { .node-item { flex-wrap: wrap; } .node-stats-col { width: 100%; justify-content: flex-start; margin-left: 60px; } }
 
+        /* Admin Panel */
+        .admin-panel-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--red); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .admin-panel-btn:hover { opacity: 0.85; }
+        .admin-panel-btn .material-symbols-outlined { font-size: 16px; }
+        .admin-modal { max-width: 700px; }
+        .admin-table { width: 100%; border-collapse: collapse; }
+        .admin-table th { text-align: left; padding: 10px 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+        .admin-table td { padding: 10px 14px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
+        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table tr:hover td { background: var(--bg-tertiary); }
+        .admin-user-cell { display: flex; align-items: center; gap: 10px; }
+        .admin-user-cell img { width: 28px; height: 28px; border-radius: 50%; }
+        .admin-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .admin-badge.admin { background: var(--red); color: white; }
+        .admin-badge.user { background: var(--bg-tertiary); color: var(--text-secondary); }
+        .admin-badge.banned { background: #8b2e2e; color: #ff6b6b; }
+        .ban-btn { padding: 5px 12px; border-radius: 6px; border: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .ban-btn.ban { background: var(--red); color: white; }
+        .ban-btn.ban:hover { background: #c0392b; }
+        .ban-btn.unban { background: var(--green); color: white; }
+        .ban-btn.unban:hover { background: #2d8b46; }
+        .admin-stats-row { display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border); }
+        .admin-stat-item { text-align: center; flex: 1; }
+        .admin-stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .admin-stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .ban-reason-input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.82rem; outline: none; margin-top: 8px; }
+        .ban-reason-input:focus { border-color: var(--red); }
+        .admin-empty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-primary); }
         ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
@@ -398,6 +427,48 @@
     </div>
 </div>
 
+<!-- Admin Panel Modal -->
+<div class="modal-overlay" id="admin-panel-modal">
+    <div class="modal admin-modal">
+        <div class="modal-header">
+            <h2><span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;">admin_panel_settings</span>Admin Panel</h2>
+            <button class="modal-close" onclick="closeModal('admin-panel-modal')">&times;</button>
+        </div>
+        <div class="admin-stats-row" id="admin-stats-row"></div>
+        <div class="modal-body" style="padding:0;">
+            <div style="padding:16px 24px 8px;display:flex;align-items:center;justify-content:space-between;">
+                <span style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);">Registered Users</span>
+                <input type="text" class="form-input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()" style="width:200px;padding:6px 12px;font-size:0.82rem;">
+            </div>
+            <div id="admin-users-list"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('admin-panel-modal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Ban confirmation modal -->
+<div class="modal-overlay" id="ban-confirm-modal">
+    <div class="modal" style="max-width:400px;">
+        <div class="modal-header">
+            <h2 id="ban-confirm-title">Ban User</h2>
+            <button class="modal-close" onclick="closeModal('ban-confirm-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:12px;" id="ban-confirm-text"></p>
+            <div class="form-group">
+                <label class="form-label">Reason (optional)</label>
+                <input type="text" class="ban-reason-input" id="ban-reason" placeholder="Enter ban reason...">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="closeModal('ban-confirm-modal')">Cancel</button>
+            <button class="btn-primary" id="ban-confirm-btn" style="background:var(--red);">Ban</button>
+        </div>
+    </div>
+</div>
+
 <script>
 // ===== DISCORD OAUTH CONFIG =====
 var DISCORD_CLIENT_ID = '1525497038094209164';
@@ -405,14 +476,73 @@ var DISCORD_REDIRECT_URI = 'https://orosroman109-ai.github.io/nevermissserver/ca
 var DISCORD_SCOPE = 'identify';
 var DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI) + '&scope=' + DISCORD_SCOPE;
 
+// ===== ADMIN SYSTEM =====
+var ADMIN_USERNAMES = ['nevermisssserver_owner', 'nevermissserver_owner', 'orosroman109'];
+var registeredUsers = JSON.parse(localStorage.getItem('np_registered_users') || '[]');
+var bannedUsers = JSON.parse(localStorage.getItem('np_banned_users') || '[]');
+var pendingBanUser = null;
+
+function isAdmin(user) {
+    if (!user) return false;
+    var u = (user.username || '').toLowerCase();
+    var g = (user.global_name || '').toLowerCase();
+    for (var i = 0; i < ADMIN_USERNAMES.length; i++) {
+        if (u === ADMIN_USERNAMES[i].toLowerCase() || g === ADMIN_USERNAMES[i].toLowerCase()) return true;
+    }
+    return false;
+}
+
+function isBanned(userId) {
+    for (var i = 0; i < bannedUsers.length; i++) {
+        if (bannedUsers[i].id === userId) return true;
+    }
+    return false;
+}
+
+function registerUser(user) {
+    if (!user) return;
+    for (var i = 0; i < registeredUsers.length; i++) {
+        if (registeredUsers[i].id === user.id) {
+            registeredUsers[i].username = user.username;
+            registeredUsers[i].global_name = user.global_name || '';
+            registeredUsers[i].avatar = user.avatar || '';
+            registeredUsers[i].lastLogin = new Date().toISOString();
+            localStorage.setItem('np_registered_users', JSON.stringify(registeredUsers));
+            return;
+        }
+    }
+    registeredUsers.push({
+        id: user.id,
+        username: user.username,
+        global_name: user.global_name || '',
+        avatar: user.avatar || '',
+        joinedAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString()
+    });
+    localStorage.setItem('np_registered_users', JSON.stringify(registeredUsers));
+}
+
 // ===== AUTH SYSTEM =====
 var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
+
+// Check ban on load
+if (currentUser && isBanned(currentUser.id)) {
+    alert('Your account has been banned from this site.');
+    currentUser = null;
+    localStorage.removeItem('np_user');
+}
+
+// Register user on load if logged in
+if (currentUser) registerUser(currentUser);
 
 function renderNavAuth() {
     var navRight = document.getElementById('nav-right');
     if (currentUser) {
         var avatarSrc = currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
-        navRight.innerHTML =
+        var adminBtn = isAdmin(currentUser)
+            ? '<button class="admin-panel-btn" onclick="openAdminPanel()"><span class="material-symbols-outlined">admin_panel_settings</span>Admin</button>'
+            : '';
+        navRight.innerHTML = adminBtn +
             '<div class="user-dropdown">' +
                 '<div class="user-profile" onclick="toggleDropdown()">' +
                     '<div class="user-avatar"><img src="' + avatarSrc + '" alt=""></div>' +
@@ -790,6 +920,99 @@ function loadDiscordWidget() {
         .catch(function() {
             body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem;">Failed to load widget<br><a href="https://discord.com/invite/mS8Je49C" target="_blank" class="discord-join-btn" style="margin-top:12px;display:inline-flex;width:auto;padding:8px 20px;">Join Discord</a></div>';
         });
+}
+
+// ===== ADMIN PANEL =====
+function openAdminPanel() {
+    if (!currentUser || !isAdmin(currentUser)) return;
+    registeredUsers = JSON.parse(localStorage.getItem('np_registered_users') || '[]');
+    bannedUsers = JSON.parse(localStorage.getItem('np_banned_users') || '[]');
+
+    // Stats
+    document.getElementById('admin-stats-row').innerHTML =
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + registeredUsers.length + '</div><div class="admin-stat-label">Registered</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + bannedUsers.length + '</div><div class="admin-stat-label">Banned</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + userThreads.length + '</div><div class="admin-stat-label">Threads</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + getTotalComments() + '</div><div class="admin-stat-label">Comments</div></div>';
+
+    renderAdminUsers();
+    showModal('admin-panel-modal');
+}
+
+function renderAdminUsers() {
+    var query = (document.getElementById('admin-search').value || '').toLowerCase();
+    var list = document.getElementById('admin-users-list');
+    var users = registeredUsers;
+    if (query) {
+        users = users.filter(function(u) {
+            return (u.username || '').toLowerCase().indexOf(query) !== -1 ||
+                   (u.global_name || '').toLowerCase().indexOf(query) !== -1;
+        });
+    }
+    if (users.length === 0) {
+        list.innerHTML = '<div class="admin-empty">No registered users yet.</div>';
+        return;
+    }
+    var html = '<table class="admin-table"><thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Last Login</th><th>Action</th></tr></thead><tbody>';
+    for (var i =  users.length - 1; i >= 0; i--) {
+        var u = users[i];
+        var banned = isBanned(u.id);
+        var roleLabel = isAdmin(u)
+            ? '<span class="admin-badge admin">Admin</span>'
+            : (banned ? '<span class="admin-badge banned">Banned</span>' : '<span class="admin-badge user">User</span>');
+        var joinDate = u.joinedAt ? new Date(u.joinedAt).toLocaleDateString() : '—';
+        var lastLogin = u.lastLogin ? new Date(u.lastLogin).toLocaleDateString() : '—';
+        var actionHtml = '';
+        if (u.id !== currentUser.id) {
+            if (banned) {
+                actionHtml = '<button class="ban-btn unban" onclick="unbanUser(\'' + u.id + '\')">Unban</button>';
+            } else {
+                actionHtml = '<button class="ban-btn ban" onclick="confirmBan(\'' + u.id + '\', \'' + (u.username || '').replace(/'/g, "\\'") + '\')">Ban</button>';
+            }
+        } else {
+            actionHtml = '<span style="font-size:0.78rem;color:var(--text-muted);">You</span>';
+        }
+        var av = u.avatar
+            ? '<img src="' + u.avatar + '" alt="">'
+            : '<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;">' + (u.username || '?').charAt(0).toUpperCase() + '</div>';
+        html += '<tr>' +
+            '<td><div class="admin-user-cell">' + av + '<div><div style="font-weight:600;">' + (u.global_name || u.username) + '</div><div style="font-size:0.75rem;color:var(--text-muted);">@' + u.username + '</div></div></div></td>' +
+            '<td>' + roleLabel + '</td>' +
+            '<td style="font-size:0.8rem;color:var(--text-secondary);">' + joinDate + '</td>' +
+            '<td style="font-size:0.8rem;color:var(--text-secondary);">' + lastLogin + '</td>' +
+            '<td>' + actionHtml + '</td>' +
+        '</tr>';
+    }
+    html += '</tbody></table>';
+    list.innerHTML = html;
+}
+
+function confirmBan(userId, username) {
+    pendingBanUser = { id: userId, username: username };
+    document.getElementById('ban-confirm-title').textContent = 'Ban @' + username;
+    document.getElementById('ban-confirm-text').textContent = 'Are you sure you want to ban ' + username + '? They will be unable to use the site.';
+    document.getElementById('ban-reason').value = '';
+    document.getElementById('ban-confirm-btn').onclick = function() { doBanUser(); };
+    showModal('ban-confirm-modal');
+}
+
+function doBanUser() {
+    if (!pendingBanUser) return;
+    var reason = document.getElementById('ban-reason').value.trim();
+    bannedUsers.push({ id: pendingBanUser.id, username: pendingBanUser.username, reason: reason, bannedAt: new Date().toISOString(), bannedBy: currentUser.username });
+    localStorage.setItem('np_banned_users', JSON.stringify(bannedUsers));
+    pendingBanUser = null;
+    closeModal('ban-confirm-modal');
+    renderAdminUsers();
+    // Refresh stats
+    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedUsers.length;
+}
+
+function unbanUser(userId) {
+    bannedUsers = bannedUsers.filter(function(b) { return b.id !== userId; });
+    localStorage.setItem('np_banned_users', JSON.stringify(bannedUsers));
+    renderAdminUsers();
+    document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedUsers.length;
 }
 
 // ===== INIT =====
