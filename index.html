@@ -217,6 +217,8 @@
         .input--title:focus { box-shadow: none; }
         .input--title::placeholder { color: var(--text-muted); font-weight: 400; }
         textarea.input--title { min-height: auto; overflow: hidden; }
+        .create-title-input { width: 100%; padding: 0; border: none; background: transparent; font-size: 1.15rem; font-weight: 700; color: var(--text-bright); font-family: inherit; outline: none; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .create-title-input::placeholder { color: var(--text-muted); font-weight: 400; }
         .editorContainer { border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; }
         .editor-toolbar { display: flex; align-items: center; gap: 2px; padding: 6px 8px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
         .editor-btn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 28px; border: none; background: transparent; color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 0.82rem; transition: all 0.1s; }
@@ -505,15 +507,9 @@
         <form onsubmit="createThread();return false;" style="display:flex;flex-direction:column;max-height:80vh;">
             <div style="flex:1;overflow-y:auto;padding:0;">
                 <!-- Title -->
-                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel">
-                    <div class="formRow-labelWrapper">
-                        <label class="formRow-label">Title</label>
-                    </div>
-                    <div class="formRow-input">
-                        <textarea rows="1" class="input input--title" id="thread-title-input"
-                            data-single-line="true" placeholder="Thread title" maxlength="150"
-                            autocomplete="off" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"></textarea>
-                    </div>
+                <div style="padding:14px 20px 0;">
+                    <input type="text" id="thread-title-input" class="create-title-input"
+                        placeholder="Thread title" maxlength="150" autocomplete="off" />
                 </div>
                 <!-- Thread Type -->
                 <div class="formRow formRow--fullWidth formRow--noLabel formRow--noTopPadding formRow--noBottomPadding">
