@@ -252,6 +252,7 @@
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
         .modal { background: var(--bg-block); border: 1px solid var(--border-light); border-radius: 10px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .create-thread-modal { max-width: 600px; }
         .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .modal-header h2 { font-size: 1rem; font-weight: 700; color: var(--text-bright); }
         .modal-close { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; padding: 4px; transition: color 0.15s; }
@@ -494,21 +495,15 @@
     </footer>
 </div>
 
-<!-- Create Thread PAGE -->
-<div id="create-thread-page" style="display:none;">
-    <div class="p-breadcrumbs">
-        <a href="#" onclick="goHome();return false;">Forums</a>
-        <span class="sep">/</span>
-        <a href="#marketplace" onclick="backToMarketplace();return false;">Marketplace</a>
-        <span class="sep">/</span>
-        <span>Post thread</span>
-    </div>
-    <div class="p-title">
-        <h1>Post thread</h1>
-    </div>
-    <form class="block" onsubmit="createThread();return false;">
-        <div class="block-container">
-            <div class="block-body">
+<!-- Create Thread MODAL -->
+<div class="modal-overlay" id="create-thread-modal">
+    <div class="modal create-thread-modal" onclick="event.stopPropagation()">
+        <div class="modal-header" style="border-bottom:1px solid var(--border);">
+            <h2 style="font-size:1rem;font-weight:700;color:var(--text-bright);">Post thread</h2>
+            <button class="modal-close" onclick="closeModal('create-thread-modal')">&times;</button>
+        </div>
+        <form onsubmit="createThread();return false;" style="display:flex;flex-direction:column;max-height:80vh;">
+            <div style="flex:1;overflow-y:auto;padding:0;">
                 <!-- Title -->
                 <div class="formRow formRow--input formRow--fullWidth formRow--noLabel">
                     <div class="formRow-labelWrapper">
@@ -527,7 +522,7 @@
                             <ul class="inputTypes" role="radiogroup" aria-label="Thread type">
                                 <li role="none">
                                     <label class="inputTypes-type">
-                                        <input type="radio" name="discussion_type" value="discussion" class="inputTypes-input" checked="checked" data-thread-type="discussion" />
+                                        <input type="radio" name="discussion_type" value="discussion" class="inputTypes-input" checked="checked" />
                                         <span class="inputTypes-display">
                                             <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">chat_bubble_outline</span></span>
                                             <span class="inputTypes-title">Discussion</span>
@@ -536,7 +531,7 @@
                                 </li>
                                 <li role="none">
                                     <label class="inputTypes-type">
-                                        <input type="radio" name="discussion_type" value="poll" class="inputTypes-input" data-thread-type="poll" />
+                                        <input type="radio" name="discussion_type" value="poll" class="inputTypes-input" />
                                         <span class="inputTypes-display">
                                             <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">poll</span></span>
                                             <span class="inputTypes-title">Poll</span>
@@ -564,7 +559,6 @@
                     </div>
                     <div class="formRow-input">
                         <div class="editorContainer">
-                            <!-- Simple toolbar -->
                             <div class="editor-toolbar" id="editor-toolbar">
                                 <button type="button" class="editor-btn" onclick="execEditor('bold')" title="Bold"><b>B</b></button>
                                 <button type="button" class="editor-btn" onclick="execEditor('italic')" title="Italic"><i>I</i></button>
@@ -596,7 +590,7 @@
                     </div>
                 </div>
                 <!-- Options -->
-                <div class="formRow" style="margin-top:14px;">
+                <div class="formRow" style="margin-top:14px;border-bottom:none;">
                     <div class="formRow-labelWrapper">
                         <label class="formRow-label">Options</label>
                     </div>
@@ -608,20 +602,15 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Sticky submit bar -->
-        <div class="formSubmitRow formSubmitRow--sticky">
-            <div class="formSubmitRow-main">
-                <div class="formSubmitRow-bar"></div>
-                <div class="formSubmitRow-controls">
-                    <button type="submit" class="btn-cta">
-                        <span class="material-icons" style="font-size:16px;">edit</span> Post thread
-                    </button>
-                    <button type="button" class="btn-secondary" onclick="backToMarketplace()">Cancel</button>
-                </div>
+            <!-- Sticky submit -->
+            <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:var(--bg-block);border-radius:0 0 10px 10px;">
+                <button type="button" class="btn-secondary" onclick="closeModal('create-thread-modal')">Cancel</button>
+                <button type="submit" class="btn-cta">
+                    <span class="material-icons" style="font-size:16px;">edit</span> Post thread
+                </button>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 
 <!-- Admin Panel Modal -->
@@ -962,7 +951,7 @@ async function createThread() {
     selectedTags = [];
     document.querySelectorAll('.form-tag').forEach(function(t) { t.classList.remove('selected'); });
     document.getElementById('thread-title-input').style.borderColor = '';
-    backToMarketplace();
+    closeModal('create-thread-modal');
     renderCategories();
     if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) {
         renderMarketplaceThreads();
@@ -1071,7 +1060,6 @@ function navigateToMarketplace() {
 function backToMarketplace() {
     window.location.hash = 'marketplace';
     document.getElementById('thread-detail-page').style.display = 'none';
-    document.getElementById('create-thread-page').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
     document.getElementById('main-categories').style.display = 'none';
     renderMarketplaceThreads();
@@ -1086,7 +1074,6 @@ function showMarketplacePage() {
     document.getElementById('main-categories').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
     document.getElementById('thread-detail-page').style.display = 'none';
-    document.getElementById('create-thread-page').style.display = 'none';
     document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none';
     renderMarketplaceThreads();
 }
@@ -1095,7 +1082,6 @@ function showMainPage() {
     document.getElementById('main-categories').style.display = 'block';
     document.getElementById('marketplace-page').style.display = 'none';
     document.getElementById('thread-detail-page').style.display = 'none';
-    document.getElementById('create-thread-page').style.display = 'none';
     renderCategories();
 }
 
@@ -1223,16 +1209,13 @@ window.addEventListener('hashchange', function() {
 
 function openCreateThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
-    document.getElementById('main-categories').style.display = 'none';
-    document.getElementById('marketplace-page').style.display = 'none';
-    document.getElementById('thread-detail-page').style.display = 'none';
-    document.getElementById('create-thread-page').style.display = 'block';
     var qt = document.getElementById('quick-thread-title');
     var titleInput = document.getElementById('thread-title-input');
     if (qt && qt.value.trim()) {
         titleInput.value = qt.value.trim();
         qt.value = '';
     }
+    showModal('create-thread-modal');
     titleInput.focus();
 }
 
