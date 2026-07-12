@@ -504,108 +504,59 @@
             <h2 style="font-size:1rem;font-weight:700;color:var(--text-bright);">Post thread</h2>
             <button class="modal-close" onclick="closeModal('create-thread-modal')">&times;</button>
         </div>
-        <form onsubmit="createThread();return false;" style="display:flex;flex-direction:column;max-height:80vh;">
+        <div style="display:flex;flex-direction:column;max-height:80vh;">
             <div style="flex:1;overflow-y:auto;padding:0;">
                 <!-- Title -->
                 <div style="padding:14px 20px 0;">
                     <input type="text" id="thread-title-input" class="create-title-input"
                         placeholder="Thread title" maxlength="150" autocomplete="off" />
                 </div>
-                <!-- Thread Type -->
-                <div class="formRow formRow--fullWidth formRow--noLabel formRow--noTopPadding formRow--noBottomPadding">
-                    <div class="formRow-input">
-                        <div class="inputTypesScroller">
-                            <ul class="inputTypes" role="radiogroup" aria-label="Thread type">
-                                <li role="none">
-                                    <label class="inputTypes-type">
-                                        <input type="radio" name="discussion_type" value="discussion" class="inputTypes-input" checked="checked" />
-                                        <span class="inputTypes-display">
-                                            <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">chat_bubble_outline</span></span>
-                                            <span class="inputTypes-title">Discussion</span>
-                                        </span>
-                                    </label>
-                                </li>
-                                <li role="none">
-                                    <label class="inputTypes-type">
-                                        <input type="radio" name="discussion_type" value="poll" class="inputTypes-input" />
-                                        <span class="inputTypes-display">
-                                            <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">poll</span></span>
-                                            <span class="inputTypes-title">Poll</span>
-                                        </span>
-                                    </label>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
                 <!-- Tags -->
-                <div class="formRow formRow--fullWidth formRow--noLabel formRow--mergePrev">
-                    <div class="formRow-input">
-                        <div class="form-tags" id="thread-tags">
-                            <div class="form-tag" data-tag="Source" onclick="toggleTag(this)">Source</div>
-                            <div class="form-tag" data-tag="Crack" onclick="toggleTag(this)">Crack</div>
-                            <div class="form-tag" data-tag="Free" onclick="toggleTag(this)">Free</div>
-                        </div>
+                <div style="padding:12px 20px 0;">
+                    <div class="form-tags" id="thread-tags">
+                        <div class="form-tag" data-tag="Source" onclick="toggleTag(this)">Source</div>
+                        <div class="form-tag" data-tag="Crack" onclick="toggleTag(this)">Crack</div>
+                        <div class="form-tag" data-tag="Free" onclick="toggleTag(this)">Free</div>
                     </div>
                 </div>
                 <!-- Message -->
-                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel formRow--mergePrev">
-                    <div class="formRow-labelWrapper">
-                        <label class="formRow-label">Message</label>
-                    </div>
-                    <div class="formRow-input">
-                        <div class="editorContainer">
-                            <div class="editor-toolbar" id="editor-toolbar">
-                                <button type="button" class="editor-btn" onclick="execEditor('bold')" title="Bold"><b>B</b></button>
-                                <button type="button" class="editor-btn" onclick="execEditor('italic')" title="Italic"><i>I</i></button>
-                                <button type="button" class="editor-btn" onclick="execEditor('underline')" title="Underline"><u>U</u></button>
-                                <span class="editor-sep"></span>
-                                <button type="button" class="editor-btn" onclick="execEditor('insertUnorderedList')" title="List"><span class="material-icons" style="font-size:16px;">format_list_bulleted</span></button>
-                                <button type="button" class="editor-btn" onclick="execEditor('insertOrderedList')" title="Numbered list"><span class="material-icons" style="font-size:16px;">format_list_numbered</span></button>
-                                <span class="editor-sep"></span>
-                                <button type="button" class="editor-btn" onclick="insertLink()" title="Link"><span class="material-icons" style="font-size:16px;">link</span></button>
-                                <button type="button" class="editor-btn" onclick="insertCode()" title="Code"><span class="material-icons" style="font-size:16px;">code</span></button>
-                                <span class="editor-sep"></span>
-                                <button type="button" class="editor-btn" onclick="execEditor('removeFormat')" title="Clear formatting"><span class="material-icons" style="font-size:16px;">format_clear</span></button>
-                            </div>
-                            <div class="editor-content" id="thread-desc-input" contenteditable="true"
-                                data-placeholder="Type your message…" style="min-height:200px;padding:12px 14px;background:var(--bg-input);border:1px solid var(--border-light);border-top:none;border-radius:0 0 6px 6px;color:var(--text-primary);font-family:inherit;font-size:0.88rem;outline:none;line-height:1.6;overflow-y:auto;"
-                                onfocus="if(this.textContent.trim()==='Type your message…')this.textContent='';"
-                                onblur="if(this.textContent.trim()==='')this.textContent='Type your message…';"
-                            ></div>
+                <div style="padding:12px 20px 0;">
+                    <label class="formRow-label" style="margin-bottom:6px;">Message</label>
+                    <div class="editorContainer">
+                        <div class="editor-toolbar" id="editor-toolbar">
+                            <button type="button" class="editor-btn" onclick="execEditor('bold')" title="Bold"><b>B</b></button>
+                            <button type="button" class="editor-btn" onclick="execEditor('italic')" title="Italic"><i>I</i></button>
+                            <button type="button" class="editor-btn" onclick="execEditor('underline')" title="Underline"><u>U</u></button>
+                            <span class="editor-sep"></span>
+                            <button type="button" class="editor-btn" onclick="execEditor('insertUnorderedList')" title="List"><span class="material-icons" style="font-size:16px;">format_list_bulleted</span></button>
+                            <button type="button" class="editor-btn" onclick="execEditor('insertOrderedList')" title="Numbered list"><span class="material-icons" style="font-size:16px;">format_list_numbered</span></button>
+                            <span class="editor-sep"></span>
+                            <button type="button" class="editor-btn" onclick="insertLink()" title="Link"><span class="material-icons" style="font-size:16px;">link</span></button>
+                            <button type="button" class="editor-btn" onclick="insertCode()" title="Code"><span class="material-icons" style="font-size:16px;">code</span></button>
+                            <span class="editor-sep"></span>
+                            <button type="button" class="editor-btn" onclick="execEditor('removeFormat')" title="Clear formatting"><span class="material-icons" style="font-size:16px;">format_clear</span></button>
                         </div>
+                        <div class="editor-content" id="thread-desc-input" contenteditable="true"
+                            data-placeholder="Type your message…" style="min-height:200px;padding:12px 14px;background:var(--bg-input);border:1px solid var(--border-light);border-top:none;border-radius:0 0 6px 6px;color:var(--text-primary);font-family:inherit;font-size:0.88rem;outline:none;line-height:1.6;overflow-y:auto;"
+                            onfocus="if(this.innerHTML.trim()==='<br>'||this.textContent.trim()==='Type your message…')this.innerHTML='';"
+                            onblur="if(this.innerHTML.trim()===''||this.innerHTML.trim()==='<br>')this.innerHTML='Type your message…';"
+                        ></div>
                     </div>
                 </div>
                 <!-- Product Link -->
-                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel formRow--mergePrev" style="margin-top:12px;">
-                    <div class="formRow-labelWrapper">
-                        <label class="formRow-label">Product Link</label>
-                    </div>
-                    <div class="formRow-input">
-                        <input type="text" class="input" id="thread-link-input" placeholder="https://...">
-                    </div>
-                </div>
-                <!-- Options -->
-                <div class="formRow" style="margin-top:14px;border-bottom:none;">
-                    <div class="formRow-labelWrapper">
-                        <label class="formRow-label">Options</label>
-                    </div>
-                    <div class="formRow-input">
-                        <label class="inputChoice">
-                            <input type="checkbox" name="watch_thread" value="1" checked="checked" />
-                            <span class="inputChoice-text">Watch this thread…</span>
-                        </label>
-                    </div>
+                <div style="padding:12px 20px 0;">
+                    <label class="formRow-label" style="margin-bottom:6px;">Product Link</label>
+                    <input type="text" class="input" id="thread-link-input" placeholder="https://...">
                 </div>
             </div>
-            <!-- Sticky submit -->
+            <!-- Submit bar -->
             <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:var(--bg-block);border-radius:0 0 10px 10px;">
                 <button type="button" class="btn-secondary" onclick="closeModal('create-thread-modal')">Cancel</button>
-                <button type="submit" class="btn-cta">
+                <button type="button" class="btn-cta" onclick="createThread()">
                     <span class="material-icons" style="font-size:16px;">edit</span> Post thread
                 </button>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
@@ -914,9 +865,10 @@ async function createThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
     var title = document.getElementById('thread-title-input').value.trim();
     var descEl = document.getElementById('thread-desc-input');
-    var desc = descEl.textContent.trim();
+    var descText = descEl.textContent.trim();
+    var desc = (descText === 'Type your message…' || descText === '<br>') ? '' : descText;
     var link = document.getElementById('thread-link-input').value.trim();
-    if (!title) { document.getElementById('thread-title-input').style.borderColor = 'var(--red)'; return; }
+    if (!title) { document.getElementById('thread-title-input').focus(); return; }
 
     var tagClass = 'tag-blue';
     if (selectedTags.indexOf('Source') > -1) tagClass = 'tag-green';
@@ -942,11 +894,10 @@ async function createThread() {
     if (!saved) { alert('Failed to save thread to server. It may not be visible to others.'); }
 
     document.getElementById('thread-title-input').value = '';
-    descEl.textContent = '';
+    descEl.innerHTML = '';
     document.getElementById('thread-link-input').value = '';
     selectedTags = [];
     document.querySelectorAll('.form-tag').forEach(function(t) { t.classList.remove('selected'); });
-    document.getElementById('thread-title-input').style.borderColor = '';
     closeModal('create-thread-modal');
     renderCategories();
     if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) {
