@@ -3,404 +3,421 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neverpost Ctrl+C — Forum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Neverpost Ctrl+C</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --accent: hsl(216, 48%, 57%);
-            --accent-hover: hsl(216, 55%, 48%);
-            --gradient-end: hsl(216, 100%, 72%);
-            --bg-main: #0e0e10;
-            --bg-secondary: #111114;
-            --bg-tertiary: #191919;
-            --bg-card: #141414;
-            --bg-card-hover: #1a1a1a;
-            --bg-input: #1a1a1a;
-            --text-primary: #d4d4d4;
+            --bg-body: #050505;
+            --bg-page: #0a0a0a;
+            --bg-block: #0f0f0f;
+            --bg-block-header: #111;
+            --bg-node: #0c0c0c;
+            --bg-node-hover: #111;
+            --bg-input: #161616;
+            --bg-nav: #080808;
+            --bg-sidebar: #0f0f0f;
+            --text-primary: #c9c9c9;
             --text-secondary: #888;
             --text-muted: #555;
-            --border: #1e1e1e;
-            --border-light: #282828;
-            --green: #2ecc71;
+            --text-bright: #e0e0e0;
+            --accent: hsl(216, 48%, 57%);
+            --accent-hover: hsl(216, 60%, 65%);
+            --gradient: linear-gradient(135deg, hsl(216,48%,57%), hsl(216,100%,72%));
+            --gradient-h: linear-gradient(to right, hsl(216,48%,57%), hsl(216,100%,72%));
+            --border: #1a1a1a;
+            --border-light: #222;
             --red: #e74c3c;
+            --green: #2ecc71;
             --yellow: #f1c40f;
-            --orange: #e67e22;
-            --tag-green: #1a5c30;
-            --tag-red: #7a2020;
-            --tag-blue: #1e4a7a;
-            --tag-orange: #7a5a1e;
-            --tag-purple: #5a1e7a;
-            --gradient: linear-gradient(135deg, var(--accent), var(--gradient-end));
-            --gradient-h: linear-gradient(to right, var(--accent), var(--gradient-end));
+            --notice-bg: hsl(216, 48%, 18%);
+            --notice-border: hsl(216, 48%, 35%);
         }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-main); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
-        a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
-        a:hover { color: var(--gradient-end); }
+        body { font-family: 'Nunito', -apple-system, sans-serif; background: var(--bg-body); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
+        a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
+        a:hover { color: var(--accent-hover); }
 
-        /* NAV - glassmorphism */
-        .nav { background: rgba(14,14,16,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; position: sticky; top: 0; z-index: 100; }
-        .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 56px; gap: 24px; }
-        .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; color: var(--text-primary); white-space: nowrap; }
-        .nav-logo .logo-icon { width: 32px; height: 32px; background: var(--gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; box-shadow: 0 0 18px rgba(88,101,242,0.35); animation: logoGlow 7s ease-in-out infinite alternate; }
-        @keyframes logoGlow { 0% { box-shadow: 0 0 12px rgba(88,101,242,0.25); } 100% { box-shadow: 0 0 24px rgba(88,182,242,0.5); } }
-        .nav-links { display: flex; gap: 4px; list-style: none; }
-        .nav-links a { padding: 8px 14px; border-radius: 6px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.05); }
-        .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+        /* ===== PAGE WRAPPER (XenForo style) ===== */
+        .p-pageWrapper { max-width: 1300px; margin: 0 auto; }
+
+        /* ===== HEADER ===== */
+        .p-header { background: var(--bg-page); border-bottom: 1px solid var(--border); padding: 16px 20px; }
+        .p-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; }
+        .p-header-logo img { height: 36px; width: auto; }
+        .p-header-logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; }
+        .p-header-logo-text span { color: var(--accent); }
+
+        /* ===== NAV (XenForo sticky) ===== */
+        .p-nav { background: var(--bg-nav); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .p-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 48px; gap: 0; }
+        .p-nav-list { display: flex; list-style: none; gap: 0; }
+        .p-navEl { position: relative; }
+        .p-navEl-link { display: flex; align-items: center; height: 48px; padding: 0 16px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .p-navEl-link:hover { color: var(--text-bright); }
+        .p-navEl.is-selected .p-navEl-link { color: var(--text-bright); border-bottom-color: var(--accent); }
+        .p-nav-opposite { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+        .p-navgroup-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; cursor: pointer; }
+        .p-navgroup-link:hover { color: var(--text-bright); background: rgba(255,255,255,0.04); }
+        .p-navgroup-link--iconic { gap: 6px; }
+        .avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+        .avatar-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
         .hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 24px; cursor: pointer; }
 
-        /* Auth buttons */
-        .auth-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.25s; }
-        .auth-login { background: var(--gradient); color: white; }
-        .auth-login:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
-        .auth-btn svg { width: 18px; height: 18px; }
+        /* ===== NOTICES ===== */
+        .notices { list-style: none; }
+        .notice { background: var(--notice-bg); border: 1px solid var(--notice-border); border-radius: 8px; padding: 10px 16px; margin: 12px 20px; font-size: 0.88rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .notice a { color: var(--accent-hover); font-weight: 600; }
 
-        /* User profile in nav */
-        .user-profile { display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 4px; border-radius: 10px; cursor: pointer; transition: background 0.2s; }
-        .user-profile:hover { background: rgba(255,255,255,0.05); }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
-        .user-avatar img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
-        .user-name { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
-        .user-dropdown { position: relative; }
-        .user-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 10px; padding: 8px; min-width: 180px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); z-index: 200; }
-        .user-dropdown-menu.show { display: block; }
-        .user-dropdown-menu a, .user-dropdown-menu button { display: block; width: 100%; text-align: left; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary); border: none; background: none; font-family: inherit; cursor: pointer; }
-        .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
+        /* ===== BODY ===== */
+        .p-body { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
 
-        /* LAYOUT */
-        .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
+        /* ===== BLOCK / CATEGORY (XenForo) ===== */
+        .block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+        .block-header { padding: 12px 16px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); }
+        .block-header h2 { font-size: 0.92rem; font-weight: 700; color: var(--text-bright); text-transform: uppercase; letter-spacing: 0.3px; }
+        .block-header a { color: var(--text-bright); }
+        .block-header a:hover { color: var(--accent-hover); }
 
-        /* CATEGORIES */
-        .category-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-top: 24px; overflow: hidden; }
-        .category-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.015); }
-        .category-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
-        .node-list { list-style: none; }
-        .node-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s, opacity 0.25s; }
-        .node-item:last-child { border-bottom: none; }
-        .node-item:hover { background: var(--bg-card-hover); opacity: 1; }
-        .node-item { opacity: 0.88; }
-        .node-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; color: var(--accent); }
+        /* ===== NODE (XenForo forum row) ===== */
+        .node { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 14px; }
+        .node:last-child { border-bottom: none; }
+        .node:hover { background: var(--bg-node-hover); }
+        .node-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-muted); font-size: 18px; }
+        .node-icon .material-icons { font-size: 20px; }
         .node-main { flex: 1; min-width: 0; }
-        .node-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
-        .node-title a { color: var(--text-primary); }
-        .node-title a:hover { color: var(--gradient-end); }
-        .node-new { display: inline-block; background: var(--gradient); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
+        .node-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 1px; }
+        .node-title a { color: var(--text-bright); }
+        .node-title a:hover { color: var(--accent-hover); }
+        .node-new { display: inline-block; background: var(--accent); color: white; font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; margin-left: 6px; font-weight: 700; vertical-align: middle; text-transform: uppercase; }
         .node-desc { font-size: 0.8rem; color: var(--text-muted); }
-        .node-stats-col { display: flex; gap: 20px; flex-shrink: 0; }
-        .node-stat { text-align: center; }
-        .node-stat-val { font-weight: 700; font-size: 0.95rem; color: var(--text-primary); }
-        .node-stat-label { font-size: 0.7rem; color: var(--text-muted); }
-        .node-extra { flex-shrink: 0; max-width: 250px; display: none; }
-        .node-extra-title { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .node-meta { display: none; }
+        .node-stats { display: flex; gap: 24px; flex-shrink: 0; text-align: center; }
+        .node-stats dt { display: none; }
+        .node-stats dd { font-size: 0.82rem; color: var(--text-secondary); }
+        .node-stats dd strong { color: var(--text-primary); font-weight: 700; }
+        .node-extra { flex-shrink: 0; max-width: 220px; display: none; }
+        @media (min-width: 960px) {
+            .node-extra { display: block; }
+            .node-meta { display: none; }
+        }
+        .node-extra-title { font-size: 0.8rem; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+        .node-extra-title:hover { color: var(--accent-hover); }
         .node-extra-date { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .node-extra-user { font-size: 0.72rem; color: var(--text-muted); }
+        .node-extra-user a { color: var(--accent); font-size: 0.72rem; }
 
-        /* SIDEBAR */
-        .sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        .sidebar-title { padding: 14px 16px; font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.015); }
+        /* Node link style (for Download) */
+        .node--link .node-title a { color: var(--accent); }
+
+        /* ===== SIDEBAR ===== */
+        .p-body-sidebar { display: flex; flex-direction: column; gap: 20px; }
+        .sidebar-block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .sidebar-header { padding: 12px 16px; font-weight: 700; font-size: 0.85rem; color: var(--text-bright); border-bottom: 1px solid var(--border); background: var(--bg-block-header); }
+        .sidebar-header a { color: var(--text-bright); }
         .sidebar-body { padding: 12px 16px; }
 
-        /* Discord Widget */
-        .discord-online { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .discord-online-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 8px rgba(46,204,113,0.5); }
-        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .discord-online-count { font-weight: 600; font-size: 0.9rem; }
-        .discord-members { list-style: none; }
-        .discord-member { display: flex; align-items: center; gap: 10px; padding: 6px 0; transition: opacity 0.2s; }
-        .discord-member:hover { opacity: 0.8; }
-        .discord-avatar-wrap { position: relative; flex-shrink: 0; }
-        .discord-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .discord-avatar-placeholder { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; }
-        .discord-status { position: absolute; bottom: -1px; right: -1px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--bg-card); }
+        /* Stats */
+        .stats-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
+        .stats-row:last-child { border-bottom: none; }
+        .stats-row dt { color: var(--text-muted); }
+        .stats-row dd { font-weight: 600; color: var(--text-primary); }
+
+        /* Online members */
+        .online-list { display: flex; flex-wrap: wrap; gap: 2px 8px; line-height: 1.8; }
+        .online-user { font-size: 0.82rem; color: var(--accent); }
+        .online-user:hover { color: var(--accent-hover); }
+        .online-total { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--text-muted); }
+
+        /* Discord widget */
+        .discord-online { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .discord-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(46,204,113,0.5); }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .discord-count { font-weight: 700; font-size: 0.88rem; color: var(--text-primary); }
+        .discord-members { list-style: none; max-height: 300px; overflow-y: auto; }
+        .discord-member { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+        .discord-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+        .discord-avatar-ph { width: 28px; height: 28px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
+        .discord-status { position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--bg-block); }
         .discord-status.online { background: var(--green); }
         .discord-status.dnd { background: var(--red); }
         .discord-status.idle { background: var(--yellow); }
-        .discord-name { font-size: 0.82rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .discord-game { font-size: 0.72rem; color: var(--text-muted); }
-        .discord-join-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 12px; transition: all 0.25s; text-decoration: none; }
-        .discord-join-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); color: white; }
-        .discord-join-btn svg { width: 18px; height: 18px; }
-        .discord-more { text-align: center; font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
-        .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-        .stat-row:last-child { border-bottom: none; }
-        .stat-label { color: var(--text-muted); }
-        .stat-value { font-weight: 600; color: var(--text-primary); }
-        .online-list { display: flex; flex-wrap: wrap; gap: 4px; }
-        .online-user { font-size: 0.8rem; color: var(--accent); padding: 2px 6px; border-radius: 4px; transition: background 0.2s; }
-        .online-user:hover { background: rgba(255,255,255,0.05); }
+        .discord-name { font-size: 0.8rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .discord-game { font-size: 0.7rem; color: var(--text-muted); }
+        .discord-join { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.2s; text-decoration: none; }
+        .discord-join:hover { opacity: 0.85; color: white; }
+        .discord-loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+        .discord-more { text-align: center; font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
 
-        /* FOOTER - hidden per plaguecheat.cc */
-        .footer { display: none !important; }
-
-        /* LIVE STATS */
-        .live-stats { display: flex; gap: 16px; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .live-stat { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
-        .live-stat-icon { font-size: 16px; color: var(--accent); }
-        .live-stat-val { font-weight: 700; color: var(--text-primary); }
-        .live-stat-label { color: var(--text-muted); }
-
-        /* Marketplace Threads */
-        .mp-thread { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s, opacity 0.25s; opacity: 0.88; cursor: pointer; }
+        /* ===== MARKETPLACE / THREAD PAGES ===== */
+        .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 12px; }
+        .back-link:hover { color: var(--accent-hover); }
+        .mp-thread { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
         .mp-thread:last-child { border-bottom: none; }
-        .mp-thread:hover { background: var(--bg-card-hover); opacity: 1; }
-        .mp-thread-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .mp-thread:hover { background: var(--bg-node-hover); }
+        .mp-thread-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent); }
         .mp-thread-info { flex: 1; min-width: 0; }
-        .mp-thread-title { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .mp-thread-title a { color: var(--text-primary); }
-        .mp-thread-title a:hover { color: var(--gradient-end); }
-        .mp-thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
+        .mp-thread-title { font-weight: 700; font-size: 0.92rem; color: var(--text-bright); margin-bottom: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .mp-thread-title a { color: var(--text-bright); }
+        .mp-thread-title a:hover { color: var(--accent-hover); }
+        .mp-thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
         .mp-thread-meta .author { color: var(--accent); }
-        .mp-thread-desc { font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
-        .mp-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.9rem; }
-        .mp-empty-icon { font-size: 48px; margin-bottom: 12px; display: block; color: var(--text-muted); }
+        .mp-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.88rem; }
 
-        /* CREATE THREAD */
-        .create-thread-btn { display: flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
-        .create-thread-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
-        .create-thread-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+        /* ===== BUTTONS (XenForo style) ===== */
+        .btn-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+        .btn-cta:hover { opacity: 0.85; color: white; }
+        .btn-primary { padding: 8px 20px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-secondary { padding: 8px 20px; background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-light); border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .btn-secondary:hover { color: var(--text-primary); border-color: var(--text-muted); }
+        .create-thread-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .create-thread-btn:hover { opacity: 0.85; }
+        .create-thread-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        /* ===== MODAL ===== */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
-        .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
-        .modal-header h2 { font-size: 1.1rem; font-weight: 600; }
-        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 4px; transition: color 0.2s; }
+        .modal { background: var(--bg-block); border: 1px solid var(--border-light); border-radius: 10px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+        .modal-header h2 { font-size: 1rem; font-weight: 700; color: var(--text-bright); }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 22px; cursor: pointer; padding: 4px; transition: color 0.15s; }
         .modal-close:hover { color: var(--text-primary); }
-        .modal-body { padding: 24px; }
-        .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
+        .modal-body { padding: 20px; }
+        .modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
 
-        /* Form */
-        .form-group { margin-bottom: 18px; }
-        .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-        .form-input, .form-textarea, .form-select { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
-        .form-input:focus, .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,101,242,0.15); }
+        /* ===== FORMS ===== */
+        .form-group { margin-bottom: 16px; }
+        .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 5px; }
+        .form-input, .form-textarea { width: 100%; padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.15s; }
+        .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
         .form-textarea { min-height: 100px; resize: vertical; }
         .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
-        .form-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .form-tag { padding: 6px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); }
+        .form-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+        .form-tag { padding: 5px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; color: var(--text-secondary); font-weight: 600; }
         .form-tag:hover { border-color: var(--accent); color: var(--text-primary); }
         .form-tag.selected { background: var(--gradient); border-color: transparent; color: white; }
-        .btn-primary { padding: 10px 24px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
-        .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
-        .btn-secondary { padding: 10px 24px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-light); border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
-        .btn-secondary:hover { color: var(--text-primary); border-color: var(--text-muted); }
 
-        /* Loading */
-        .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .discord-loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
+        /* Tags */
+        .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .tag-green { background: rgba(46,204,113,0.15); color: #4ade80; }
+        .tag-red { background: rgba(231,76,60,0.15); color: #f87171; }
+        .tag-blue { background: rgba(88,101,242,0.15); color: #60a5fa; }
+        .tag-orange { background: rgba(241,196,0,0.15); color: #fbbf24; }
+        .tag-purple { background: rgba(155,89,182,0.15); color: #c084fc; }
 
-        /* Responsive */
-        @media (max-width: 900px) {
-            .container { grid-template-columns: 1fr; }
-            .sidebar { order: -1; }
-            .node-extra { display: none !important; }
-            .nav-links { display: none; }
-            .hamburger { display: block; }
-            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 56px; left: 0; right: 0; background: rgba(14,14,16,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; padding: 12px; z-index: 99; }
-        }
-        @media (min-width: 901px) { .node-extra { display: block !important; } }
-        @media (max-width: 600px) { .node-item { flex-wrap: wrap; } .node-stats-col { width: 100%; justify-content: flex-start; margin-left: 60px; } }
-
-        /* Admin Panel */
-        .admin-panel-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--red); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
-        .admin-panel-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-        .admin-panel-btn .material-symbols-outlined { font-size: 16px; }
+        /* ===== ADMIN ===== */
+        .admin-panel-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--red); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
+        .admin-panel-btn:hover { opacity: 0.85; }
         .admin-modal { max-width: 700px; }
         .admin-table { width: 100%; border-collapse: collapse; }
-        .admin-table th { text-align: left; padding: 10px 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
-        .admin-table td { padding: 10px 14px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
-        .admin-table tr:last-child td { border-bottom: none; }
+        .admin-table th { text-align: left; padding: 8px 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+        .admin-table td { padding: 8px 12px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
         .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
-        .admin-user-cell { display: flex; align-items: center; gap: 10px; }
-        .admin-user-cell img { width: 28px; height: 28px; border-radius: 50%; }
-        .admin-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .admin-user-cell { display: flex; align-items: center; gap: 8px; }
+        .admin-user-cell img { width: 26px; height: 26px; border-radius: 50%; }
+        .admin-badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
         .admin-badge.admin { background: var(--red); color: white; }
-        .admin-badge.user { background: var(--bg-tertiary); color: var(--text-secondary); }
-        .admin-badge.banned { background: #7a2020; color: #ff6b6b; }
-        .ban-btn { padding: 5px 12px; border-radius: 6px; border: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+        .admin-badge.user { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
+        .admin-badge.banned { background: rgba(231,76,60,0.2); color: #f87171; }
+        .ban-btn { padding: 4px 10px; border-radius: 4px; border: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
         .ban-btn.ban { background: var(--red); color: white; }
-        .ban-btn.ban:hover { background: #c0392b; }
+        .ban-btn.ban:hover { opacity: 0.85; }
         .ban-btn.unban { background: var(--green); color: white; }
-        .ban-btn.unban:hover { background: #239b56; }
-        .admin-stats-row { display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border); }
+        .ban-btn.unban:hover { opacity: 0.85; }
+        .admin-stats-row { display: flex; gap: 16px; padding: 14px 20px; border-bottom: 1px solid var(--border); }
         .admin-stat-item { text-align: center; flex: 1; }
-        .admin-stat-num { font-size: 1.4rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .admin-stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-        .ban-reason-input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.82rem; outline: none; margin-top: 8px; transition: border-color 0.2s; }
+        .admin-stat-num { font-size: 1.3rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .admin-stat-label { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; }
+        .ban-reason-input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.85rem; outline: none; margin-top: 6px; }
         .ban-reason-input:focus { border-color: var(--red); }
-        .admin-empty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
+        .admin-empty { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.85rem; }
 
-        /* Tags in thread list */
-        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
-        .tag-green { background: var(--tag-green); color: #4ade80; }
-        .tag-red { background: var(--tag-red); color: #f87171; }
-        .tag-blue { background: var(--tag-blue); color: #60a5fa; }
-        .tag-orange { background: var(--tag-orange); color: #fbbf24; }
-        .tag-purple { background: var(--tag-purple); color: #c084fc; }
+        /* ===== FOOTER (XenForo style) ===== */
+        .p-footer { background: var(--bg-page); border-top: 1px solid var(--border); margin-top: 30px; padding: 20px; }
+        .p-footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .p-footer-links { display: flex; gap: 16px; list-style: none; }
+        .p-footer-links a { font-size: 0.8rem; color: var(--text-muted); }
+        .p-footer-links a:hover { color: var(--text-primary); }
+        .p-footer-copy { font-size: 0.78rem; color: var(--text-muted); }
+        .p-footer-copy a { color: var(--text-muted); }
 
+        /* ===== LOADING ===== */
+        .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 16px auto; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 960px) {
+            .p-body { grid-template-columns: 1fr; }
+            .p-body-sidebar { order: -1; }
+            .p-nav-list { display: none; }
+            .hamburger { display: block; }
+            .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; padding: 8px; z-index: 99; }
+            .node-stats { display: none !important; }
+            .node-extra { display: none !important; }
+        }
+        @media (max-width: 600px) {
+            .p-header { padding: 12px 16px; }
+            .p-body { padding: 12px; }
+            .notice { margin: 8px 12px; font-size: 0.82rem; }
+        }
     </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="nav">
-    <div class="nav-inner">
-        <button class="hamburger" onclick="document.querySelector('.nav-links').classList.toggle('open')">&#9776;</button>
-        <div class="nav-logo">
-            <div class="logo-icon">N</div>
-            <span>Neverpost Ctrl+C</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="#" class="active">Home</a></li>
-            <li><a href="#forum">Forum</a></li>
-            <li><a href="#members">Members</a></li>
-            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Support</a></li>
-        </ul>
-        <div class="nav-right" id="nav-right">
-            <!-- Populated by JS based on login state -->
-        </div>
-    </div>
-</nav>
+<div class="p-pageWrapper">
 
-<!-- MAIN -->
-<div class="container">
-    <main>
-        <!-- Live Stats -->
-        <div class="live-stats">
-            <div class="live-stat">
-                <span class="material-symbols-outlined live-stat-icon">group</span>
-                <span class="live-stat-val" id="stat-online">...</span>
-                <span class="live-stat-label">online</span>
-            </div>
-            <div class="live-stat">
-                <span class="material-symbols-outlined live-stat-icon">forum</span>
-                <span class="live-stat-val" id="stat-threads">0</span>
-                <span class="live-stat-label">threads</span>
-            </div>
-            <div class="live-stat">
-                <span class="material-symbols-outlined live-stat-icon">chat</span>
-                <span class="live-stat-val">0</span>
-                <span class="live-stat-label">messages</span>
-            </div>
-            <div class="live-stat">
-                <span class="material-symbols-outlined live-stat-icon">person</span>
-                <span class="live-stat-val">0</span>
-                <span class="live-stat-label">members</span>
+    <!-- HEADER -->
+    <header class="p-header">
+        <div class="p-header-inner">
+            <a href="#" onclick="goHome();return false;" class="p-header-logo">
+                <!-- Replace src with your logo image when ready -->
+                <div class="p-header-logo-text">Never<span>post</span> Ctrl+C</div>
+            </a>
+        </div>
+    </header>
+
+    <!-- NAV -->
+    <nav class="p-nav">
+        <div class="p-nav-inner">
+            <button class="hamburger" onclick="document.querySelector('.p-nav-list').classList.toggle('open')">&#9776;</button>
+            <ul class="p-nav-list">
+                <li class="p-navEl is-selected" id="nav-home">
+                    <a href="#" class="p-navEl-link" onclick="goHome();return false;">Forums</a>
+                </li>
+                <li class="p-navEl" id="nav-marketplace">
+                    <a href="#marketplace" class="p-navEl-link" onclick="navigateToMarketplace();return false;">Marketplace</a>
+                </li>
+                <li class="p-navEl">
+                    <a href="https://discord.com/invite/mS8Je49C" class="p-navEl-link" target="_blank">Discord</a>
+                </li>
+            </ul>
+            <div class="p-nav-opposite" id="nav-right">
+                <!-- Populated by JS -->
             </div>
         </div>
+    </nav>
 
+    <!-- NOTICES -->
+    <ul class="notices" id="notices-bar">
+        <li class="notice">
+            💥 Welcome to <strong>Neverpost Ctrl+C</strong> — the community forum. Login with Discord to participate!
+        </li>
+    </ul>
 
-
-        <!-- Forum Categories -->
-        <div class="category-block" id="main-categories">
-            <div class="category-header">
-                <h2>Public Area</h2>
-            </div>
-            <ul class="node-list" id="node-list"></ul>
-        </div>
-
-        <!-- Marketplace Page (hidden by default) -->
-        <div id="marketplace-page" style="display:none;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                <a href="#" onclick="goHome();return false;" style="display:flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:0.88rem;">
-                    <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span> Back
-                </a>
-                <h2 style="font-size:1.1rem;font-weight:600;">Marketplace</h2>
-            </div>
-            <div class="category-block">
-                <div class="category-header">
-                    <h2 style="font-size:0.9rem;">Threads</h2>
-                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
-                        <span class="material-symbols-outlined" style="font-size:18px;">add</span> Create Thread
-                    </button>
+    <!-- BODY -->
+    <div class="p-body">
+        <main>
+            <!-- HOME: Forum Categories -->
+            <div id="main-categories">
+                <div class="block">
+                    <div class="block-header">
+                        <h2><a href="#">Public</a></h2>
+                    </div>
+                    <div id="node-list"></div>
                 </div>
-                <div id="marketplace-threads-list"></div>
             </div>
-        </div>
 
-        <!-- Thread Detail Page (hidden by default) -->
-        <div id="thread-detail-page" style="display:none;">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-                <a href="#" onclick="backToMarketplace();return false;" style="display:flex;align-items:center;gap:6px;color:var(--text-secondary);font-size:0.88rem;">
-                    <span class="material-symbols-outlined" style="font-size:20px;">arrow_back</span> Back
+            <!-- MARKETPLACE PAGE -->
+            <div id="marketplace-page" style="display:none;">
+                <a href="#" class="back-link" onclick="goHome();return false;">
+                    <span class="material-icons" style="font-size:18px;">arrow_back</span> Back to Forums
                 </a>
-                <h2 id="detail-title" style="font-size:1.1rem;font-weight:600;"></h2>
-            </div>
-            <div class="category-block">
-                <div style="padding:20px;" id="detail-body"></div>
-            </div>
-            <div class="category-block" style="margin-top:16px;">
-                <div class="category-header">
-                    <h2 style="font-size:0.9rem;">Comments (<span id="detail-comments-count">0</span>)</h2>
+                <div class="block">
+                    <div class="block-header" style="display:flex;align-items:center;justify-content:space-between;">
+                        <h2>Marketplace</h2>
+                        <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
+                            <span class="material-icons" style="font-size:16px;">edit</span> Post thread...
+                        </button>
+                    </div>
+                    <div id="marketplace-threads-list"></div>
                 </div>
-                <div id="detail-comments-list"></div>
-                <div style="padding:16px 20px;border-top:1px solid var(--border);">
-                    <div style="display:flex;gap:8px;">
+            </div>
+
+            <!-- THREAD DETAIL PAGE -->
+            <div id="thread-detail-page" style="display:none;">
+                <a href="#" class="back-link" onclick="backToMarketplace();return false;">
+                    <span class="material-icons" style="font-size:18px;">arrow_back</span> Back to Marketplace
+                </a>
+                <div class="block">
+                    <div class="block-header">
+                        <h2 id="detail-title"></h2>
+                    </div>
+                    <div style="padding:16px;" id="detail-body"></div>
+                </div>
+                <div class="block" style="margin-top:16px;">
+                    <div class="block-header">
+                        <h2>Comments (<span id="detail-comments-count">0</span>)</h2>
+                    </div>
+                    <div id="detail-comments-list"></div>
+                    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;">
                         <input type="text" class="form-input" id="comment-input" placeholder="Write a comment..." style="flex:1;">
-                        <button class="btn-primary" onclick="addComment()" style="white-space:nowrap;">Send</button>
+                        <button class="btn-primary" onclick="addComment()">Send</button>
                     </div>
                 </div>
             </div>
-        </div>
-    </main>
+        </main>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="sidebar-block">
-            <div class="sidebar-title">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="var(--accent)"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-                Discord Server
+        <!-- SIDEBAR -->
+        <aside class="p-body-sidebar">
+            <!-- Discord Widget -->
+            <div class="sidebar-block">
+                <div class="sidebar-header">
+                    <span class="material-icons" style="font-size:16px;vertical-align:middle;margin-right:4px;color:var(--accent);">forum</span>
+                    Discord Server
+                </div>
+                <div class="sidebar-body" id="discord-widget-body">
+                    <div class="discord-loading"><div class="loading-spinner"></div>Loading...</div>
+                </div>
             </div>
-            <div class="sidebar-body" id="discord-widget-body">
-                <div class="discord-loading"><div class="loading-spinner"></div>Loading...</div>
-            </div>
-        </div>
-        <div class="sidebar-block">
-            <div class="sidebar-title">
-                <span class="material-symbols-outlined" style="font-size:18px;">bar_chart</span>
-                Forum statistics
-            </div>
-            <div class="sidebar-body">
-                <div class="stat-row"><span class="stat-label">Threads</span><span class="stat-value" id="stat-threads">0</span></div>
-                <div class="stat-row"><span class="stat-label">Messages</span><span class="stat-value" id="stat-messages">0</span></div>
-                <div class="stat-row"><span class="stat-label">Members</span><span class="stat-value" id="stat-members">0</span></div>
-                <div class="stat-row"><span class="stat-label">Latest member</span><span class="stat-value" id="stat-latest-member" style="color:var(--accent);">—</span></div>
-            </div>
-        </div>
-        <div class="sidebar-block" id="members">
-            <div class="sidebar-title">
-                <span class="material-symbols-outlined" style="font-size:18px;color:var(--green);">circle</span>
-                Members online
-            </div>
-            <div class="sidebar-body">
-                <div class="online-list" id="online-list"></div>
-                <div style="margin-top:10px;font-size:0.78rem;color:var(--text-muted);" id="online-total">Loading...</div>
-            </div>
-        </div>
-    </aside>
-</div>
 
-<!-- FOOTER -->
-<footer class="footer">
-    <div class="footer-inner">
-        <ul class="footer-links">
-            <li><a href="#">Home</a></li>
-            <li><a href="#">Terms</a></li>
-            <li><a href="#">Privacy</a></li>
-            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Support</a></li>
-            <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Discord</a></li>
-        </ul>
-        <div class="footer-copy">&copy; 2026 Neverpost Ctrl+C</div>
+            <!-- Forum Statistics -->
+            <div class="sidebar-block">
+                <div class="sidebar-header">Forum statistics</div>
+                <div class="sidebar-body">
+                    <dl class="stats-row"><dt>Threads</dt><dd id="stat-threads">0</dd></dl>
+                    <dl class="stats-row"><dt>Messages</dt><dd id="stat-messages">0</dd></dl>
+                    <dl class="stats-row"><dt>Members</dt><dd id="stat-members">0</dd></dl>
+                    <dl class="stats-row"><dt>Latest member</dt><dd id="stat-latest-member" style="color:var(--accent);">—</dd></dl>
+                </div>
+            </div>
+
+            <!-- Members Online -->
+            <div class="sidebar-block" id="members">
+                <div class="sidebar-header">
+                    <span class="material-icons" style="font-size:14px;vertical-align:middle;margin-right:4px;color:var(--green);">circle</span>
+                    Members online
+                </div>
+                <div class="sidebar-body">
+                    <div class="online-list" id="online-list"></div>
+                    <div class="online-total" id="online-total">Loading...</div>
+                </div>
+            </div>
+        </aside>
     </div>
-</footer>
+
+    <!-- FOOTER -->
+    <footer class="p-footer">
+        <div class="p-footer-inner">
+            <ul class="p-footer-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Terms and rules</a></li>
+                <li><a href="#">Privacy policy</a></li>
+                <li><a href="https://discord.com/invite/mS8Je49C" target="_blank">Contact us</a></li>
+            </ul>
+            <div class="p-footer-copy">&copy; 2026 Neverpost Ctrl+C</div>
+        </div>
+    </footer>
+</div>
 
 <!-- Create Thread Modal -->
 <div class="modal-overlay" id="create-thread-modal">
@@ -442,14 +459,14 @@
 <div class="modal-overlay" id="admin-panel-modal">
     <div class="modal admin-modal">
         <div class="modal-header">
-            <h2><span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle;margin-right:6px;">admin_panel_settings</span>Admin Panel</h2>
+            <h2><span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:4px;">admin_panel_settings</span>Admin Panel</h2>
             <button class="modal-close" onclick="closeModal('admin-panel-modal')">&times;</button>
         </div>
         <div class="admin-stats-row" id="admin-stats-row"></div>
         <div class="modal-body" style="padding:0;">
-            <div style="padding:16px 24px 8px;display:flex;align-items:center;justify-content:space-between;">
+            <div style="padding:12px 20px 6px;display:flex;align-items:center;justify-content:space-between;">
                 <span style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);">Registered Users</span>
-                <input type="text" class="form-input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()" style="width:200px;padding:6px 12px;font-size:0.82rem;">
+                <input type="text" class="form-input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()" style="width:180px;padding:6px 10px;font-size:0.82rem;">
             </div>
             <div id="admin-users-list"></div>
         </div>
@@ -467,7 +484,7 @@
             <button class="modal-close" onclick="closeModal('ban-confirm-modal')">&times;</button>
         </div>
         <div class="modal-body">
-            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:12px;" id="ban-confirm-text"></p>
+            <p style="font-size:0.88rem;color:var(--text-secondary);margin-bottom:10px;" id="ban-confirm-text"></p>
             <div class="form-group">
                 <label class="form-label">Reason (optional)</label>
                 <input type="text" class="ban-reason-input" id="ban-reason" placeholder="Enter ban reason...">
@@ -528,8 +545,6 @@ async function fetchRemoteUsers() {
             remoteUsers = data.users || [];
         }
     } catch (e) { /* ignore */ }
-
-    // Also get SHA for writing
     try {
         var shaRes = await fetch(GITHUB_API, {
             headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
@@ -539,7 +554,6 @@ async function fetchRemoteUsers() {
             dataFileSha = file.sha;
         }
     } catch (e) { /* ignore */ }
-
     return remoteUsers;
 }
 
@@ -608,19 +622,15 @@ async function fetchRemoteThreads() {
                 userThreads = remote;
                 localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
             } else if (userThreads.length > 0) {
-                // GitHub empty but we have local data → push local to GitHub
                 await saveRemoteThreads();
             }
         }
     } catch (e) { /* fallback to localStorage */ }
-
-    // Always get SHA for writing
     await fetchThreadsSha();
     return userThreads;
 }
 
 async function saveRemoteThreads() {
-    // Ensure we have SHA - fetch if missing
     if (!threadsFileSha) await fetchThreadsSha();
     try {
         var content = JSON.stringify({ threads: userThreads }, null, 2);
@@ -637,7 +647,6 @@ async function saveRemoteThreads() {
             threadsFileSha = result.content ? result.content.sha : threadsFileSha;
             return true;
         } else {
-            // If 422 (SHA mismatch), re-fetch SHA and retry once
             if (res.status === 422) {
                 await fetchThreadsSha();
                 if (threadsFileSha) {
@@ -661,14 +670,11 @@ async function saveRemoteThreads() {
 
 // ===== AUTH SYSTEM =====
 var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
-
-// Show login button immediately
 renderNavAuth();
 
 async function initAuth() {
     try {
         await fetchRemoteUsers();
-
         if (currentUser && isBannedRemote(currentUser.id)) {
             alert('Your account has been banned from this site.');
             currentUser = null;
@@ -676,13 +682,11 @@ async function initAuth() {
             renderNavAuth();
             return;
         }
-
         if (currentUser) {
             await registerUser(currentUser);
             await fetchRemoteUsers();
         }
     } catch (e) { /* ignore */ }
-
     renderNavAuth();
 }
 
@@ -691,25 +695,25 @@ function renderNavAuth() {
     if (currentUser) {
         var avatarSrc = currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
         var adminBtn = isAdmin(currentUser)
-            ? '<button class="admin-panel-btn" onclick="openAdminPanel()"><span class="material-symbols-outlined">admin_panel_settings</span>Admin</button>'
+            ? '<button class="admin-panel-btn" onclick="openAdminPanel()"><span class="material-icons" style="font-size:14px;">admin_panel_settings</span>Admin</button>'
             : '';
         navRight.innerHTML = adminBtn +
-            '<div class="user-dropdown">' +
-                '<div class="user-profile" onclick="toggleDropdown()">' +
-                    '<div class="user-avatar"><img src="' + avatarSrc + '" alt=""></div>' +
-                    '<span class="user-name">' + (currentUser.global_name || currentUser.username) + '</span>' +
-                    '<span class="material-symbols-outlined" style="font-size:18px;color:var(--text-muted);">expand_more</span>' +
+            '<div class="user-dropdown" style="position:relative;">' +
+                '<div class="p-navgroup-link" onclick="toggleDropdown()" style="cursor:pointer;">' +
+                    '<img class="avatar" src="' + avatarSrc + '" alt="">' +
+                    '<span>' + (currentUser.global_name || currentUser.username) + '</span>' +
+                    '<span class="material-icons" style="font-size:16px;color:var(--text-muted);">expand_more</span>' +
                 '</div>' +
-                '<div class="user-dropdown-menu" id="user-dropdown">' +
-                    '<a href="https://discord.com/users/' + (currentUser.id || '') + '" target="_blank">My Profile</a>' +
-                    '<hr style="border:none;border-top:1px solid var(--border);margin:4px 0;">' +
-                    '<button onclick="logout()">Logout</button>' +
+                '<div class="user-dropdown-menu" id="user-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg-block);border:1px solid var(--border-light);border-radius:8px;padding:6px;min-width:170px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:200;">' +
+                    '<a href="https://discord.com/users/' + (currentUser.id || '') + '" target="_blank" style="display:block;padding:7px 12px;border-radius:4px;font-size:0.85rem;color:var(--text-secondary);">My Profile</a>' +
+                    '<hr style="border:none;border-top:1px solid var(--border);margin:3px 0;">' +
+                    '<button onclick="logout()" style="display:block;width:100%;text-align:left;padding:7px 12px;border-radius:4px;font-size:0.85rem;color:var(--text-secondary);border:none;background:none;font-family:inherit;cursor:pointer;">Logout</button>' +
                 '</div>' +
             '</div>';
     } else {
         navRight.innerHTML =
-            '<a href="' + DISCORD_AUTH_URL + '" class="auth-btn auth-login">' +
-                '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>' +
+            '<a href="' + DISCORD_AUTH_URL + '" class="p-navgroup-link" style="background:var(--gradient);color:white;border-radius:6px;padding:7px 14px;">' +
+                '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>' +
                 'Login with Discord' +
             '</a>';
     }
@@ -723,13 +727,13 @@ function logout() {
 
 function toggleDropdown() {
     var dd = document.getElementById('user-dropdown');
-    if (dd) dd.classList.toggle('show');
+    if (dd) dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
 }
 document.addEventListener('click', function(e) {
     var dd = document.getElementById('user-dropdown');
-    var profile = document.querySelector('.user-profile');
+    var profile = document.querySelector('.user-dropdown');
     if (dd && profile && !profile.contains(e.target) && !dd.contains(e.target)) {
-        dd.classList.remove('show');
+        dd.style.display = 'none';
     }
 });
 
@@ -778,18 +782,15 @@ async function createThread() {
 
     userThreads.push(thread);
     localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
-
     var saved = await saveRemoteThreads();
     if (!saved) { alert('Failed to save thread to server. It may not be visible to others.'); }
 
-    // Reset form
     document.getElementById('thread-title-input').value = '';
     document.getElementById('thread-desc-input').value = '';
     document.getElementById('thread-link-input').value = '';
     selectedTags = [];
     document.querySelectorAll('.form-tag').forEach(function(t) { t.classList.remove('selected'); });
     document.getElementById('thread-title-input').style.borderColor = '';
-
     closeModal('create-thread-modal');
     renderCategories();
     if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) {
@@ -811,7 +812,7 @@ async function addComment() {
     var input = document.getElementById('comment-input');
     var text = input.value.trim();
     if (!text) { alert('Type a comment first.'); return; }
-    if (activeThreadId === null) { alert('Error: no thread selected. Go back to Marketplace and open the thread again.'); return; }
+    if (activeThreadId === null) { alert('Error: no thread selected.'); return; }
 
     var found = false;
     for (var i = 0; i < userThreads.length; i++) {
@@ -824,16 +825,14 @@ async function addComment() {
                 time: "Just now"
             });
             found = true;
-            console.log('[DEBUG] Comments now:', userThreads[i].comments.length, userThreads[i].comments.map(function(c){return c.text}));
             break;
         }
     }
-    if (!found) { console.error('[DEBUG] Thread not found! activeThreadId=', activeThreadId, 'threads=', userThreads.map(function(t){return t.id})); }
+    if (!found) { console.error('Thread not found! activeThreadId=', activeThreadId); }
     localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
     input.value = '';
     renderThreadDetail(activeThreadId);
     renderCategories();
-
     var saved = await saveRemoteThreads();
     if (!saved) { alert('Failed to save comment to server. Your local copy is saved.'); }
 }
@@ -855,39 +854,39 @@ function renderCategories() {
     }
 
     var categories = [
-        { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: mpThreads.toString(), messages: totalComments.toString(), latest: latestTitle, latestUser: latestUser, latestTime: latestTime, tag: null, unread: false, id: "marketplace", link: "#marketplace" },
-        { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
-        { icon: "forum", name: "Offtopic", desc: "Free communication.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", tag: null, unread: false },
+        { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "" },
+        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: mpThreads.toString(), messages: totalComments.toString(), latest: latestTitle, latestUser: latestUser, latestTime: latestTime, id: "marketplace", link: "#marketplace" },
+        { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "" },
+        { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "" },
+        { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "" },
+        { icon: "forum", name: "Offtopic", desc: "Free communication.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "" },
     ];
 
     var nodeList = document.getElementById('node-list');
     nodeList.innerHTML = categories.map(function(cat) {
-        var tagHtml = cat.tag ? '<span class="tag ' + cat.tagClass + '">' + cat.tag + '</span> ' : '';
         var nameHtml = cat.link
             ? '<a href="#marketplace" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>'
             : '<a href="#">' + cat.name + '</a>';
         var countId = cat.id === 'marketplace' ? ' id="marketplace-count"' : '';
         var msgId = cat.id === 'marketplace' ? ' id="marketplace-messages"' : '';
-        return '<li class="node-item">' +
-            '<div class="node-icon"><span class="material-symbols-outlined">' + cat.icon + '</span></div>' +
+        var extraHtml = cat.latest !== '—'
+            ? '<div class="node-extra">' +
+                '<a href="#" class="node-extra-title">' + cat.latest + '</a>' +
+                '<div class="node-extra-date">' + cat.latestUser + ' &middot; ' + cat.latestTime + '</div>' +
+              '</div>'
+            : '<div class="node-extra"></div>';
+        return '<div class="node">' +
+            '<div class="node-icon"><span class="material-icons">' + cat.icon + '</span></div>' +
             '<div class="node-main">' +
-                '<h3 class="node-title">' + nameHtml +
-                (cat.unread ? '<span class="node-new">New</span>' : '') +
-                '</h3>' +
+                '<h3 class="node-title">' + nameHtml + '</h3>' +
                 '<div class="node-desc">' + cat.desc + '</div>' +
             '</div>' +
-            '<div class="node-stats-col">' +
-                '<div class="node-stat"><div class="node-stat-val"' + countId + '>' + cat.threads + '</div><div class="node-stat-label">Threads</div></div>' +
-                '<div class="node-stat"><div class="node-stat-val"' + msgId + '>' + cat.messages + '</div><div class="node-stat-label">Messages</div></div>' +
+            '<div class="node-stats">' +
+                '<dl class="pairs pairs--rows"><dt>Threads</dt><dd>' + cat.threads + '</dd></dl>' +
+                '<dl class="pairs pairs--rows"><dt>Messages</dt><dd>' + cat.messages + '</dd></dl>' +
             '</div>' +
-            '<div class="node-extra">' +
-                '<div class="node-extra-title">' + tagHtml + cat.latest + '</div>' +
-                '<div class="node-extra-date">' + cat.latestUser + ' &middot; ' + cat.latestTime + '</div>' +
-            '</div>' +
-        '</li>';
+            extraHtml +
+        '</div>';
     }).join('');
 }
 renderCategories();
@@ -929,10 +928,7 @@ function showMainPage() {
 function renderMarketplaceThreads() {
     var list = document.getElementById('marketplace-threads-list');
     if (userThreads.length === 0) {
-        list.innerHTML = '<div class="mp-empty">' +
-            '<span class="material-symbols-outlined mp-empty-icon">storefront</span>' +
-            'No threads yet<br><span style="font-size:0.82rem;">Be the first to create one!</span>' +
-        '</div>';
+        list.innerHTML = '<div class="mp-empty"><span class="material-icons" style="font-size:48px;display:block;margin-bottom:10px;color:var(--text-muted);">storefront</span>No threads yet<br><span style="font-size:0.82rem;">Be the first to create one!</span></div>';
         return;
     }
     var html = userThreads.slice().reverse().map(function(t) {
@@ -940,10 +936,10 @@ function renderMarketplaceThreads() {
         var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span>' : '';
         var commentsCount = (t.comments || []).length;
         var commentsHtml = commentsCount > 0
-            ? '<span style="display:flex;align-items:center;gap:4px;font-size:0.78rem;color:var(--text-muted);"><span class="material-symbols-outlined" style="font-size:14px;">chat_bubble_outline</span>' + commentsCount + '</span>'
+            ? '<span style="display:flex;align-items:center;gap:3px;font-size:0.78rem;color:var(--text-muted);"><span class="material-icons" style="font-size:14px;">chat_bubble_outline</span>' + commentsCount + '</span>'
             : '';
-        return '<div class="mp-thread" onclick="openThread(' + t.id + ')" style="cursor:pointer;">' +
-            '<div class="mp-thread-icon"><span class="material-symbols-outlined" style="color:var(--accent);">chat_bubble_outline</span></div>' +
+        return '<div class="mp-thread" onclick="openThread(' + t.id + ')">' +
+            '<div class="mp-thread-icon"><span class="material-icons" style="font-size:18px;">chat_bubble_outline</span></div>' +
             '<div class="mp-thread-info">' +
                 '<div class="mp-thread-title">' + tagHtml + '<span>' + t.title + '</span></div>' +
                 '<div class="mp-thread-meta"><span class="author">' + t.author + '</span><span>' + t.time + '</span>' + commentsHtml + '</div>' +
@@ -971,29 +967,28 @@ function renderThreadDetail(id) {
 
     var tagClass = thread.tagClass || 'tag-blue';
     var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span>' : '';
-    var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:6px;margin-top:12px;color:var(--accent);font-size:0.88rem;">Open link <span class="material-symbols-outlined" style="font-size:16px;">open_in_new</span></a>' : '';
-    var descHtml = thread.description ? '<div style="margin-top:12px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '';
+    var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:var(--accent);font-size:0.88rem;">Open link <span class="material-icons" style="font-size:15px;">open_in_new</span></a>' : '';
+    var descHtml = thread.description ? '<div style="margin-top:10px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '';
 
     document.getElementById('detail-title').textContent = thread.title;
     document.getElementById('detail-body').innerHTML =
-        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">' + tagHtml +
+        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' + tagHtml +
         '<span style="font-size:0.82rem;color:var(--text-muted);">' + thread.time + '</span></div>' +
         '<div style="font-size:0.85rem;color:var(--accent);margin-bottom:4px;">' + thread.author + '</div>' +
         descHtml + linkHtml;
 
     var comments = thread.comments || [];
-    console.log('[DEBUG] renderThreadDetail id=' + id + ' comments=' + comments.length, comments.map(function(c){return c.text}));
     document.getElementById('detail-comments-count').textContent = comments.length;
     var cl = document.getElementById('detail-comments-list');
     if (comments.length === 0) {
         cl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.85rem;">No comments yet</div>';
     } else {
         cl.innerHTML = comments.map(function(c) {
-            return '<div style="padding:12px 20px;border-bottom:1px solid var(--border);display:flex;gap:10px;">' +
-                '<img src="' + (c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:32px;height:32px;border-radius:50%;flex-shrink:0;">' +
+            return '<div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;">' +
+                '<img src="' + (c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:30px;height:30px;border-radius:50%;flex-shrink:0;">' +
                 '<div style="flex:1;">' +
-                    '<div style="font-size:0.85rem;font-weight:600;color:var(--accent);">' + c.author + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">' + c.time + '</span></div>' +
-                    '<div style="font-size:0.88rem;color:var(--text-primary);margin-top:4px;">' + c.text + '</div>' +
+                    '<div style="font-size:0.85rem;font-weight:700;color:var(--accent);">' + c.author + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">' + c.time + '</span></div>' +
+                    '<div style="font-size:0.88rem;color:var(--text-primary);margin-top:3px;">' + c.text + '</div>' +
                 '</div>' +
             '</div>';
         }).join('');
@@ -1043,9 +1038,7 @@ function loadDiscordWidget() {
     fetch(CORS_PROXY + encodeURIComponent(WIDGET_URL))
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
         .then(function(data) {
-            document.getElementById('stat-online').textContent = data.presence_count;
             var sorted = data.members.filter(function(m) {
-                // Filter out bots
                 if (m.username && m.username.toLowerCase().indexOf('bot') !== -1) return false;
                 if (m.discriminator === '0' && m.bot) return false;
                 return true;
@@ -1053,10 +1046,9 @@ function loadDiscordWidget() {
                 var o = { online: 0, dnd: 1, idle: 2, offline: 3 };
                 return (o[a.status] || 3) - (o[b.status] || 3);
             });
-            var shown = sorted.slice(0, 15);
-            var more = sorted.length - 15;
+            var shown = sorted.slice(0, 20);
+            var more = sorted.length - 20;
 
-            // Populate online users sidebar
             var onlineList = document.getElementById('online-list');
             if (onlineList) {
                 onlineList.innerHTML = shown.map(function(m) {
@@ -1068,20 +1060,20 @@ function loadDiscordWidget() {
                 onlineTotal.textContent = 'Total: ' + data.presence_count;
             }
 
-            var html = '<div class="discord-online"><div class="discord-online-dot"></div><span class="discord-online-count">' + data.presence_count + ' online</span></div>' +
+            var html = '<div class="discord-online"><div class="discord-dot"></div><span class="discord-count">' + data.presence_count + ' online</span></div>' +
                 '<ul class="discord-members">' +
                 shown.map(function(m) {
-                    var av = m.avatar_url ? '<img class="discord-avatar" src="' + m.avatar_url + '">' : '<div class="discord-avatar-placeholder">' + m.username.charAt(0).toUpperCase() + '</div>';
+                    var av = m.avatar_url ? '<img class="discord-avatar" src="' + m.avatar_url + '">' : '<div class="discord-avatar-ph">' + m.username.charAt(0).toUpperCase() + '</div>';
                     var game = m.game ? '<div class="discord-game">🎮 ' + m.game.name + '</div>' : '';
-                    return '<li class="discord-member"><div class="discord-avatar-wrap">' + av + '<div class="discord-status ' + m.status + '"></div></div><div><div class="discord-name">' + m.username + '</div>' + game + '</div></li>';
+                    return '<li class="discord-member" style="display:flex;align-items:center;gap:8px;padding:3px 0;position:relative;">' + av + '<div><div class="discord-name">' + m.username + '</div>' + game + '</div></li>';
                 }).join('') +
                 '</ul>' +
                 (more > 0 ? '<div class="discord-more">... and ' + more + ' more</div>' : '') +
-                '<a href="' + data.instant_invite + '" target="_blank" class="discord-join-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>Join Discord</a>';
+                '<a href="' + data.instant_invite + '" target="_blank" class="discord-join">Join Discord</a>';
             body.innerHTML = html;
         })
         .catch(function() {
-            body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.85rem;">Failed to load widget<br><a href="https://discord.com/invite/mS8Je49C" target="_blank" class="discord-join-btn" style="margin-top:12px;display:inline-flex;width:auto;padding:8px 20px;">Join Discord</a></div>';
+            body.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:0.85rem;">Failed to load widget<br><a href="https://discord.com/invite/mS8Je49C" target="_blank" class="discord-join" style="margin-top:10px;display:inline-flex;width:auto;padding:8px 16px;">Join Discord</a></div>';
         });
 }
 
@@ -1091,13 +1083,11 @@ async function openAdminPanel() {
     await fetchRemoteUsers();
     var registered = remoteUsers.length;
     var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
-
     document.getElementById('admin-stats-row').innerHTML =
         '<div class="admin-stat-item"><div class="admin-stat-num">' + registered + '</div><div class="admin-stat-label">Registered</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + bannedCount + '</div><div class="admin-stat-label">Banned</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + userThreads.length + '</div><div class="admin-stat-label">Threads</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + getTotalComments() + '</div><div class="admin-stat-label">Comments</div></div>';
-
     renderAdminUsers();
     showModal('admin-panel-modal');
 }
@@ -1137,9 +1127,9 @@ function renderAdminUsers() {
         }
         var av = u.avatar
             ? '<img src="' + u.avatar + '" alt="">'
-            : '<div style="width:28px;height:28px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:white;font-size:12px;font-weight:700;">' + (u.username || '?').charAt(0).toUpperCase() + '</div>';
+            : '<div class="avatar-placeholder">' + (u.username || '?').charAt(0).toUpperCase() + '</div>';
         html += '<tr>' +
-            '<td><div class="admin-user-cell">' + av + '<div><div style="font-weight:600;">' + (u.global_name || u.username) + '</div><div style="font-size:0.75rem;color:var(--text-muted);">@' + u.username + '</div></div></div></td>' +
+            '<td><div class="admin-user-cell">' + av + '<div><div style="font-weight:700;">' + (u.global_name || u.username) + '</div><div style="font-size:0.72rem;color:var(--text-muted);">@' + u.username + '</div></div></div></td>' +
             '<td>' + roleLabel + '</td>' +
             '<td style="font-size:0.8rem;color:var(--text-secondary);">' + joinDate + '</td>' +
             '<td style="font-size:0.8rem;color:var(--text-secondary);">' + lastLogin + '</td>' +
@@ -1153,7 +1143,7 @@ function renderAdminUsers() {
 function confirmBan(userId, username) {
     pendingBanUser = { id: userId, username: username };
     document.getElementById('ban-confirm-title').textContent = 'Ban @' + username;
-    document.getElementById('ban-confirm-text').textContent = 'Are you sure you want to ban ' + username + '? They will be unable to use the site.';
+    document.getElementById('ban-confirm-text').textContent = 'Are you sure you want to ban ' + username + '?';
     document.getElementById('ban-reason').value = '';
     document.getElementById('ban-confirm-btn').onclick = function() { doBanUser(); };
     showModal('ban-confirm-modal');
@@ -1213,35 +1203,26 @@ function updateStats() {
     document.getElementById('stat-latest-member').textContent = latestUser;
 }
 
-// Load shared threads from GitHub first, then init auth + render
 fetchRemoteThreads().then(function() {
     updateStats();
     renderCategories();
     renderMarketplaceThreads();
-    // Re-render active thread if on thread page (data just loaded)
-    if (activeThreadId !== null) {
-        renderThreadDetail(activeThreadId);
-    }
+    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
     return initAuth();
 }).then(function() {
     updateStats();
     renderCategories();
     renderMarketplaceThreads();
-    if (activeThreadId !== null) {
-        renderThreadDetail(activeThreadId);
-    }
+    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
 }).catch(function() {
     updateStats();
     renderCategories();
     renderMarketplaceThreads();
-    if (activeThreadId !== null) {
-        renderThreadDetail(activeThreadId);
-    }
+    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
 });
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
 
-// Enter key for comment input
 document.getElementById('comment-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') addComment(); });
 </script>
 
