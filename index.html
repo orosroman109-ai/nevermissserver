@@ -604,6 +604,17 @@
         </div>
         <div class="admin-stats-row" id="admin-stats-row"></div>
         <div class="modal-body" style="padding:0;">
+            <!-- Quick Ban Section -->
+            <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(231,76,60,0.04);">
+                <div style="font-size:0.85rem;font-weight:600;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
+                    <span class="material-icons" style="font-size:16px;">gavel</span> Quick Ban
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" class="form-input" id="admin-quickban-input" placeholder="Type username..." style="flex:1;padding:8px 12px;font-size:0.88rem;" onkeydown="if(event.key==='Enter')doQuickBan()">
+                    <button class="ban-btn ban" onclick="doQuickBan()" style="padding:8px 16px;font-size:0.82rem;">Ban</button>
+                </div>
+                <div id="admin-quickban-results" style="margin-top:6px;max-height:120px;overflow-y:auto;"></div>
+            </div>
             <!-- IP Bans Section -->
             <div style="padding:12px 20px;border-bottom:1px solid var(--border);">
                 <div style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">IP Ban</div>
@@ -1509,6 +1520,66 @@ async function doUnbanUser(userId) {
     renderAdminUsers();
     var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
     document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
+}
+
+// ===== QUICK BAN BY USERNAME =====
+async function doQuickBan() {
+    var input = document.getElementById('admin-quickban-input');
+    var results = document.getElementById('admin-quickban-results');
+    var query = input.value.trim().toLowerCase();
+    if (!query) return;
+
+    // Search users
+    var matches = remoteUsers.filter(function(u) {
+        return (u.username || '').toLowerCase().indexOf(query) !== -1 ||
+               (u.global_name || '').toLowerCase().indexOf(query) !== -1;
+    });
+
+    if (matches.length === 0) {
+        results.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:4px 0;">User not found</div>';
+        return;
+    }
+
+    // Ban all matches
+    var banned = 0;
+    for (var i = 0; i < matches.length; i++) {
+        var u = matches[i];
+        if (u.id === currentUser.id) continue; // don't ban self
+        if (u.banned) continue; // already banned
+        try {
+            var res = await fetch(WORKER_URL + '/api/ban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: u.id, bannedBy: currentUser.username, reason: 'Quick ban' })
+            });
+            var data = await res.json();
+            if (data.ok) {
+                u.banned = true;
+                u.banReason = 'Quick ban';
+                u.bannedBy = currentUser.username;
+                u.bannedAt = new Date().toISOString();
+                banned++;
+            }
+        } catch (e) { /* skip */ }
+    }
+
+    if (banned > 0) {
+        results.innerHTML = '<div style="font-size:0.82rem;color:var(--green);padding:4px 0;">Banned ' + banned + ' user(s): ' +
+            matches.filter(function(u) { return u.banned; }).map(function(u) { return '@' + u.username; }).join(', ') + '</div>';
+        input.value = '';
+        renderAdminUsers();
+        var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
+        document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
+    } else {
+        results.innerHTML = '<div style="font-size:0.82rem;color:var(--yellow);padding:4px 0;">All matching users already banned or self</div>';
+    }
+
+    // Show matches as clickable list for reference
+    if (matches.length > 0 && banned === 0) {
+        results.innerHTML += matches.map(function(u) {
+            return '<div style="font-size:0.78rem;color:var(--text-muted);padding:2px 0;">@' + u.username + (u.banned ? ' (already banned)' : (u.id === currentUser.id ? ' (you)' : '')) + '</div>';
+        }).join('');
+    }
 }
 
 // ===== IP BAN =====
