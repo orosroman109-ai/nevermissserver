@@ -26,7 +26,7 @@
 
     <script>
     (function() {
-        var WORKER_URL = 'https://yellow-sun-34fe.orosroman109.workers.dev';
+        var WORKER_URL = 'https://discord-oauth.orosroman109.workers.dev';
         var title = document.getElementById('title');
         var message = document.getElementById('message');
         var spinner = document.getElementById('spinner');
@@ -70,15 +70,45 @@
                 discriminator: data.discriminator
             };
 
-            localStorage.setItem('np_user', JSON.stringify(user));
+            // Check if user is banned BEFORE allowing login
+            return fetch(WORKER_URL + '/api/check-ban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: user.id })
+            }).then(function(r2) { return r2.json(); }).then(function(banData) {
+                if (banData.banned) {
+                    spinner.style.display = 'none';
+                    title.textContent = 'Access denied';
+                    title.classList.add('error');
+                    message.textContent = 'You are banned from this site. Reason: ' + (banData.reason || 'No reason provided');
+                    return;
+                }
 
-            title.textContent = 'Welcome, ' + data.global_name + '!';
-            message.textContent = 'Redirecting...';
-            spinner.style.display = 'none';
+                // Also register user (captures IP)
+                fetch(WORKER_URL + '/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user: { id: user.id, username: user.username, global_name: user.global_name || '', avatar: user.avatar || '' } })
+                }).then(function(r3) { return r3.json(); }).then(function(regData) {
+                    if (regData.banned) {
+                        spinner.style.display = 'none';
+                        title.textContent = 'Access denied';
+                        title.classList.add('error');
+                        message.textContent = 'You are banned from this site. Reason: ' + (regData.banReason || 'No reason provided');
+                        return;
+                    }
+                }).catch(function() {});
 
-            setTimeout(function() {
-                window.location.href = 'https://orosroman109-ai.github.io/nevermissserver/';
-            }, 1000);
+                localStorage.setItem('np_user', JSON.stringify(user));
+
+                title.textContent = 'Welcome, ' + data.global_name + '!';
+                message.textContent = 'Redirecting...';
+                spinner.style.display = 'none';
+
+                setTimeout(function() {
+                    window.location.href = 'https://orosroman109-ai.github.io/nevermissserver/';
+                }, 1000);
+            });
         })
         .catch(function(err) {
             spinner.style.display = 'none';
