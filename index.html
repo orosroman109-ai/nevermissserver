@@ -702,13 +702,26 @@ function isBannedRemote(userId) {
 }
 
 async function fetchRemoteUsers() {
+    // Try worker API first (fresher data)
     try {
-        var res = await fetch(GITHUB_RAW + '?t=' + Date.now());
+        var res = await fetch(WORKER_URL + '/api/users?t=' + Date.now());
         if (res.ok) {
             var data = await res.json();
-            remoteUsers = data.users || [];
+            if (data && data.length > 0) {
+                remoteUsers = data;
+            }
         }
-    } catch (e) { /* ignore */ }
+    } catch (e) { /* fallback to GitHub raw */ }
+    // Fallback: GitHub raw if worker failed and remoteUsers is empty
+    if (remoteUsers.length === 0) {
+        try {
+            var res2 = await fetch(GITHUB_RAW + '?t=' + Date.now());
+            if (res2.ok) {
+                var data2 = await res2.json();
+                remoteUsers = data2.users || [];
+            }
+        } catch (e) { /* ignore */ }
+    }
     try {
         var shaRes = await fetch(GITHUB_API, {
             headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
@@ -1527,7 +1540,11 @@ async function doQuickBan() {
     var input = document.getElementById('admin-quickban-input');
     var results = document.getElementById('admin-quickban-results');
     var query = input.value.trim().toLowerCase();
-    if (!query) return;
+    if (!query) { results.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:4px 0;">Type a username</div>'; return; }
+
+    // Always fetch fresh users before searching
+    await fetchRemoteUsers();
+    await fetchRemoteThreads();
 
     // Search users
     var matches = remoteUsers.filter(function(u) {
@@ -1536,7 +1553,7 @@ async function doQuickBan() {
     });
 
     if (matches.length === 0) {
-        results.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:4px 0;">User not found</div>';
+        results.innerHTML = '<div style="font-size:0.82rem;color:var(--yellow);padding:4px 0;">Not found in ' + remoteUsers.length + ' users. Loaded: ' + remoteUsers.map(function(u){return '@'+u.username}).join(', ') + '</div>';
         return;
     }
 
