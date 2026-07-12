@@ -155,16 +155,49 @@
         /* ===== MARKETPLACE / THREAD PAGES ===== */
         .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 12px; }
         .back-link:hover { color: var(--accent-hover); }
-        .mp-thread { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
-        .mp-thread:last-child { border-bottom: none; }
-        .mp-thread:hover { background: var(--bg-node-hover); }
-        .mp-thread-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent); }
-        .mp-thread-info { flex: 1; min-width: 0; }
-        .mp-thread-title { font-weight: 700; font-size: 0.92rem; color: var(--text-bright); margin-bottom: 3px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-        .mp-thread-title a { color: var(--text-bright); }
-        .mp-thread-title a:hover { color: var(--accent-hover); }
-        .mp-thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 10px; }
-        .mp-thread-meta .author { color: var(--accent); }
+
+        /* XenForo structItem thread listing */
+        .structItem--thread { display: flex; align-items: stretch; padding: 0; border-bottom: 1px solid var(--border); transition: background 0.15s; cursor: pointer; }
+        .structItem--thread:hover { background: var(--bg-node-hover); }
+        .structItem--thread:last-child { border-bottom: none; }
+        .structItem-cell { padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
+        .structItem-cell--icon { flex: 0 0 42px; align-items: center; }
+        .structItem-cell--icon .structItem-iconContainer { width: 36px; height: 36px; border-radius: 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .structItem-cell--main { flex: 1; min-width: 0; padding-left: 0; }
+        .structItem-title { font-weight: 700; font-size: 0.93rem; color: var(--text-bright); margin-bottom: 4px; }
+        .structItem-title span { color: var(--text-bright); }
+        .structItem-title a { color: var(--text-bright); text-decoration: none; }
+        .structItem-title a:hover { color: var(--accent-hover); }
+        .structItem-minor { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .structItem-minor .author { color: var(--accent); font-weight: 600; }
+        .structItem-cell--meta { flex: 0 0 110px; align-items: center; gap: 4px; }
+        .structItem-cell--meta .pairs { display: flex; flex-direction: column; gap: 1px; }
+        .structItem-cell--meta .pairs dt { font-size: 0.68rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .structItem-cell--meta .pairs dd { font-size: 0.85rem; color: var(--text-secondary); font-weight: 600; }
+        .structItem-cell--latest { flex: 0 0 160px; align-items: center; }
+        .structItem-latestDate { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 3px; }
+        .structItem-latestUser { display: flex; align-items: center; gap: 6px; }
+        .structItem-latestUser img { width: 20px; height: 20px; border-radius: 50%; }
+        .structItem-latestUser span { font-size: 0.78rem; color: var(--accent); font-weight: 600; }
+        .structItem-cell--iconEnd { flex: 0 0 36px; align-items: center; justify-content: center; }
+        .structItem-cell--iconEnd img { width: 28px; height: 28px; border-radius: 50%; }
+
+        /* Quick create inline */
+        .structItem--quickCreate { display: flex; align-items: stretch; padding: 10px 14px; border-bottom: 1px solid var(--border); }
+        .structItem--quickCreate .structItem-cell { padding: 0; }
+        .structItem--quickCreate input { width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; }
+        .structItem--quickCreate input:focus { outline: none; border-color: var(--accent); }
+
+        /* Breadcrumbs */
+        .p-breadcrumbs { display: flex; align-items: center; gap: 6px; padding: 10px 0; font-size: 0.82rem; color: var(--text-muted); }
+        .p-breadcrumbs a { color: var(--text-secondary); text-decoration: none; }
+        .p-breadcrumbs a:hover { color: var(--accent-hover); }
+        .p-breadcrumbs .sep { color: var(--text-muted); }
+
+        /* Page title bar */
+        .p-title { padding: 14px 0; display: flex; align-items: center; justify-content: space-between; }
+        .p-title h1 { font-size: 1.3rem; font-weight: 700; color: var(--text-bright); }
+
         .mp-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.88rem; }
 
         /* ===== BUTTONS (XenForo style) ===== */
@@ -329,15 +362,20 @@
 
             <!-- MARKETPLACE PAGE -->
             <div id="marketplace-page" style="display:none;">
-                <a href="#" class="back-link" onclick="goHome();return false;">
-                    <span class="material-icons" style="font-size:18px;">arrow_back</span> Back to Forums
-                </a>
+                <div class="p-breadcrumbs">
+                    <a href="#" onclick="goHome();return false;">Forums</a>
+                    <span class="sep">/</span>
+                    <span>Marketplace</span>
+                </div>
+                <div class="p-title">
+                    <h1>Marketplace</h1>
+                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
+                        <span class="material-icons" style="font-size:16px;">edit</span> Post thread
+                    </button>
+                </div>
                 <div class="block">
-                    <div class="block-header" style="display:flex;align-items:center;justify-content:space-between;">
-                        <h2>Marketplace</h2>
-                        <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;">
-                            <span class="material-icons" style="font-size:16px;">edit</span> Post thread...
-                        </button>
+                    <div class="block-header">
+                        <h2 style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);">Threads</h2>
                     </div>
                     <div id="marketplace-threads-list"></div>
                 </div>
@@ -931,18 +969,42 @@ function renderMarketplaceThreads() {
         list.innerHTML = '<div class="mp-empty"><span class="material-icons" style="font-size:48px;display:block;margin-bottom:10px;color:var(--text-muted);">storefront</span>No threads yet<br><span style="font-size:0.82rem;">Be the first to create one!</span></div>';
         return;
     }
-    var html = userThreads.slice().reverse().map(function(t) {
+    // Quick create inline row
+    var quickRow = '';
+    if (currentUser) {
+        quickRow = '<div class="structItem structItem--quickCreate">' +
+            '<div class="structItem-cell structItem-cell--icon"><div class="structItem-iconContainer"><img src="' + currentUser.avatar + '" style="width:30px;height:30px;border-radius:50%;"></div></div>' +
+            '<div class="structItem-cell structItem-cell--main" style="padding-left:0;">' +
+                '<input type="text" id="quick-thread-title" placeholder="Create thread... Start typing to create a new thread." onkeydown="if(event.key===\'Enter\')openCreateThread()">' +
+            '</div>' +
+        '</div>';
+    }
+    var html = quickRow + userThreads.slice().reverse().map(function(t) {
         var tagClass = t.tagClass || 'tag-blue';
-        var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span>' : '';
-        var commentsCount = (t.comments || []).length;
-        var commentsHtml = commentsCount > 0
-            ? '<span style="display:flex;align-items:center;gap:3px;font-size:0.78rem;color:var(--text-muted);"><span class="material-icons" style="font-size:14px;">chat_bubble_outline</span>' + commentsCount + '</span>'
-            : '';
-        return '<div class="mp-thread" onclick="openThread(' + t.id + ')">' +
-            '<div class="mp-thread-icon"><span class="material-icons" style="font-size:18px;">chat_bubble_outline</span></div>' +
-            '<div class="mp-thread-info">' +
-                '<div class="mp-thread-title">' + tagHtml + '<span>' + t.title + '</span></div>' +
-                '<div class="mp-thread-meta"><span class="author">' + t.author + '</span><span>' + t.time + '</span>' + commentsHtml + '</div>' +
+        var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span> ' : '';
+        var comments = t.comments || [];
+        var commentsCount = comments.length;
+        var lastComment = commentsCount > 0 ? comments[commentsCount - 1] : null;
+        var latestDateHtml = lastComment ? '<div class="structItem-latestDate">' + lastComment.time + '</div>' : '<div class="structItem-latestDate">' + t.time + '</div>';
+        var latestUserHtml = lastComment
+            ? '<div class="structItem-latestUser"><img src="' + (lastComment.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + lastComment.author + '</span></div>'
+            : '<div class="structItem-latestUser"><img src="' + (t.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + t.author + '</span></div>';
+        return '<div class="structItem structItem--thread" onclick="openThread(' + t.id + ')">' +
+            '<div class="structItem-cell structItem-cell--icon">' +
+                '<div class="structItem-iconContainer"><img src="' + (t.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:30px;height:30px;border-radius:50%;"></div>' +
+            '</div>' +
+            '<div class="structItem-cell structItem-cell--main">' +
+                '<div class="structItem-title">' + tagHtml + '<span>' + t.title + '</span></div>' +
+                '<div class="structItem-minor">' +
+                    '<span class="author">' + t.author + '</span>' +
+                    '<span>' + t.time + '</span>' +
+                '</div>' +
+            '</div>' +
+            '<div class="structItem-cell structItem-cell--meta">' +
+                '<div class="pairs"><dt>Replies</dt><dd>' + commentsCount + '</dd></div>' +
+            '</div>' +
+            '<div class="structItem-cell structItem-cell--latest">' +
+                latestDateHtml + latestUserHtml +
             '</div>' +
         '</div>';
     }).join('');
