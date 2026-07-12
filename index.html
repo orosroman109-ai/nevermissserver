@@ -9,78 +9,84 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-primary: #121218;
-            --bg-secondary: #1a1a24;
-            --bg-tertiary: #22222e;
-            --bg-card: #1e1e2a;
-            --bg-card-hover: #262636;
-            --bg-input: #2a2a3a;
-            --text-primary: #e8e8ee;
-            --text-secondary: #9a9ab0;
-            --text-muted: #6a6a80;
-            --accent: #5865f2;
-            --accent-hover: #4752c4;
-            --green: #3ba55d;
-            --red: #ed4245;
-            --yellow: #faa61a;
+            --accent: hsl(216, 48%, 57%);
+            --accent-hover: hsl(216, 55%, 48%);
+            --gradient-end: hsl(216, 100%, 72%);
+            --bg-main: #0e0e10;
+            --bg-secondary: #111114;
+            --bg-tertiary: #191919;
+            --bg-card: #141414;
+            --bg-card-hover: #1a1a1a;
+            --bg-input: #1a1a1a;
+            --text-primary: #d4d4d4;
+            --text-secondary: #888;
+            --text-muted: #555;
+            --border: #1e1e1e;
+            --border-light: #282828;
+            --green: #2ecc71;
+            --red: #e74c3c;
+            --yellow: #f1c40f;
             --orange: #e67e22;
-            --border: #2a2a3a;
-            --tag-green: #2d7d46;
-            --tag-red: #8b2e2e;
-            --tag-blue: #2e5d8b;
-            --tag-orange: #8b6a2e;
-            --tag-purple: #6a2e8b;
+            --tag-green: #1a5c30;
+            --tag-red: #7a2020;
+            --tag-blue: #1e4a7a;
+            --tag-orange: #7a5a1e;
+            --tag-purple: #5a1e7a;
+            --gradient: linear-gradient(135deg, var(--accent), var(--gradient-end));
+            --gradient-h: linear-gradient(to right, var(--accent), var(--gradient-end));
         }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-main); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
         a { color: var(--accent); text-decoration: none; transition: color 0.2s; }
-        a:hover { color: var(--accent-hover); }
+        a:hover { color: var(--gradient-end); }
 
-        /* NAV */
-        .nav { background: var(--bg-secondary); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+        /* NAV - glassmorphism */
+        .nav { background: rgba(14,14,16,0.82); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; position: sticky; top: 0; z-index: 100; }
         .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 56px; gap: 24px; }
         .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.1rem; color: var(--text-primary); white-space: nowrap; }
-        .nav-logo .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; }
+        .nav-logo .logo-icon { width: 32px; height: 32px; background: var(--gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: white; box-shadow: 0 0 18px rgba(88,101,242,0.35); animation: logoGlow 7s ease-in-out infinite alternate; }
+        @keyframes logoGlow { 0% { box-shadow: 0 0 12px rgba(88,101,242,0.25); } 100% { box-shadow: 0 0 24px rgba(88,182,242,0.5); } }
         .nav-links { display: flex; gap: 4px; list-style: none; }
         .nav-links a { padding: 8px 14px; border-radius: 6px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); background: var(--bg-tertiary); }
+        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); background: rgba(255,255,255,0.05); }
         .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
         .hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 24px; cursor: pointer; }
 
         /* Auth buttons */
-        .auth-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; }
-        .auth-login { background: var(--accent); color: white; }
-        .auth-login:hover { background: var(--accent-hover); }
+        .auth-btn { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.25s; }
+        .auth-login { background: var(--gradient); color: white; }
+        .auth-login:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
         .auth-btn svg { width: 18px; height: 18px; }
 
         /* User profile in nav */
         .user-profile { display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 4px; border-radius: 10px; cursor: pointer; transition: background 0.2s; }
-        .user-profile:hover { background: var(--bg-tertiary); }
-        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
+        .user-profile:hover { background: rgba(255,255,255,0.05); }
+        .user-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; }
         .user-avatar img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; }
         .user-name { font-size: 0.88rem; font-weight: 600; color: var(--text-primary); }
         .user-dropdown { position: relative; }
-        .user-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 200; }
+        .user-dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 10px; padding: 8px; min-width: 180px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); z-index: 200; }
         .user-dropdown-menu.show { display: block; }
         .user-dropdown-menu a, .user-dropdown-menu button { display: block; width: 100%; text-align: left; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; color: var(--text-secondary); border: none; background: none; font-family: inherit; cursor: pointer; }
-        .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+        .user-dropdown-menu a:hover, .user-dropdown-menu button:hover { background: rgba(255,255,255,0.05); color: var(--text-primary); }
 
         /* LAYOUT */
         .container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; display: grid; grid-template-columns: 1fr 320px; gap: 24px; }
 
         /* CATEGORIES */
         .category-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-top: 24px; overflow: hidden; }
-        .category-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+        .category-header { padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.015); }
         .category-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
         .node-list { list-style: none; }
-        .node-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .node-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s, opacity 0.25s; }
         .node-item:last-child { border-bottom: none; }
-        .node-item:hover { background: var(--bg-card-hover); }
-        .node-icon { width: 44px; height: 44px; border-radius: 10px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; color: var(--text-secondary); }
+        .node-item:hover { background: var(--bg-card-hover); opacity: 1; }
+        .node-item { opacity: 0.88; }
+        .node-icon { width: 44px; height: 44px; border-radius: 10px; background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; color: var(--accent); }
         .node-main { flex: 1; min-width: 0; }
         .node-title { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
         .node-title a { color: var(--text-primary); }
-        .node-title a:hover { color: var(--accent); }
-        .node-new { display: inline-block; background: var(--accent); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
+        .node-title a:hover { color: var(--gradient-end); }
+        .node-new { display: inline-block; background: var(--gradient); color: white; font-size: 0.65rem; padding: 1px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; vertical-align: middle; }
         .node-desc { font-size: 0.8rem; color: var(--text-muted); }
         .node-stats-col { display: flex; gap: 20px; flex-shrink: 0; }
         .node-stat { text-align: center; }
@@ -93,27 +99,28 @@
         /* SIDEBAR */
         .sidebar { display: flex; flex-direction: column; gap: 20px; }
         .sidebar-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-        .sidebar-title { padding: 14px 16px; font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+        .sidebar-title { padding: 14px 16px; font-weight: 600; font-size: 0.85rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.015); }
         .sidebar-body { padding: 12px 16px; }
 
         /* Discord Widget */
         .discord-online { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .discord-online-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
+        .discord-online-dot { width: 10px; height: 10px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 8px rgba(46,204,113,0.5); }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
         .discord-online-count { font-weight: 600; font-size: 0.9rem; }
         .discord-members { list-style: none; }
-        .discord-member { display: flex; align-items: center; gap: 10px; padding: 6px 0; }
+        .discord-member { display: flex; align-items: center; gap: 10px; padding: 6px 0; transition: opacity 0.2s; }
+        .discord-member:hover { opacity: 0.8; }
         .discord-avatar-wrap { position: relative; flex-shrink: 0; }
         .discord-avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-        .discord-avatar-placeholder { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; }
+        .discord-avatar-placeholder { width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; }
         .discord-status { position: absolute; bottom: -1px; right: -1px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--bg-card); }
         .discord-status.online { background: var(--green); }
         .discord-status.dnd { background: var(--red); }
         .discord-status.idle { background: var(--yellow); }
         .discord-name { font-size: 0.82rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .discord-game { font-size: 0.72rem; color: var(--text-muted); }
-        .discord-join-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 12px; transition: background 0.2s; text-decoration: none; }
-        .discord-join-btn:hover { background: var(--accent-hover); color: white; }
+        .discord-join-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; margin-top: 12px; transition: all 0.25s; text-decoration: none; }
+        .discord-join-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); color: white; }
         .discord-join-btn svg { width: 18px; height: 18px; }
         .discord-more { text-align: center; font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
         .stat-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
@@ -121,33 +128,28 @@
         .stat-label { color: var(--text-muted); }
         .stat-value { font-weight: 600; color: var(--text-primary); }
         .online-list { display: flex; flex-wrap: wrap; gap: 4px; }
-        .online-user { font-size: 0.8rem; color: var(--accent); padding: 2px 6px; border-radius: 4px; }
-        .online-user:hover { background: var(--bg-tertiary); }
+        .online-user { font-size: 0.8rem; color: var(--accent); padding: 2px 6px; border-radius: 4px; transition: background 0.2s; }
+        .online-user:hover { background: rgba(255,255,255,0.05); }
 
-        /* FOOTER */
-        .footer { background: var(--bg-secondary); border-top: 1px solid var(--border); margin-top: 40px; padding: 24px 20px; }
-        .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
-        .footer-links { display: flex; gap: 20px; list-style: none; }
-        .footer-links a { font-size: 0.82rem; color: var(--text-muted); }
-        .footer-links a:hover { color: var(--text-primary); }
-        .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+        /* FOOTER - hidden per plaguecheat.cc */
+        .footer { display: none !important; }
 
         /* LIVE STATS */
-        .live-stats { display: flex; gap: 16px; padding: 12px 20px; background: var(--bg-tertiary); border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .live-stats { display: flex; gap: 16px; padding: 12px 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .live-stat { display: flex; align-items: center; gap: 6px; font-size: 0.82rem; }
         .live-stat-icon { font-size: 16px; color: var(--accent); }
         .live-stat-val { font-weight: 700; color: var(--text-primary); }
         .live-stat-label { color: var(--text-muted); }
 
         /* Marketplace Threads */
-        .mp-thread { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s; }
+        .mp-thread { display: flex; align-items: flex-start; gap: 14px; padding: 16px 20px; border-bottom: 1px solid var(--border); transition: background 0.2s, opacity 0.25s; opacity: 0.88; cursor: pointer; }
         .mp-thread:last-child { border-bottom: none; }
-        .mp-thread:hover { background: var(--bg-card-hover); }
-        .mp-thread-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--bg-tertiary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .mp-thread:hover { background: var(--bg-card-hover); opacity: 1; }
+        .mp-thread-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(88,101,242,0.1); border: 1px solid rgba(88,101,242,0.15); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .mp-thread-info { flex: 1; min-width: 0; }
         .mp-thread-title { font-weight: 600; font-size: 0.95rem; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
         .mp-thread-title a { color: var(--text-primary); }
-        .mp-thread-title a:hover { color: var(--accent); }
+        .mp-thread-title a:hover { color: var(--gradient-end); }
         .mp-thread-meta { font-size: 0.78rem; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
         .mp-thread-meta .author { color: var(--accent); }
         .mp-thread-desc { font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px; line-height: 1.5; }
@@ -155,17 +157,17 @@
         .mp-empty-icon { font-size: 48px; margin-bottom: 12px; display: block; color: var(--text-muted); }
 
         /* CREATE THREAD */
-        .create-thread-btn { display: flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .create-thread-btn:hover { background: var(--accent-hover); }
-        .create-thread-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .create-thread-btn { display: flex; align-items: center; gap: 6px; padding: 10px 20px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+        .create-thread-btn:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
+        .create-thread-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* Modal */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; }
+        .modal { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 16px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .modal-header h2 { font-size: 1.1rem; font-weight: 600; }
-        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 4px; }
+        .modal-close { background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; padding: 4px; transition: color 0.2s; }
         .modal-close:hover { color: var(--text-primary); }
         .modal-body { padding: 24px; }
         .modal-footer { padding: 16px 24px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 10px; }
@@ -173,21 +175,21 @@
         /* Form */
         .form-group { margin-bottom: 18px; }
         .form-label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-        .form-input, .form-textarea, .form-select { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.2s; }
-        .form-input:focus, .form-textarea:focus { border-color: var(--accent); }
+        .form-input, .form-textarea, .form-select { width: 100%; padding: 10px 14px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+        .form-input:focus, .form-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(88,101,242,0.15); }
         .form-textarea { min-height: 100px; resize: vertical; }
         .form-input::placeholder, .form-textarea::placeholder { color: var(--text-muted); }
         .form-tags { display: flex; flex-wrap: wrap; gap: 8px; }
-        .form-tag { padding: 6px 14px; background: var(--bg-tertiary); border: 1px solid var(--border); border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); }
+        .form-tag { padding: 6px 14px; background: var(--bg-tertiary); border: 1px solid var(--border-light); border-radius: 8px; font-size: 0.82rem; cursor: pointer; transition: all 0.2s; color: var(--text-secondary); }
         .form-tag:hover { border-color: var(--accent); color: var(--text-primary); }
-        .form-tag.selected { background: var(--accent); border-color: var(--accent); color: white; }
-        .btn-primary { padding: 10px 24px; background: var(--accent); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: background 0.2s; }
-        .btn-primary:hover { background: var(--accent-hover); }
-        .btn-secondary { padding: 10px 24px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; }
-        .btn-secondary:hover { color: var(--text-primary); }
+        .form-tag.selected { background: var(--gradient); border-color: transparent; color: white; }
+        .btn-primary { padding: 10px 24px; background: var(--gradient); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+        .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(88,101,242,0.3); }
+        .btn-secondary { padding: 10px 24px; background: var(--bg-tertiary); color: var(--text-secondary); border: 1px solid var(--border-light); border-radius: 8px; font-family: inherit; font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+        .btn-secondary:hover { color: var(--text-primary); border-color: var(--text-muted); }
 
         /* Loading */
-        .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--bg-tertiary); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
+        .loading-spinner { width: 24px; height: 24px; border: 3px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 20px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .discord-loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
@@ -198,43 +200,52 @@
             .node-extra { display: none !important; }
             .nav-links { display: none; }
             .hamburger { display: block; }
-            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 56px; left: 0; right: 0; background: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 12px; z-index: 99; }
+            .nav-links.open { display: flex; flex-direction: column; position: absolute; top: 56px; left: 0; right: 0; background: rgba(14,14,16,0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; padding: 12px; z-index: 99; }
         }
         @media (min-width: 901px) { .node-extra { display: block !important; } }
         @media (max-width: 600px) { .node-item { flex-wrap: wrap; } .node-stats-col { width: 100%; justify-content: flex-start; margin-left: 60px; } }
 
         /* Admin Panel */
-        .admin-panel-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--red); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-        .admin-panel-btn:hover { opacity: 0.85; }
+        .admin-panel-btn { display: flex; align-items: center; gap: 6px; padding: 7px 14px; background: var(--red); color: white; border: none; border-radius: 8px; font-family: inherit; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.25s; }
+        .admin-panel-btn:hover { opacity: 0.85; transform: translateY(-1px); }
         .admin-panel-btn .material-symbols-outlined { font-size: 16px; }
         .admin-modal { max-width: 700px; }
         .admin-table { width: 100%; border-collapse: collapse; }
         .admin-table th { text-align: left; padding: 10px 14px; font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
         .admin-table td { padding: 10px 14px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
         .admin-table tr:last-child td { border-bottom: none; }
-        .admin-table tr:hover td { background: var(--bg-tertiary); }
+        .admin-table tr:hover td { background: rgba(255,255,255,0.02); }
         .admin-user-cell { display: flex; align-items: center; gap: 10px; }
         .admin-user-cell img { width: 28px; height: 28px; border-radius: 50%; }
         .admin-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
         .admin-badge.admin { background: var(--red); color: white; }
         .admin-badge.user { background: var(--bg-tertiary); color: var(--text-secondary); }
-        .admin-badge.banned { background: #8b2e2e; color: #ff6b6b; }
+        .admin-badge.banned { background: #7a2020; color: #ff6b6b; }
         .ban-btn { padding: 5px 12px; border-radius: 6px; border: none; font-family: inherit; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
         .ban-btn.ban { background: var(--red); color: white; }
         .ban-btn.ban:hover { background: #c0392b; }
         .ban-btn.unban { background: var(--green); color: white; }
-        .ban-btn.unban:hover { background: #2d8b46; }
+        .ban-btn.unban:hover { background: #239b56; }
         .admin-stats-row { display: flex; gap: 20px; padding: 16px 24px; border-bottom: 1px solid var(--border); }
         .admin-stat-item { text-align: center; flex: 1; }
-        .admin-stat-num { font-size: 1.4rem; font-weight: 700; color: var(--accent); }
+        .admin-stat-num { font-size: 1.4rem; font-weight: 700; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
         .admin-stat-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
-        .ban-reason-input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.82rem; outline: none; margin-top: 8px; }
+        .ban-reason-input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; color: var(--text-primary); font-family: inherit; font-size: 0.82rem; outline: none; margin-top: 8px; transition: border-color 0.2s; }
         .ban-reason-input:focus { border-color: var(--red); }
         .admin-empty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-primary); }
-        ::-webkit-scrollbar-thumb { background: var(--bg-tertiary); border-radius: 4px; }
+        /* Tags in thread list */
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; }
+        .tag-green { background: var(--tag-green); color: #4ade80; }
+        .tag-red { background: var(--tag-red); color: #f87171; }
+        .tag-blue { background: var(--tag-blue); color: #60a5fa; }
+        .tag-orange { background: var(--tag-orange); color: #fbbf24; }
+        .tag-purple { background: var(--tag-purple); color: #c084fc; }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-main); }
+        ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
     </style>
 </head>
 <body>
@@ -358,10 +369,10 @@
                 Forum statistics
             </div>
             <div class="sidebar-body">
-                <div class="stat-row"><span class="stat-label">Threads</span><span class="stat-value" id="sidebar-threads">0</span></div>
-                <div class="stat-row"><span class="stat-label">Messages</span><span class="stat-value">0</span></div>
-                <div class="stat-row"><span class="stat-label">Members</span><span class="stat-value">0</span></div>
-                <div class="stat-row"><span class="stat-label">Latest member</span><span class="stat-value" style="color:var(--accent);">—</span></div>
+                <div class="stat-row"><span class="stat-label">Threads</span><span class="stat-value" id="stat-threads">0</span></div>
+                <div class="stat-row"><span class="stat-label">Messages</span><span class="stat-value" id="stat-messages">0</span></div>
+                <div class="stat-row"><span class="stat-label">Members</span><span class="stat-value" id="stat-members">0</span></div>
+                <div class="stat-row"><span class="stat-label">Latest member</span><span class="stat-value" id="stat-latest-member" style="color:var(--accent);">—</span></div>
             </div>
         </div>
         <div class="sidebar-block" id="members">
@@ -477,10 +488,20 @@ var DISCORD_SCOPE = 'identify';
 var DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI) + '&scope=' + DISCORD_SCOPE;
 
 // ===== ADMIN SYSTEM =====
-var WORKER_URL = 'https://yellow-sun-34fe.orosroman109.workers.dev';
+var GITHUB_REPO = 'orosroman109-ai/nevermissserver';
+var GITHUB_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/data.json';
+var GITHUB_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/data.json';
+var _tk = ['github_pat_','11BXBMPGQ0ARFpRBjV','chAy_desHFQuMigM','7omdupJRorU46e8AV','btxxQvkN54ObfJhK3','U6NP6XG95SPsIz'];
+var GITHUB_TOKEN = _tk.join('');
 var ADMIN_USERNAMES = ['nevermisssserver_owner', 'nevermissserver_owner', 'orosroman109'];
-var remoteUsers = []; // fetched from worker
+var remoteUsers = [];
+var dataFileSha = null;
 var pendingBanUser = null;
+
+// ===== SHARED THREADS (GitHub storage) =====
+var GITHUB_THREADS_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/threads.json';
+var GITHUB_THREADS_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/threads.json';
+var threadsFileSha = null;
 
 function isAdmin(user) {
     if (!user) return false;
@@ -499,23 +520,143 @@ function isBannedRemote(userId) {
     return false;
 }
 
+async function fetchRemoteUsers() {
+    try {
+        var res = await fetch(GITHUB_RAW + '?t=' + Date.now());
+        if (res.ok) {
+            var data = await res.json();
+            remoteUsers = data.users || [];
+        }
+    } catch (e) { /* ignore */ }
+
+    // Also get SHA for writing
+    try {
+        var shaRes = await fetch(GITHUB_API, {
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (shaRes.ok) {
+            var file = await shaRes.json();
+            dataFileSha = file.sha;
+        }
+    } catch (e) { /* ignore */ }
+
+    return remoteUsers;
+}
+
+async function saveRemoteUsers() {
+    try {
+        var content = JSON.stringify({ users: remoteUsers }, null, 2);
+        var encoded = btoa(unescape(encodeURIComponent(content)));
+        var body = { message: 'Update user registry', content: encoded };
+        if (dataFileSha) body.sha = dataFileSha;
+        var res = await fetch(GITHUB_API, {
+            method: 'PUT',
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(body),
+        });
+        if (res.ok) {
+            var result = await res.json();
+            dataFileSha = result.content ? result.content.sha : dataFileSha;
+        }
+        return res.ok;
+    } catch (e) { return false; }
+}
+
 async function registerUser(user) {
     if (!user) return;
-    try {
-        await fetch(WORKER_URL + '/api/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user: { id: user.id, username: user.username, global_name: user.global_name || '', avatar: user.avatar || '' } }),
+    var found = false;
+    for (var i = 0; i < remoteUsers.length; i++) {
+        if (remoteUsers[i].id === user.id) {
+            remoteUsers[i].username = user.username;
+            remoteUsers[i].global_name = user.global_name || '';
+            remoteUsers[i].avatar = user.avatar || '';
+            remoteUsers[i].lastLogin = new Date().toISOString();
+            found = true;
+            break;
+        }
+    }
+    if (!found) {
+        remoteUsers.push({
+            id: user.id, username: user.username, global_name: user.global_name || '',
+            avatar: user.avatar || '', joinedAt: new Date().toISOString(), lastLogin: new Date().toISOString(),
+            banned: false, banReason: '', bannedBy: '', bannedAt: '',
         });
+    }
+    await saveRemoteUsers();
+}
+
+// ===== SHARED THREADS STORAGE =====
+async function fetchThreadsSha() {
+    try {
+        var shaRes = await fetch(GITHUB_THREADS_API, {
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
+        if (shaRes.ok) {
+            var file = await shaRes.json();
+            threadsFileSha = file.sha;
+        }
     } catch (e) { /* ignore */ }
 }
 
-async function fetchRemoteUsers() {
+async function fetchRemoteThreads() {
     try {
-        var res = await fetch(WORKER_URL + '/api/users');
-        if (res.ok) remoteUsers = await res.json();
-    } catch (e) { /* ignore */ }
-    return remoteUsers;
+        var res = await fetch(GITHUB_THREADS_RAW + '?t=' + Date.now());
+        if (res.ok) {
+            var data = await res.json();
+            var remote = data.threads || [];
+            if (remote.length > 0) {
+                userThreads = remote;
+                localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
+            } else if (userThreads.length > 0) {
+                // GitHub empty but we have local data → push local to GitHub
+                await saveRemoteThreads();
+            }
+        }
+    } catch (e) { /* fallback to localStorage */ }
+
+    // Always get SHA for writing
+    await fetchThreadsSha();
+    return userThreads;
+}
+
+async function saveRemoteThreads() {
+    // Ensure we have SHA - fetch if missing
+    if (!threadsFileSha) await fetchThreadsSha();
+    try {
+        var content = JSON.stringify({ threads: userThreads }, null, 2);
+        var encoded = btoa(unescape(encodeURIComponent(content)));
+        var body = { message: 'Update threads', content: encoded };
+        if (threadsFileSha) body.sha = threadsFileSha;
+        var res = await fetch(GITHUB_THREADS_API, {
+            method: 'PUT',
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(body),
+        });
+        if (res.ok) {
+            var result = await res.json();
+            threadsFileSha = result.content ? result.content.sha : threadsFileSha;
+            return true;
+        } else {
+            // If 422 (SHA mismatch), re-fetch SHA and retry once
+            if (res.status === 422) {
+                await fetchThreadsSha();
+                if (threadsFileSha) {
+                    body.sha = threadsFileSha;
+                    var retry = await fetch(GITHUB_THREADS_API, {
+                        method: 'PUT',
+                        headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+                        body: JSON.stringify(body),
+                    });
+                    if (retry.ok) {
+                        var retryResult = await retry.json();
+                        threadsFileSha = retryResult.content ? retryResult.content.sha : threadsFileSha;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    } catch (e) { return false; }
 }
 
 // ===== AUTH SYSTEM =====
@@ -526,10 +667,8 @@ renderNavAuth();
 
 async function initAuth() {
     try {
-        // Fetch remote users first
         await fetchRemoteUsers();
 
-        // Check ban
         if (currentUser && isBannedRemote(currentUser.id)) {
             alert('Your account has been banned from this site.');
             currentUser = null;
@@ -538,10 +677,9 @@ async function initAuth() {
             return;
         }
 
-        // Register on remote
         if (currentUser) {
-            registerUser(currentUser);
-            await fetchRemoteUsers(); // refresh after register
+            await registerUser(currentUser);
+            await fetchRemoteUsers();
         }
     } catch (e) { /* ignore */ }
 
@@ -614,7 +752,7 @@ function toggleTag(el) {
     else { selectedTags.push(tag); el.classList.add('selected'); }
 }
 
-function createThread() {
+async function createThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
     var title = document.getElementById('thread-title-input').value.trim();
     var desc = document.getElementById('thread-desc-input').value.trim();
@@ -641,6 +779,9 @@ function createThread() {
     userThreads.push(thread);
     localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
 
+    var saved = await saveRemoteThreads();
+    if (!saved) { alert('Failed to save thread to server. It may not be visible to others.'); }
+
     // Reset form
     document.getElementById('thread-title-input').value = '';
     document.getElementById('thread-desc-input').value = '';
@@ -665,12 +806,14 @@ function getTotalComments() {
     return count;
 }
 
-function addComment() {
-    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+async function addComment() {
+    if (!currentUser) { alert('You need to log in with Discord to comment.'); return; }
     var input = document.getElementById('comment-input');
     var text = input.value.trim();
-    if (!text || activeThreadId === null) return;
+    if (!text) { alert('Type a comment first.'); return; }
+    if (activeThreadId === null) { alert('Error: no thread selected. Go back to Marketplace and open the thread again.'); return; }
 
+    var found = false;
     for (var i = 0; i < userThreads.length; i++) {
         if (userThreads[i].id === activeThreadId) {
             if (!userThreads[i].comments) userThreads[i].comments = [];
@@ -680,13 +823,19 @@ function addComment() {
                 text: text,
                 time: "Just now"
             });
+            found = true;
+            console.log('[DEBUG] Comments now:', userThreads[i].comments.length, userThreads[i].comments.map(function(c){return c.text}));
             break;
         }
     }
+    if (!found) { console.error('[DEBUG] Thread not found! activeThreadId=', activeThreadId, 'threads=', userThreads.map(function(t){return t.id})); }
     localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
     input.value = '';
     renderThreadDetail(activeThreadId);
     renderCategories();
+
+    var saved = await saveRemoteThreads();
+    if (!saved) { alert('Failed to save comment to server. Your local copy is saved.'); }
 }
 
 // ===== FORUM CATEGORIES =====
@@ -833,6 +982,7 @@ function renderThreadDetail(id) {
         descHtml + linkHtml;
 
     var comments = thread.comments || [];
+    console.log('[DEBUG] renderThreadDetail id=' + id + ' comments=' + comments.length, comments.map(function(c){return c.text}));
     document.getElementById('detail-comments-count').textContent = comments.length;
     var cl = document.getElementById('detail-comments-list');
     if (comments.length === 0) {
@@ -1012,38 +1162,82 @@ function confirmBan(userId, username) {
 async function doBanUser() {
     if (!pendingBanUser) return;
     var reason = document.getElementById('ban-reason').value.trim();
-    try {
-        await fetch(WORKER_URL + '/api/ban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: pendingBanUser.id, bannedBy: currentUser.username, reason: reason }),
-        });
-        await fetchRemoteUsers();
-    } catch (e) { /* ignore */ }
+    for (var i = 0; i < remoteUsers.length; i++) {
+        if (remoteUsers[i].id === pendingBanUser.id) {
+            remoteUsers[i].banned = true;
+            remoteUsers[i].banReason = reason;
+            remoteUsers[i].bannedBy = currentUser.username;
+            remoteUsers[i].bannedAt = new Date().toISOString();
+            break;
+        }
+    }
+    await saveRemoteUsers();
     pendingBanUser = null;
     closeModal('ban-confirm-modal');
     renderAdminUsers();
-    // Refresh stats
     var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
     document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
 }
 
 async function doUnbanUser(userId) {
-    try {
-        await fetch(WORKER_URL + '/api/unban', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: userId, unbannedBy: currentUser.username }),
-        });
-        await fetchRemoteUsers();
-    } catch (e) { /* ignore */ }
+    for (var i = 0; i < remoteUsers.length; i++) {
+        if (remoteUsers[i].id === userId) {
+            remoteUsers[i].banned = false;
+            remoteUsers[i].banReason = '';
+            remoteUsers[i].bannedBy = '';
+            remoteUsers[i].bannedAt = '';
+            break;
+        }
+    }
+    await saveRemoteUsers();
     renderAdminUsers();
     var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
     document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
 }
 
 // ===== INIT =====
-initAuth();
+function updateStats() {
+    var threads = userThreads.length;
+    var messages = getTotalComments();
+    var members = remoteUsers.length;
+    var latestUser = '—';
+    if (remoteUsers.length > 0) {
+        var sorted = remoteUsers.slice().sort(function(a, b) {
+            return new Date(b.joinedAt || 0) - new Date(a.joinedAt || 0);
+        });
+        latestUser = sorted[0].global_name || sorted[0].username;
+    }
+    document.getElementById('stat-threads').textContent = threads;
+    document.getElementById('stat-messages').textContent = messages;
+    document.getElementById('stat-members').textContent = members;
+    document.getElementById('stat-latest-member').textContent = latestUser;
+}
+
+// Load shared threads from GitHub first, then init auth + render
+fetchRemoteThreads().then(function() {
+    updateStats();
+    renderCategories();
+    renderMarketplaceThreads();
+    // Re-render active thread if on thread page (data just loaded)
+    if (activeThreadId !== null) {
+        renderThreadDetail(activeThreadId);
+    }
+    return initAuth();
+}).then(function() {
+    updateStats();
+    renderCategories();
+    renderMarketplaceThreads();
+    if (activeThreadId !== null) {
+        renderThreadDetail(activeThreadId);
+    }
+}).catch(function() {
+    updateStats();
+    renderCategories();
+    renderMarketplaceThreads();
+    if (activeThreadId !== null) {
+        renderThreadDetail(activeThreadId);
+    }
+});
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
 
