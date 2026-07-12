@@ -282,6 +282,30 @@
         .tag-orange { background: rgba(241,196,0,0.15); color: #fbbf24; }
         .tag-purple { background: rgba(155,89,182,0.15); color: #c084fc; }
 
+        /* ===== THREAD VIEW / MESSAGE LAYOUT (XenForo) ===== */
+        .block--messages { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .block--messages .block-header { background: var(--bg-block-header); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .message--post { display: flex; border-bottom: 1px solid var(--border); }
+        .message--post:last-child { border-bottom: none; }
+        .message-cell--user {
+            flex: 0 0 160px;
+            padding: 16px;
+            border-right: 1px solid var(--border);
+            text-align: center;
+            background: rgba(255,255,255,0.01);
+        }
+        .message-cell--main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        @media (max-width: 700px) {
+            .message--post { flex-direction: column; }
+            .message-cell--user { flex: none; border-right: none; border-bottom: 1px solid var(--border); padding: 12px; display: flex; align-items: center; gap: 10px; text-align: left; }
+            .message-cell--user img { width: 40px !important; height: 40px !important; }
+        }
+
         /* ===== ADMIN ===== */
         .admin-panel-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--red); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
         .admin-panel-btn:hover { opacity: 0.85; }
@@ -423,23 +447,34 @@
 
             <!-- THREAD DETAIL PAGE -->
             <div id="thread-detail-page" style="display:none;">
-                <a href="#" class="back-link" onclick="backToMarketplace();return false;">
-                    <span class="material-icons" style="font-size:18px;">arrow_back</span> Back to Marketplace
-                </a>
-                <div class="block">
-                    <div class="block-header">
-                        <h2 id="detail-title"></h2>
-                    </div>
-                    <div style="padding:16px;" id="detail-body"></div>
+                <div class="p-breadcrumbs">
+                    <a href="#" onclick="goHome();return false;">Forums</a>
+                    <span class="sep">/</span>
+                    <a href="#marketplace" onclick="backToMarketplace();return false;">Marketplace</a>
+                    <span class="sep">/</span>
+                    <span id="detail-breadcrumb-title"></span>
                 </div>
-                <div class="block" style="margin-top:16px;">
-                    <div class="block-header">
-                        <h2>Comments (<span id="detail-comments-count">0</span>)</h2>
+                <div class="p-title">
+                    <h1 id="detail-title"></h1>
+                </div>
+                <div id="detail-description" style="margin-bottom:16px;"></div>
+                <!-- Messages block -->
+                <div class="block block--messages">
+                    <div class="block-header" style="display:flex;align-items:center;justify-content:space-between;">
+                        <h2 style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);">Replies (<span id="detail-comments-count">0</span>)</h2>
                     </div>
-                    <div id="detail-comments-list"></div>
-                    <div style="padding:12px 16px;border-top:1px solid var(--border);display:flex;gap:8px;">
-                        <input type="text" class="form-input" id="comment-input" placeholder="Write a comment..." style="flex:1;">
-                        <button class="btn-primary" onclick="addComment()">Send</button>
+                    <div id="detail-messages-list"></div>
+                </div>
+                <!-- Quick Reply -->
+                <div class="block" style="margin-top:16px;" id="detail-reply-block">
+                    <div class="block-header">
+                        <h2 style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);">Quick reply</h2>
+                    </div>
+                    <div style="padding:12px 16px;display:flex;gap:10px;align-items:flex-start;" id="detail-reply-row">
+                        <input type="text" class="input" id="comment-input" placeholder="Write your reply..." style="flex:1;">
+                        <button class="btn-cta" onclick="addComment()">
+                            <span class="material-icons" style="font-size:16px;">reply</span> Reply
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1097,33 +1132,95 @@ function renderThreadDetail(id) {
     if (!thread) return;
 
     var tagClass = thread.tagClass || 'tag-blue';
-    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span>' : '';
+    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span> ' : '';
     var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:var(--accent);font-size:0.88rem;">Open link <span class="material-icons" style="font-size:15px;">open_in_new</span></a>' : '';
-    var descHtml = thread.description ? '<div style="margin-top:10px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '';
 
+    document.getElementById('detail-breadcrumb-title').textContent = thread.title;
     document.getElementById('detail-title').textContent = thread.title;
-    document.getElementById('detail-body').innerHTML =
-        '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">' + tagHtml +
-        '<span style="font-size:0.82rem;color:var(--text-muted);">' + thread.time + '</span></div>' +
-        '<div style="font-size:0.85rem;color:var(--accent);margin-bottom:4px;">' + thread.author + '</div>' +
-        descHtml + linkHtml;
+    document.getElementById('detail-description').innerHTML =
+        '<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);">' +
+            '<span class="material-icons" style="font-size:14px;">person</span> ' +
+            '<span style="color:var(--accent);font-weight:600;">' + thread.author + '</span>' +
+            '<span style="margin-left:4px;">' + thread.time + '</span>' +
+        '</div>' +
+        (thread.description ? '<div style="margin-top:10px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '') +
+        linkHtml;
 
     var comments = thread.comments || [];
     document.getElementById('detail-comments-count').textContent = comments.length;
-    var cl = document.getElementById('detail-comments-list');
-    if (comments.length === 0) {
-        cl.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.85rem;">No comments yet</div>';
-    } else {
-        cl.innerHTML = comments.map(function(c) {
-            return '<div style="padding:10px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;">' +
-                '<img src="' + (c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:30px;height:30px;border-radius:50%;flex-shrink:0;">' +
-                '<div style="flex:1;">' +
-                    '<div style="font-size:0.85rem;font-weight:700;color:var(--accent);">' + c.author + ' <span style="font-weight:400;color:var(--text-muted);font-size:0.78rem;">' + c.time + '</span></div>' +
-                    '<div style="font-size:0.88rem;color:var(--text-primary);margin-top:3px;">' + c.text + '</div>' +
-                '</div>' +
-            '</div>';
-        }).join('');
+
+    // Render OP message
+    var opAvatar = thread.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+    var messagesHtml = renderMessage({
+        author: thread.author,
+        avatar: opAvatar,
+        time: thread.time,
+        text: (thread.description || '') + (thread.link ? '<br><a href="' + thread.link + '" target="_blank" style="color:var(--accent);">Open link</a>' : ''),
+        num: 1,
+        isOp: true
+    });
+
+    // Render comments as replies
+    for (var i = 0; i < comments.length; i++) {
+        var c = comments[i];
+        messagesHtml += renderMessage({
+            author: c.author,
+            avatar: c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png',
+            time: c.time,
+            text: c.text,
+            num: i + 2,
+            isOp: false
+        });
     }
+
+    document.getElementById('detail-messages-list').innerHTML = messagesHtml;
+
+    // Show/hide reply block
+    document.getElementById('detail-reply-block').style.display = currentUser ? 'block' : 'none';
+    if (!currentUser) {
+        document.getElementById('detail-reply-row').innerHTML =
+            '<a href="' + DISCORD_AUTH_URL + '" class="btn-cta" style="text-decoration:none;">Login with Discord to reply</a>';
+    } else {
+        document.getElementById('detail-reply-row').innerHTML =
+            '<img src="' + currentUser.avatar + '" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;">' +
+            '<input type="text" class="input" id="comment-input" placeholder="Write your reply..." style="flex:1;" onkeydown="if(event.key===\'Enter\')addComment()">' +
+            '<button class="btn-cta" onclick="addComment()">' +
+                '<span class="material-icons" style="font-size:16px;">reply</span> Reply' +
+            '</button>';
+    }
+}
+
+function renderMessage(m) {
+    var initials = m.author ? m.author.charAt(0).toUpperCase() : '?';
+    return '<article class="message message--post" style="display:flex;border-bottom:1px solid var(--border);">' +
+        // User column
+        '<div class="message-cell message-cell--user" style="flex:0 0 160px;padding:16px;border-right:1px solid var(--border);text-align:center;">' +
+            '<div style="margin-bottom:8px;">' +
+                '<img src="' + m.avatar + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">' +
+            '</div>' +
+            '<div style="font-size:0.88rem;font-weight:700;color:var(--accent);word-break:break-all;">' + m.author + '</div>' +
+            (m.isOp ? '<div style="margin-top:4px;"><span class="tag tag-blue" style="font-size:0.7rem;">OP</span></div>' : '') +
+        '</div>' +
+        // Message column
+        '<div class="message-cell message-cell--main" style="flex:1;min-width:0;">' +
+            '<div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;">' +
+                '<span style="font-size:0.82rem;color:var(--text-muted);">' + m.time + '</span>' +
+                '<span style="font-size:0.78rem;color:var(--text-muted);">#' + m.num + '</span>' +
+            '</div>' +
+            '<div style="padding:12px 16px;font-size:0.9rem;color:var(--text-primary);line-height:1.6;">' + (m.text || '<em style="color:var(--text-muted);">No content</em>') + '</div>' +
+            '<div style="padding:6px 16px;display:flex;gap:12px;border-top:1px solid var(--border);">' +
+                '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="alert(\'Coming soon\')">' +
+                    '<span class="material-icons" style="font-size:14px;">thumb_up</span> Like' +
+                '</button>' +
+                '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="document.getElementById(\'comment-input\').focus()">' +
+                    '<span class="material-icons" style="font-size:14px;">reply</span> Reply' +
+                '</button>' +
+                '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="alert(\'Coming soon\')">' +
+                    '<span class="material-icons" style="font-size:14px;">flag</span> Report' +
+                '</button>' +
+            '</div>' +
+        '</div>' +
+    '</article>';
 }
 
 // Check hash on load
