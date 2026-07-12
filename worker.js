@@ -5,13 +5,10 @@ const CLIENT_ID = '1525497038094209164';
 const CLIENT_SECRET = 'gQ89d9Qjy5G6HhxjgD4WcAkRMv_m-uhH';
 const REDIRECT_URI = 'https://orosroman109-ai.github.io/nevermissserver/callback.html';
 
-// Secrets are set via: wrangler secret put GITHUB_TOKEN
-// env.GITHUB_TOKEN is injected at runtime
 const GITHUB_REPO = 'orosroman109-ai/nevermissserver';
 const GITHUB_API = 'https://api.github.com';
 const DATA_FILE = 'data.json';
 
-const ADMIN_IDS = []; // filled by fetchAdminIds
 const ADMIN_USERNAMES = ['nevermissserver_owner', 'nevermisssserver_owner', 'orosroman109'];
 
 const corsHeaders = {
@@ -30,12 +27,14 @@ async function getDataFile(token) {
         'User-Agent': 'nevermiss-worker',
       },
     });
-    if (!res.ok) return { content: { users: [] }, sha: null };
+    if (!res.ok) return { content: { users: [], bannedIPs: [] }, sha: null };
     const file = await res.json();
     const decoded = atob(file.content.replace(/\n/g, ''));
-    return { content: JSON.parse(decoded), sha: file.sha };
+    const content = JSON.parse(decoded);
+    if (!content.bannedIPs) content.bannedIPs = [];
+    return { content, sha: file.sha };
   } catch (e) {
-    return { content: { users: [] }, sha: null };
+    return { content: { users: [], bannedIPs: [] }, sha: null };
   }
 }
 
@@ -69,6 +68,10 @@ function isAdminUser(userId, username) {
   return false;
 }
 
+function getClientIP(request) {
+  return request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || 'unknown';
+}
+
 const jsonResp = (data, status = 200) =>
   new Response(JSON.stringify(data), {
     status,
@@ -90,7 +93,17 @@ export default {
       return jsonResp(content.users || []);
     }
 
-    // ===== POST /api/register =====
+    // ===== GET /api/bans — return banned users + banned IPs =====
+    if (request.method === 'GET' && url.pathname === '/api/bans') {
+      const { content } = await getDataFile(GITHUB_TOKEN);
+      const bannedUsers = (content.users || []).filter(u => u.banned).map(u => ({
+        id: u.id, username: u.username, global_name: u.global_name, ip: u.ip || null,
+        banReason: u.banReason, bannedBy: u.bannedBy, bannedAt: u.bannedAt,
+      }));
+      return jsonResp({ bannedUsers, bannedIPs: content.bannedIPs || [] });
+    }
+
+    // ===== POST /api/register — captures IP automatically =====
     if (request.method === 'POST' && url.pathname === '/api/register') {
       try {
         const { user } = await request.json();
@@ -98,14 +111,26 @@ export default {
           return jsonResp({ error: 'Missing user data' }, 400);
         }
 
+        const clientIP = getClientIP(request);
         const { content, sha } = await getDataFile(GITHUB_TOKEN);
         if (!content.users) content.users = [];
+        if (!content.bannedIPs) content.bannedIPs = [];
+
+        // Check IP ban
+        if (content.bannedIPs.includes(clientIP)) {
+          return jsonResp({ banned: true, banReason: 'Your IP address has been banned.', bannedBy: 'admin' }, 403);
+        }
 
         const existing = content.users.find(u => u.id === user.id);
         if (existing) {
+          // If user is banned, block them
+          if (existing.banned) {
+            return jsonResp({ banned: true, banReason: existing.banReason || 'You are banned.', bannedBy: existing.bannedBy || 'admin' }, 403);
+          }
           existing.username = user.username;
           existing.global_name = user.global_name || '';
           existing.avatar = user.avatar || '';
+          existing.ip = clientIP;
           existing.lastLogin = new Date().toISOString();
         } else {
           content.users.push({
@@ -113,6 +138,7 @@ export default {
             username: user.username,
             global_name: user.global_name || '',
             avatar: user.avatar || '',
+            ip: clientIP,
             joinedAt: new Date().toISOString(),
             lastLogin: new Date().toISOString(),
             banned: false,
@@ -123,13 +149,13 @@ export default {
         }
 
         await saveDataFile(content, sha, GITHUB_TOKEN);
-        return jsonResp({ ok: true, total: content.users.length });
+        return jsonResp({ ok: true, total: content.users.length, ip: clientIP });
       } catch (e) {
         return jsonResp({ error: e.message }, 500);
       }
     }
 
-    // ===== POST /api/ban =====
+    // ===== POST /api/ban — ban user by ID, also bans their IP =====
     if (request.method === 'POST' && url.pathname === '/api/ban') {
       try {
         const { userId, bannedBy, reason } = await request.json();
@@ -137,13 +163,13 @@ export default {
           return jsonResp({ error: 'Missing userId or bannedBy' }, 400);
         }
 
-        // Check if requester is admin
         if (!isAdminUser(null, bannedBy)) {
           return jsonResp({ error: 'Not authorized' }, 403);
         }
 
         const { content, sha } = await getDataFile(GITHUB_TOKEN);
         if (!content.users) content.users = [];
+        if (!content.bannedIPs) content.bannedIPs = [];
 
         const user = content.users.find(u => u.id === userId);
         if (!user) return jsonResp({ error: 'User not found' }, 404);
@@ -153,14 +179,21 @@ export default {
         user.bannedBy = bannedBy;
         user.bannedAt = new Date().toISOString();
 
+        // Also ban their IP if available
+        if (user.ip && user.ip !== 'unknown') {
+          if (!content.bannedIPs.includes(user.ip)) {
+            content.bannedIPs.push(user.ip);
+          }
+        }
+
         await saveDataFile(content, sha, GITHUB_TOKEN);
-        return jsonResp({ ok: true });
+        return jsonResp({ ok: true, bannedIP: user.ip || null });
       } catch (e) {
         return jsonResp({ error: e.message }, 500);
       }
     }
 
-    // ===== POST /api/unban =====
+    // ===== POST /api/unban — unban user by ID, removes their IP from ban list =====
     if (request.method === 'POST' && url.pathname === '/api/unban') {
       try {
         const { userId, unbannedBy } = await request.json();
@@ -174,9 +207,15 @@ export default {
 
         const { content, sha } = await getDataFile(GITHUB_TOKEN);
         if (!content.users) content.users = [];
+        if (!content.bannedIPs) content.bannedIPs = [];
 
         const user = content.users.find(u => u.id === userId);
         if (!user) return jsonResp({ error: 'User not found' }, 404);
+
+        // Remove user IP from banned list
+        if (user.ip) {
+          content.bannedIPs = content.bannedIPs.filter(ip => ip !== user.ip);
+        }
 
         user.banned = false;
         user.banReason = '';
@@ -190,7 +229,107 @@ export default {
       }
     }
 
-    // ===== POST / (Discord OAuth — original) =====
+    // ===== POST /api/ban-ip — manually ban an IP =====
+    if (request.method === 'POST' && url.pathname === '/api/ban-ip') {
+      try {
+        const { ip, bannedBy, reason } = await request.json();
+        if (!ip || !bannedBy) {
+          return jsonResp({ error: 'Missing ip or bannedBy' }, 400);
+        }
+
+        if (!isAdminUser(null, bannedBy)) {
+          return jsonResp({ error: 'Not authorized' }, 403);
+        }
+
+        const { content, sha } = await getDataFile(GITHUB_TOKEN);
+        if (!content.bannedIPs) content.bannedIPs = [];
+
+        if (!content.bannedIPs.includes(ip)) {
+          content.bannedIPs.push(ip);
+        }
+
+        // Also ban any existing users with this IP
+        if (content.users) {
+          for (const u of content.users) {
+            if (u.ip === ip && !u.banned) {
+              u.banned = true;
+              u.banReason = reason || 'IP banned';
+              u.bannedBy = bannedBy;
+              u.bannedAt = new Date().toISOString();
+            }
+          }
+        }
+
+        await saveDataFile(content, sha, GITHUB_TOKEN);
+        return jsonResp({ ok: true, bannedIP: ip });
+      } catch (e) {
+        return jsonResp({ error: e.message }, 500);
+      }
+    }
+
+    // ===== POST /api/unban-ip — manually unban an IP =====
+    if (request.method === 'POST' && url.pathname === '/api/unban-ip') {
+      try {
+        const { ip, unbannedBy } = await request.json();
+        if (!ip || !unbannedBy) {
+          return jsonResp({ error: 'Missing ip or unbannedBy' }, 400);
+        }
+
+        if (!isAdminUser(null, unbannedBy)) {
+          return jsonResp({ error: 'Not authorized' }, 403);
+        }
+
+        const { content, sha } = await getDataFile(GITHUB_TOKEN);
+        if (!content.bannedIPs) content.bannedIPs = [];
+
+        content.bannedIPs = content.bannedIPs.filter(b => b !== ip);
+
+        // Also unban users with this IP
+        if (content.users) {
+          for (const u of content.users) {
+            if (u.ip === ip && u.banned) {
+              u.banned = false;
+              u.banReason = '';
+              u.bannedBy = '';
+              u.bannedAt = '';
+            }
+          }
+        }
+
+        await saveDataFile(content, sha, GITHUB_TOKEN);
+        return jsonResp({ ok: true });
+      } catch (e) {
+        return jsonResp({ error: e.message }, 500);
+      }
+    }
+
+    // ===== POST /api/check-ban — check if user or IP is banned =====
+    if (request.method === 'POST' && url.pathname === '/api/check-ban') {
+      try {
+        const { userId } = await request.json();
+        const clientIP = getClientIP(request);
+        const { content } = await getDataFile(GITHUB_TOKEN);
+
+        // Check IP ban
+        if ((content.bannedIPs || []).includes(clientIP)) {
+          return jsonResp({ banned: true, reason: 'IP banned', ip: clientIP });
+        }
+
+        // Check user ban
+        if (userId && content.users) {
+          const user = content.users.find(u => u.id === userId);
+          if (user && user.banned) {
+            return jsonResp({ banned: true, reason: user.banReason || 'Account banned', ip: clientIP });
+          }
+        }
+
+        return jsonResp({ banned: false, ip: clientIP });
+      } catch (e) {
+        return jsonResp({ banned: false, error: e.message });
+      }
+    }
+
+    // ===== POST / (Discord OAuth) =====
     if (request.method === 'POST' && url.pathname === '/') {
       try {
         const { code } = await request.json();

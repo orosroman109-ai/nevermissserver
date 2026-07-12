@@ -309,7 +309,7 @@
         /* ===== ADMIN ===== */
         .admin-panel-btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: var(--red); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.8rem; font-weight: 700; cursor: pointer; transition: all 0.15s; }
         .admin-panel-btn:hover { opacity: 0.85; }
-        .admin-modal { max-width: 700px; }
+        .admin-modal { max-width: 850px; }
         .admin-table { width: 100%; border-collapse: collapse; }
         .admin-table th { text-align: left; padding: 8px 12px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
         .admin-table td { padding: 8px 12px; font-size: 0.85rem; border-bottom: 1px solid var(--border); }
@@ -604,6 +604,16 @@
         </div>
         <div class="admin-stats-row" id="admin-stats-row"></div>
         <div class="modal-body" style="padding:0;">
+            <!-- IP Bans Section -->
+            <div style="padding:12px 20px;border-bottom:1px solid var(--border);">
+                <div style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">IP Ban</div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="text" class="form-input" id="admin-ip-input" placeholder="IP address (e.g. 192.168.1.1)" style="flex:1;padding:6px 10px;font-size:0.82rem;">
+                    <button class="ban-btn ban" onclick="doBanIP()" style="padding:6px 12px;font-size:0.78rem;">Ban IP</button>
+                </div>
+                <div id="admin-banned-ips-list" style="margin-top:8px;"></div>
+            </div>
+            <!-- Users Section -->
             <div style="padding:12px 20px 6px;display:flex;align-items:center;justify-content:space-between;">
                 <span style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);">Registered Users</span>
                 <input type="text" class="form-input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()" style="width:180px;padding:6px 10px;font-size:0.82rem;">
@@ -643,6 +653,9 @@ var DISCORD_CLIENT_ID = '1525497038094209164';
 var DISCORD_REDIRECT_URI = 'https://orosroman109-ai.github.io/nevermissserver/callback.html';
 var DISCORD_SCOPE = 'identify';
 var DISCORD_AUTH_URL = 'https://discord.com/api/oauth2/authorize?client_id=' + DISCORD_CLIENT_ID + '&response_type=code&redirect_uri=' + encodeURIComponent(DISCORD_REDIRECT_URI) + '&scope=' + DISCORD_SCOPE;
+
+// ===== WORKER API =====
+var WORKER_URL = 'https://yellow-sun-34fe.orosroman109.workers.dev';
 
 // ===== ADMIN SYSTEM =====
 var GITHUB_REPO = 'orosroman109-ai/nevermissserver';
@@ -718,6 +731,24 @@ async function saveRemoteUsers() {
 
 async function registerUser(user) {
     if (!user) return;
+    // Try worker API first (captures IP server-side)
+    try {
+        var res = await fetch(WORKER_URL + '/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user: { id: user.id, username: user.username, global_name: user.global_name || '', avatar: user.avatar || '' } })
+        });
+        var data = await res.json();
+        if (data.banned) {
+            alert('You are banned from this site. Reason: ' + (data.banReason || 'No reason provided'));
+            currentUser = null;
+            localStorage.removeItem('np_user');
+            renderNavAuth();
+            return;
+        }
+        return; // Worker handled it
+    } catch (e) { /* fallback to client-side save */ }
+    // Fallback: save directly via GitHub API
     var found = false;
     for (var i = 0; i < remoteUsers.length; i++) {
         if (remoteUsers[i].id === user.id) {
@@ -815,12 +846,29 @@ renderNavAuth();
 async function initAuth() {
     try {
         await fetchRemoteUsers();
-        if (currentUser && isBannedRemote(currentUser.id)) {
-            alert('Your account has been banned from this site.');
-            currentUser = null;
-            localStorage.removeItem('np_user');
-            renderNavAuth();
-            return;
+        // Check ban via worker (user ban + IP ban)
+        try {
+            var banCheck = await fetch(WORKER_URL + '/api/check-ban', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId: currentUser ? currentUser.id : null })
+            });
+            var banData = await banCheck.json();
+            if (banData.banned) {
+                alert('You are banned from this site. Reason: ' + (banData.reason || 'No reason provided'));
+                currentUser = null;
+                localStorage.removeItem('np_user');
+                renderNavAuth();
+                return;
+            }
+        } catch (e) { /* worker offline, fallback to local check */
+            if (currentUser && isBannedRemote(currentUser.id)) {
+                alert('Your account has been banned from this site.');
+                currentUser = null;
+                localStorage.removeItem('np_user');
+                renderNavAuth();
+                return;
+            }
         }
         if (currentUser) {
             await registerUser(currentUser);
@@ -1345,6 +1393,7 @@ async function openAdminPanel() {
         '<div class="admin-stat-item"><div class="admin-stat-num">' + userThreads.length + '</div><div class="admin-stat-label">Threads</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + getTotalComments() + '</div><div class="admin-stat-label">Comments</div></div>';
     renderAdminUsers();
+    loadBannedIPs();
     showModal('admin-panel-modal');
 }
 
@@ -1362,7 +1411,7 @@ function renderAdminUsers() {
         list.innerHTML = '<div class="admin-empty">No registered users yet.</div>';
         return;
     }
-    var html = '<table class="admin-table"><thead><tr><th>User</th><th>Role</th><th>Joined</th><th>Last Login</th><th>Action</th></tr></thead><tbody>';
+    var html = '<table class="admin-table"><thead><tr><th>User</th><th>IP</th><th>Role</th><th>Joined</th><th>Last Login</th><th>Action</th></tr></thead><tbody>';
     for (var i = users.length - 1; i >= 0; i--) {
         var u = users[i];
         var banned = u.banned;
@@ -1386,6 +1435,7 @@ function renderAdminUsers() {
             : '<div class="avatar-placeholder">' + (u.username || '?').charAt(0).toUpperCase() + '</div>';
         html += '<tr>' +
             '<td><div class="admin-user-cell">' + av + '<div><div style="font-weight:700;">' + (u.global_name || u.username) + '</div><div style="font-size:0.72rem;color:var(--text-muted);">@' + u.username + '</div></div></div></td>' +
+            '<td style="font-size:0.75rem;color:var(--text-muted);font-family:monospace;">' + (u.ip || '—') + '</td>' +
             '<td>' + roleLabel + '</td>' +
             '<td style="font-size:0.8rem;color:var(--text-secondary);">' + joinDate + '</td>' +
             '<td style="font-size:0.8rem;color:var(--text-secondary);">' + lastLogin + '</td>' +
@@ -1408,6 +1458,17 @@ function confirmBan(userId, username) {
 async function doBanUser() {
     if (!pendingBanUser) return;
     var reason = document.getElementById('ban-reason').value.trim();
+    // Use worker API for server-side ban
+    try {
+        var res = await fetch(WORKER_URL + '/api/ban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: pendingBanUser.id, bannedBy: currentUser.username, reason: reason })
+        });
+        var data = await res.json();
+        if (!data.ok) { alert('Ban failed: ' + (data.error || 'Unknown error')); return; }
+    } catch (e) { alert('Ban failed: Worker unavailable'); return; }
+    // Update local state
     for (var i = 0; i < remoteUsers.length; i++) {
         if (remoteUsers[i].id === pendingBanUser.id) {
             remoteUsers[i].banned = true;
@@ -1417,7 +1478,6 @@ async function doBanUser() {
             break;
         }
     }
-    await saveRemoteUsers();
     pendingBanUser = null;
     closeModal('ban-confirm-modal');
     renderAdminUsers();
@@ -1426,6 +1486,17 @@ async function doBanUser() {
 }
 
 async function doUnbanUser(userId) {
+    // Use worker API for server-side unban
+    try {
+        var res = await fetch(WORKER_URL + '/api/unban', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: userId, unbannedBy: currentUser.username })
+        });
+        var data = await res.json();
+        if (!data.ok) { alert('Unban failed: ' + (data.error || 'Unknown error')); return; }
+    } catch (e) { alert('Unban failed: Worker unavailable'); return; }
+    // Update local state
     for (var i = 0; i < remoteUsers.length; i++) {
         if (remoteUsers[i].id === userId) {
             remoteUsers[i].banned = false;
@@ -1435,10 +1506,74 @@ async function doUnbanUser(userId) {
             break;
         }
     }
-    await saveRemoteUsers();
     renderAdminUsers();
     var bannedCount = remoteUsers.filter(function(u) { return u.banned; }).length;
     document.getElementById('admin-stats-row').children[1].querySelector('.admin-stat-num').textContent = bannedCount;
+}
+
+// ===== IP BAN =====
+async function doBanIP() {
+    var input = document.getElementById('admin-ip-input');
+    var ip = input.value.trim();
+    if (!ip) { alert('Enter an IP address'); return; }
+    if (!confirm('Ban IP ' + ip + '? This will also ban all users from this IP.')) return;
+    try {
+        var res = await fetch(WORKER_URL + '/api/ban-ip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ip: ip, bannedBy: currentUser.username, reason: 'IP banned manually' })
+        });
+        var data = await res.json();
+        if (data.ok) {
+            input.value = '';
+            alert('IP ' + ip + ' banned successfully');
+            loadBannedIPs();
+            await fetchRemoteUsers();
+            renderAdminUsers();
+        } else {
+            alert('Failed: ' + (data.error || 'Unknown'));
+        }
+    } catch (e) { alert('Failed: Worker unavailable'); }
+}
+
+async function doUnbanIP(ip) {
+    if (!confirm('Unban IP ' + ip + '?')) return;
+    try {
+        var res = await fetch(WORKER_URL + '/api/unban-ip', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ip: ip, unbannedBy: currentUser.username })
+        });
+        var data = await res.json();
+        if (data.ok) {
+            loadBannedIPs();
+            await fetchRemoteUsers();
+            renderAdminUsers();
+        } else {
+            alert('Failed: ' + (data.error || 'Unknown'));
+        }
+    } catch (e) { alert('Failed: Worker unavailable'); }
+}
+
+async function loadBannedIPs() {
+    var container = document.getElementById('admin-banned-ips-list');
+    try {
+        var res = await fetch(WORKER_URL + '/api/bans');
+        var data = await res.json();
+        var ips = data.bannedIPs || [];
+        if (ips.length === 0) {
+            container.innerHTML = '<span style="font-size:0.78rem;color:var(--text-muted);">No banned IPs</span>';
+        } else {
+            container.innerHTML = ips.map(function(ip) {
+                return '<div style="display:flex;align-items:center;gap:8px;padding:3px 0;">' +
+                    '<span style="font-size:0.8rem;color:var(--text-primary);font-family:monospace;">' + ip + '</span>' +
+                    '<button class="ban-btn unban" onclick="doUnbanIP(\'' + ip + '\')" style="padding:2px 8px;font-size:0.7rem;">Unban</button>' +
+                '</div>';
+            }).join('');
+        }
+    } catch (e) {
+        container.innerHTML = '<span style="font-size:0.78rem;color:var(--text-muted);">Failed to load</span>';
+    }
 }
 
 // ===== INIT =====
