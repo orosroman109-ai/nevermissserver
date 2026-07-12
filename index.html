@@ -200,6 +200,43 @@
 
         .mp-empty { text-align: center; padding: 40px 20px; color: var(--text-muted); font-size: 0.88rem; }
 
+        /* ===== POST THREAD FORM (XenForo) ===== */
+        .formRow { display: flex; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .formRow--fullWidth { flex-wrap: wrap; }
+        .formRow--noLabel .formRow-labelWrapper { display: none; }
+        .formRow--noTopPadding { padding-top: 0; }
+        .formRow--noBottomPadding { padding-bottom: 0; border-bottom: none; }
+        .formRow--mergePrev { border-top: none; }
+        .formRow-labelWrapper { flex: 0 0 140px; padding: 8px 14px 8px 0; }
+        .formRow-label { font-size: 0.82rem; font-weight: 600; color: var(--text-secondary); }
+        .formRow-input { flex: 1; min-width: 0; padding: 4px 0; }
+        .input { width: 100%; padding: 8px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 4px; color: var(--text-primary); font-family: inherit; font-size: 0.88rem; outline: none; transition: border-color 0.15s; resize: vertical; }
+        .input:focus { border-color: var(--accent); }
+        .input::placeholder { color: var(--text-muted); }
+        .input--title { border: none; background: transparent; font-size: 1.1rem; font-weight: 700; color: var(--text-bright); padding: 8px 0; }
+        .input--title:focus { box-shadow: none; }
+        .input--title::placeholder { color: var(--text-muted); font-weight: 400; }
+        textarea.input--title { min-height: auto; overflow: hidden; }
+        .editorContainer { border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; }
+        .editor-toolbar { display: flex; align-items: center; gap: 2px; padding: 6px 8px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .editor-btn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 28px; border: none; background: transparent; color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 0.82rem; transition: all 0.1s; }
+        .editor-btn:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+        .editor-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
+        .editor-content:empty:before { content: attr(data-placeholder); color: var(--text-muted); pointer-events: none; }
+        .inputTypesScroller { overflow-x: auto; }
+        .inputTypes { display: flex; gap: 0; list-style: none; }
+        .inputTypes-type { cursor: pointer; }
+        .inputTypes-input { display: none; }
+        .inputTypes-display { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid var(--border-light); border-radius: 6px; margin-right: 8px; transition: all 0.15s; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; }
+        .inputTypes-display:hover { border-color: var(--text-muted); color: var(--text-primary); }
+        .inputTypes-input:checked + .inputTypes-display { background: rgba(100,160,255,0.08); border-color: var(--accent); color: var(--accent); }
+        .inputTypes-icon { display: flex; align-items: center; }
+        .inputChoice { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; }
+        .inputChoice input[type="checkbox"] { accent-color: var(--accent); }
+        .formSubmitRow { padding: 16px 0; }
+        .formSubmitRow--sticky { position: sticky; bottom: 0; background: var(--bg-page); border-top: 1px solid var(--border); padding: 12px 0; margin: 0 -14px; padding-left: 14px; padding-right: 14px; z-index: 10; }
+        .formSubmitRow-main { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
         /* ===== BUTTONS (XenForo style) ===== */
         .btn-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; }
         .btn-cta:hover { opacity: 0.85; color: white; }
@@ -457,40 +494,134 @@
     </footer>
 </div>
 
-<!-- Create Thread Modal -->
-<div class="modal-overlay" id="create-thread-modal">
-    <div class="modal">
-        <div class="modal-header">
-            <h2>Create Thread</h2>
-            <button class="modal-close" onclick="closeModal('create-thread-modal')">&times;</button>
-        </div>
-        <div class="modal-body">
-            <div class="form-group">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-input" id="thread-title-input" placeholder="Enter thread title...">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Tags</label>
-                <div class="form-tags" id="thread-tags">
-                    <div class="form-tag" data-tag="Source" onclick="toggleTag(this)">Source</div>
-                    <div class="form-tag" data-tag="Crack" onclick="toggleTag(this)">Crack</div>
-                    <div class="form-tag" data-tag="Free" onclick="toggleTag(this)">Free</div>
+<!-- Create Thread PAGE -->
+<div id="create-thread-page" style="display:none;">
+    <div class="p-breadcrumbs">
+        <a href="#" onclick="goHome();return false;">Forums</a>
+        <span class="sep">/</span>
+        <a href="#marketplace" onclick="backToMarketplace();return false;">Marketplace</a>
+        <span class="sep">/</span>
+        <span>Post thread</span>
+    </div>
+    <div class="p-title">
+        <h1>Post thread</h1>
+    </div>
+    <form class="block" onsubmit="createThread();return false;">
+        <div class="block-container">
+            <div class="block-body">
+                <!-- Title -->
+                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel">
+                    <div class="formRow-labelWrapper">
+                        <label class="formRow-label">Title</label>
+                    </div>
+                    <div class="formRow-input">
+                        <textarea rows="1" class="input input--title" id="thread-title-input"
+                            data-single-line="true" placeholder="Thread title" maxlength="150"
+                            autocomplete="off" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px';"></textarea>
+                    </div>
+                </div>
+                <!-- Thread Type -->
+                <div class="formRow formRow--fullWidth formRow--noLabel formRow--noTopPadding formRow--noBottomPadding">
+                    <div class="formRow-input">
+                        <div class="inputTypesScroller">
+                            <ul class="inputTypes" role="radiogroup" aria-label="Thread type">
+                                <li role="none">
+                                    <label class="inputTypes-type">
+                                        <input type="radio" name="discussion_type" value="discussion" class="inputTypes-input" checked="checked" data-thread-type="discussion" />
+                                        <span class="inputTypes-display">
+                                            <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">chat_bubble_outline</span></span>
+                                            <span class="inputTypes-title">Discussion</span>
+                                        </span>
+                                    </label>
+                                </li>
+                                <li role="none">
+                                    <label class="inputTypes-type">
+                                        <input type="radio" name="discussion_type" value="poll" class="inputTypes-input" data-thread-type="poll" />
+                                        <span class="inputTypes-display">
+                                            <span class="inputTypes-icon"><span class="material-icons" style="font-size:18px;">poll</span></span>
+                                            <span class="inputTypes-title">Poll</span>
+                                        </span>
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- Tags -->
+                <div class="formRow formRow--fullWidth formRow--noLabel formRow--mergePrev">
+                    <div class="formRow-input">
+                        <div class="form-tags" id="thread-tags">
+                            <div class="form-tag" data-tag="Source" onclick="toggleTag(this)">Source</div>
+                            <div class="form-tag" data-tag="Crack" onclick="toggleTag(this)">Crack</div>
+                            <div class="form-tag" data-tag="Free" onclick="toggleTag(this)">Free</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Message -->
+                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel formRow--mergePrev">
+                    <div class="formRow-labelWrapper">
+                        <label class="formRow-label">Message</label>
+                    </div>
+                    <div class="formRow-input">
+                        <div class="editorContainer">
+                            <!-- Simple toolbar -->
+                            <div class="editor-toolbar" id="editor-toolbar">
+                                <button type="button" class="editor-btn" onclick="execEditor('bold')" title="Bold"><b>B</b></button>
+                                <button type="button" class="editor-btn" onclick="execEditor('italic')" title="Italic"><i>I</i></button>
+                                <button type="button" class="editor-btn" onclick="execEditor('underline')" title="Underline"><u>U</u></button>
+                                <span class="editor-sep"></span>
+                                <button type="button" class="editor-btn" onclick="execEditor('insertUnorderedList')" title="List"><span class="material-icons" style="font-size:16px;">format_list_bulleted</span></button>
+                                <button type="button" class="editor-btn" onclick="execEditor('insertOrderedList')" title="Numbered list"><span class="material-icons" style="font-size:16px;">format_list_numbered</span></button>
+                                <span class="editor-sep"></span>
+                                <button type="button" class="editor-btn" onclick="insertLink()" title="Link"><span class="material-icons" style="font-size:16px;">link</span></button>
+                                <button type="button" class="editor-btn" onclick="insertCode()" title="Code"><span class="material-icons" style="font-size:16px;">code</span></button>
+                                <span class="editor-sep"></span>
+                                <button type="button" class="editor-btn" onclick="execEditor('removeFormat')" title="Clear formatting"><span class="material-icons" style="font-size:16px;">format_clear</span></button>
+                            </div>
+                            <div class="editor-content" id="thread-desc-input" contenteditable="true"
+                                data-placeholder="Type your message…" style="min-height:200px;padding:12px 14px;background:var(--bg-input);border:1px solid var(--border-light);border-top:none;border-radius:0 0 6px 6px;color:var(--text-primary);font-family:inherit;font-size:0.88rem;outline:none;line-height:1.6;overflow-y:auto;"
+                                onfocus="if(this.textContent.trim()==='Type your message…')this.textContent='';"
+                                onblur="if(this.textContent.trim()==='')this.textContent='Type your message…';"
+                            ></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Product Link -->
+                <div class="formRow formRow--input formRow--fullWidth formRow--noLabel formRow--mergePrev" style="margin-top:12px;">
+                    <div class="formRow-labelWrapper">
+                        <label class="formRow-label">Product Link</label>
+                    </div>
+                    <div class="formRow-input">
+                        <input type="text" class="input" id="thread-link-input" placeholder="https://...">
+                    </div>
+                </div>
+                <!-- Options -->
+                <div class="formRow" style="margin-top:14px;">
+                    <div class="formRow-labelWrapper">
+                        <label class="formRow-label">Options</label>
+                    </div>
+                    <div class="formRow-input">
+                        <label class="inputChoice">
+                            <input type="checkbox" name="watch_thread" value="1" checked="checked" />
+                            <span class="inputChoice-text">Watch this thread…</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="form-label">Description</label>
-                <textarea class="form-textarea" id="thread-desc-input" placeholder="Describe your thread..."></textarea>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Product Link</label>
-                <input type="text" class="form-input" id="thread-link-input" placeholder="https://...">
+        </div>
+        <!-- Sticky submit bar -->
+        <div class="formSubmitRow formSubmitRow--sticky">
+            <div class="formSubmitRow-main">
+                <div class="formSubmitRow-bar"></div>
+                <div class="formSubmitRow-controls">
+                    <button type="submit" class="btn-cta">
+                        <span class="material-icons" style="font-size:16px;">edit</span> Post thread
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="backToMarketplace()">Cancel</button>
+                </div>
             </div>
         </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="closeModal('create-thread-modal')">Cancel</button>
-            <button class="btn-primary" onclick="createThread()">Create Thread</button>
-        </div>
-    </div>
+    </form>
 </div>
 
 <!-- Admin Panel Modal -->
@@ -797,7 +928,8 @@ function toggleTag(el) {
 async function createThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
     var title = document.getElementById('thread-title-input').value.trim();
-    var desc = document.getElementById('thread-desc-input').value.trim();
+    var descEl = document.getElementById('thread-desc-input');
+    var desc = descEl.textContent.trim();
     var link = document.getElementById('thread-link-input').value.trim();
     if (!title) { document.getElementById('thread-title-input').style.borderColor = 'var(--red)'; return; }
 
@@ -810,6 +942,7 @@ async function createThread() {
         id: Date.now(),
         title: title,
         author: currentUser.username,
+        avatar: currentUser.avatar,
         time: "Just now",
         tag: selectedTags.length > 0 ? selectedTags.join(', ') : null,
         tagClass: tagClass,
@@ -824,12 +957,12 @@ async function createThread() {
     if (!saved) { alert('Failed to save thread to server. It may not be visible to others.'); }
 
     document.getElementById('thread-title-input').value = '';
-    document.getElementById('thread-desc-input').value = '';
+    descEl.textContent = '';
     document.getElementById('thread-link-input').value = '';
     selectedTags = [];
     document.querySelectorAll('.form-tag').forEach(function(t) { t.classList.remove('selected'); });
     document.getElementById('thread-title-input').style.borderColor = '';
-    closeModal('create-thread-modal');
+    backToMarketplace();
     renderCategories();
     if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) {
         renderMarketplaceThreads();
@@ -938,6 +1071,7 @@ function navigateToMarketplace() {
 function backToMarketplace() {
     window.location.hash = 'marketplace';
     document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('create-thread-page').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
     document.getElementById('main-categories').style.display = 'none';
     renderMarketplaceThreads();
@@ -952,6 +1086,7 @@ function showMarketplacePage() {
     document.getElementById('main-categories').style.display = 'none';
     document.getElementById('marketplace-page').style.display = 'block';
     document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('create-thread-page').style.display = 'none';
     document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none';
     renderMarketplaceThreads();
 }
@@ -960,6 +1095,7 @@ function showMainPage() {
     document.getElementById('main-categories').style.display = 'block';
     document.getElementById('marketplace-page').style.display = 'none';
     document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('create-thread-page').style.display = 'none';
     renderCategories();
 }
 
@@ -1087,7 +1223,38 @@ window.addEventListener('hashchange', function() {
 
 function openCreateThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
-    showModal('create-thread-modal');
+    document.getElementById('main-categories').style.display = 'none';
+    document.getElementById('marketplace-page').style.display = 'none';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    document.getElementById('create-thread-page').style.display = 'block';
+    var qt = document.getElementById('quick-thread-title');
+    var titleInput = document.getElementById('thread-title-input');
+    if (qt && qt.value.trim()) {
+        titleInput.value = qt.value.trim();
+        qt.value = '';
+    }
+    titleInput.focus();
+}
+
+// Editor helpers
+function execEditor(cmd) {
+    document.execCommand(cmd, false, null);
+    document.getElementById('thread-desc-input').focus();
+}
+function insertLink() {
+    var url = prompt('Enter URL:');
+    if (url) { document.execCommand('createLink', false, url); }
+}
+function insertCode() {
+    var sel = window.getSelection();
+    if (sel.rangeCount) {
+        var text = sel.toString();
+        var pre = document.createElement('pre');
+        pre.style.cssText = 'background:rgba(255,255,255,0.04);padding:10px;border-radius:4px;margin:8px 0;font-family:monospace;font-size:0.85rem;color:var(--text-primary);white-space:pre-wrap;';
+        pre.textContent = text || 'code here...';
+        sel.getRangeAt(0).deleteContents();
+        sel.getRangeAt(0).insertNode(pre);
+    }
 }
 
 // ===== DISCORD WIDGET =====
