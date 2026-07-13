@@ -363,18 +363,19 @@
         .newest-members-list .avatar-placeholder-sm { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
         @media (max-width: 600px) { .xtr-extra-footer .p-footer-inner { grid-template-columns: 1fr; } }
 
-        /* ===== SHOUTBOX (XenForo Siropu style) ===== */
-        .siropuShoutboxShouts { list-style: none; margin: 0; padding: 10px; max-height: 350px; overflow-y: auto; }
-        .siropuShoutboxShouts li { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
+        /* ===== SHOUTBOX (big, full-width above Public) ===== */
+        #shoutbox-block-main .block-container { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .siropuShoutboxShouts { list-style: none; margin: 0; padding: 12px 16px; max-height: 400px; min-height: 150px; overflow-y: auto; background: var(--bg-body); }
+        .siropuShoutboxShouts li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
         .siropuShoutboxShouts li:last-child { border-bottom: none; }
-        .shout-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
-        .shout-user { color: var(--accent); font-weight: 700; font-size: 0.82rem; }
-        .shout-time { color: var(--text-muted); font-size: 0.7rem; margin-left: 4px; }
-        .shout-message { font-size: 0.85rem; color: var(--text-primary); word-break: break-word; margin-top: 2px; line-height: 1.4; }
-        .siropuShoutboxForm { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-        .siropuShoutboxForm .input { flex: 1; padding: 8px 10px; font-size: 0.82rem; }
-        .siropuShoutboxForm .btn-cta { padding: 8px 14px; font-size: 0.78rem; }
-        .siropuShoutboxEmpty { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.82rem; }
+        .shout-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+        .shout-user { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+        .shout-time { color: var(--text-muted); font-size: 0.72rem; margin-left: 6px; }
+        .shout-message { font-size: 0.88rem; color: var(--text-primary); word-break: break-word; margin-top: 3px; line-height: 1.5; }
+        .siropuShoutboxForm { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--bg-block); }
+        .siropuShoutboxForm .input { flex: 1; padding: 10px 14px; font-size: 0.85rem; }
+        .siropuShoutboxForm .btn-cta { padding: 10px 18px; font-size: 0.82rem; }
+        .siropuShoutboxEmpty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
 
         /* ===== LOADING ===== */
         .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 16px auto; }
@@ -467,6 +468,19 @@
     <!-- BODY -->
     <div class="p-body">
         <main>
+            <!-- SHOUTBOX (big, above Public) -->
+            <div class="block" id="shoutbox-block-main">
+                <div class="block-container block-box">
+                    <div class="block-header">
+                        <h2><i class="fas fa-comments" style="margin-right:8px;color:var(--accent);"></i> Shoutbox <span id="shoutbox-countdown" style="font-size:0.7rem;font-weight:400;color:var(--text-muted);margin-left:8px;"></span></h2>
+                    </div>
+                    <ul class="siropuShoutboxShouts" id="shoutbox-messages">
+                        <li class="siropuShoutboxEmpty">Loading...</li>
+                    </ul>
+                    <div class="siropuShoutboxForm" id="shoutbox-form"></div>
+                </div>
+            </div>
+
             <!-- HOME -->
             <div id="main-categories">
                 <div class="block">
@@ -536,15 +550,6 @@
                 <div class="sidebar-body" id="discord-widget-body">
                     <div class="discord-loading"><div class="loading-spinner"></div>Loading...</div>
                 </div>
-            </div>
-
-            <!-- Shoutbox -->
-            <div class="sidebar-block" id="shoutbox-block">
-                <div class="sidebar-header"><i class="fas fa-comments" style="margin-right:6px;color:var(--accent);"></i> Shoutbox</div>
-                <ul class="siropuShoutboxShouts" id="shoutbox-messages">
-                    <li class="siropuShoutboxEmpty">Loading...</li>
-                </ul>
-                <div class="siropuShoutboxForm" id="shoutbox-form"></div>
             </div>
 
             <!-- Members Online -->
@@ -1370,9 +1375,23 @@ async function loadBannedIPs() {
 // ===== SHOUTBOX =====
 var shoutboxMessages = [];
 var shoutboxLastSeenId = 0;
-var GITHUB_SHOUTBOX_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/shoutbox.json';
-var GITHUB_SHOUTBOX_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/shoutbox.json';
+var shoutboxSessionStart = 0;
+var SHOUTBOX_CLEAR_MS = 5 * 60 * 1000; // 5 minutes
+var GITHUB_SHOUTBOX_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/shoutbox.txt';
+var GITHUB_SHOUTBOX_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/shoutbox.txt';
 var shoutboxFileSha = null;
+
+function shoutboxSessionExpired() {
+    return !shoutboxSessionStart || (Date.now() - shoutboxSessionStart > SHOUTBOX_CLEAR_MS);
+}
+
+function shoutboxTimeLeft() {
+    if (!shoutboxSessionStart) return '5:00';
+    var left = Math.max(0, SHOUTBOX_CLEAR_MS - (Date.now() - shoutboxSessionStart));
+    var m = Math.floor(left / 60000);
+    var s = Math.floor((left % 60000) / 1000);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+}
 
 async function fetchShoutboxSha() {
     try {
@@ -1385,8 +1404,19 @@ async function fetchShoutboxMessages() {
     try {
         var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
         if (res.ok) {
-            var data = await res.json();
+            var text = await res.text();
+            text = text.trim();
+            if (!text) { shoutboxMessages = []; shoutboxSessionStart = 0; return shoutboxMessages; }
+            var data = JSON.parse(text);
             shoutboxMessages = data.messages || [];
+            shoutboxSessionStart = data.sessionStart || 0;
+            // Check if session expired
+            if (shoutboxSessionExpired()) {
+                // Clear everything — start new session
+                shoutboxMessages = [];
+                shoutboxSessionStart = Date.now();
+                await saveShoutboxMessages();
+            }
         }
     } catch (e) {}
     await fetchShoutboxSha();
@@ -1395,7 +1425,8 @@ async function fetchShoutboxMessages() {
 
 async function saveShoutboxMessages() {
     if (!shoutboxFileSha) await fetchShoutboxSha();
-    var content = JSON.stringify({ messages: shoutboxMessages }, null, 2);
+    var payload = { sessionStart: shoutboxSessionStart, messages: shoutboxMessages };
+    var content = JSON.stringify(payload);
     var encoded = btoa(unescape(encodeURIComponent(content)));
     var body = { message: 'Update shoutbox', content: encoded };
     if (shoutboxFileSha) body.sha = shoutboxFileSha;
@@ -1479,6 +1510,11 @@ async function sendShout() {
     if (!msg) return;
     input.value = '';
     input.disabled = true;
+    // Start new session if expired
+    if (shoutboxSessionExpired()) {
+        shoutboxMessages = [];
+        shoutboxSessionStart = Date.now();
+    }
     // Add to local array immediately
     var newMsg = { id: Date.now(), userId: currentUser.id, username: currentUser.username, avatar: currentUser.avatar || '', message: msg, time: new Date().toISOString() };
     shoutboxMessages.push(newMsg);
@@ -1495,13 +1531,29 @@ async function pollShoutbox() {
     try {
         var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
         if (res.ok) {
-            var data = await res.json();
+            var text = await res.text();
+            text = text.trim();
+            if (!text) { shoutboxMessages = []; shoutboxSessionStart = 0; renderShoutboxMessages(); return; }
+            var data = JSON.parse(text);
             var remote = data.messages || [];
+            var remoteSession = data.sessionStart || 0;
+            // Check if remote session expired
+            if (remoteSession && (Date.now() - remoteSession > SHOUTBOX_CLEAR_MS)) {
+                // Another client cleared it or we need to clear
+                if (shoutboxMessages.length > 0) {
+                    shoutboxMessages = [];
+                    shoutboxSessionStart = Date.now();
+                    await saveShoutboxMessages();
+                    renderShoutboxMessages();
+                }
+                return;
+            }
             var newMsgs = false;
             if (remote.length !== shoutboxMessages.length) newMsgs = true;
             else if (remote.length > 0 && remote[remote.length - 1].id !== shoutboxLastSeenId) newMsgs = true;
             if (newMsgs || shoutboxMessages.length === 0) {
                 shoutboxMessages = remote;
+                shoutboxSessionStart = remoteSession;
                 if (shoutboxMessages.length > 0) shoutboxLastSeenId = shoutboxMessages[shoutboxMessages.length - 1].id;
                 renderShoutboxMessages();
             }
@@ -1509,10 +1561,31 @@ async function pollShoutbox() {
     } catch (e) {}
 }
 
+function updateShoutboxCountdown() {
+    var el = document.getElementById('shoutbox-countdown');
+    if (!el) return;
+    if (!shoutboxSessionStart || shoutboxMessages.length === 0) {
+        el.textContent = '';
+        return;
+    }
+    var left = Math.max(0, SHOUTBOX_CLEAR_MS - (Date.now() - shoutboxSessionStart));
+    if (left <= 0) {
+        el.textContent = 'clearing...';
+        el.style.color = 'var(--accent)';
+        return;
+    }
+    var m = Math.floor(left / 60000);
+    var s = Math.floor((left % 60000) / 1000);
+    el.textContent = 'clears in ' + m + ':' + (s < 10 ? '0' : '') + s;
+    el.style.color = left < 60000 ? '#f56363' : 'var(--text-muted)';
+}
+
 function initShoutbox() {
     renderShoutboxForm();
     fetchShoutboxMessages().then(function() { renderShoutboxMessages(); });
     setInterval(pollShoutbox, 5000);
+    setInterval(updateShoutboxCountdown, 1000);
+    updateShoutboxCountdown();
 }
 
 // ===== INIT =====
