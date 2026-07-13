@@ -1,1 +1,20 @@
-{"messages":[{"id":1783951190000,"message":"Hello shoutbox!","avatar":"","username":"TestBot","userId":"test123","time":"2026-07-13T13:59:50.4878230+00:00"}]}
+{
+  "messages": [
+    {
+      "id": 1783951190000,
+      "message": "Hello shoutbox!",
+      "avatar": "",
+      "username": "TestBot",
+      "userId": "test123",
+      "time": "2026-07-13T13:59:50.4878230+00:00"
+    },
+    {
+      "id": 1783951314305,
+      "userId": "1309935813525508182",
+      "username": "nevermissserver_owner",
+      "avatar": "https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png",
+      "message": "1",
+      "time": "2026-07-13T14:01:54.305Z"
+    }
+  ]
+}
