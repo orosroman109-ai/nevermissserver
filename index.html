@@ -1563,12 +1563,11 @@ function renderLatestPostsSidebar() {
 
 // ===== DISCORD WIDGET =====
 var GUILD_ID = '1512530980177711325';
-var CORS_PROXY = 'https://corsproxy.io/?';
 var WIDGET_URL = 'https://discord.com/api/guilds/' + GUILD_ID + '/widget.json';
 
 function loadDiscordWidget() {
     var body = document.getElementById('discord-widget-body');
-    fetch(CORS_PROXY + encodeURIComponent(WIDGET_URL))
+    fetch(WIDGET_URL)
         .then(function(r) { if (!r.ok) throw new Error(); return r.json(); })
         .then(function(data) {
             var sorted = data.members.filter(function(m) {
