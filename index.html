@@ -363,6 +363,19 @@
         .newest-members-list .avatar-placeholder-sm { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
         @media (max-width: 600px) { .xtr-extra-footer .p-footer-inner { grid-template-columns: 1fr; } }
 
+        /* ===== SHOUTBOX (XenForo Siropu style) ===== */
+        .siropuShoutboxShouts { list-style: none; margin: 0; padding: 10px; max-height: 350px; overflow-y: auto; }
+        .siropuShoutboxShouts li { display: flex; gap: 8px; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
+        .siropuShoutboxShouts li:last-child { border-bottom: none; }
+        .shout-avatar { width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+        .shout-user { color: var(--accent); font-weight: 700; font-size: 0.82rem; }
+        .shout-time { color: var(--text-muted); font-size: 0.7rem; margin-left: 4px; }
+        .shout-message { font-size: 0.85rem; color: var(--text-primary); word-break: break-word; margin-top: 2px; line-height: 1.4; }
+        .siropuShoutboxForm { padding: 10px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+        .siropuShoutboxForm .input { flex: 1; padding: 8px 10px; font-size: 0.82rem; }
+        .siropuShoutboxForm .btn-cta { padding: 8px 14px; font-size: 0.78rem; }
+        .siropuShoutboxEmpty { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.82rem; }
+
         /* ===== LOADING ===== */
         .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 16px auto; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -523,6 +536,15 @@
                 <div class="sidebar-body" id="discord-widget-body">
                     <div class="discord-loading"><div class="loading-spinner"></div>Loading...</div>
                 </div>
+            </div>
+
+            <!-- Shoutbox -->
+            <div class="sidebar-block" id="shoutbox-block">
+                <div class="sidebar-header"><i class="fas fa-comments" style="margin-right:6px;color:var(--accent);"></i> Shoutbox</div>
+                <ul class="siropuShoutboxShouts" id="shoutbox-messages">
+                    <li class="siropuShoutboxEmpty">Loading...</li>
+                </ul>
+                <div class="siropuShoutboxForm" id="shoutbox-form"></div>
             </div>
 
             <!-- Members Online -->
@@ -1345,6 +1367,110 @@ async function loadBannedIPs() {
     } catch (e) { container.innerHTML = '<span style="font-size:0.78rem;color:var(--text-muted);">Failed to load</span>'; }
 }
 
+// ===== SHOUTBOX =====
+var shoutboxMessages = [];
+var shoutboxLastSeenId = 0;
+
+function renderShoutboxForm() {
+    var form = document.getElementById('shoutbox-form');
+    if (!form) return;
+    if (currentUser) {
+        form.innerHTML = '<input type="text" id="shoutbox-input" class="input" placeholder="Type a message..." onkeydown="if(event.key===\'Enter\')sendShout()"><button class="btn-cta" onclick="sendShout()"><i class="fas fa-paper-plane" style="font-size:12px;"></i></button>';
+    } else {
+        form.innerHTML = '<a href="' + DISCORD_AUTH_URL + '" style="display:block;width:100%;text-align:center;padding:8px;color:var(--accent);font-size:0.82rem;font-weight:600;text-decoration:none;">Login with Discord to chat</a>';
+    }
+}
+
+function renderShoutboxMessages() {
+    var list = document.getElementById('shoutbox-messages');
+    if (!list) return;
+    if (shoutboxMessages.length === 0) {
+        list.innerHTML = '<li class="siropuShoutboxEmpty">No messages yet. Be the first!</li>';
+        return;
+    }
+    var html = '';
+    for (var i = 0; i < shoutboxMessages.length; i++) {
+        var msg = shoutboxMessages[i];
+        var av = msg.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+        var timeStr = formatShoutTime(msg.time);
+        html += '<li>' +
+            '<img class="shout-avatar" src="' + av + '">' +
+            '<div style="min-width:0;">' +
+                '<span class="shout-user">' + escapeHtml(msg.username) + '</span>' +
+                '<span class="shout-time">' + timeStr + '</span>' +
+                '<div class="shout-message">' + escapeHtml(msg.message) + '</div>' +
+            '</div>' +
+        '</li>';
+    }
+    list.innerHTML = html;
+    list.scrollTop = list.scrollHeight;
+}
+
+function shoutboxEscapeHtml(str) {
+    if (!str) return '';
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function formatShoutTime(isoStr) {
+    if (!isoStr) return '';
+    var d = new Date(isoStr);
+    var now = new Date();
+    var diff = (now - d) / 1000;
+    if (diff < 60) return 'Just now';
+    if (diff < 3600) return Math.floor(diff / 60) + 'm ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+    return d.toLocaleDateString();
+}
+
+async function sendShout() {
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+    var input = document.getElementById('shoutbox-input');
+    if (!input) return;
+    var msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    input.disabled = true;
+    try {
+        var res = await fetch(WORKER_URL + '/api/shoutbox', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser.id, username: currentUser.username, avatar: currentUser.avatar || '', message: msg })
+        });
+        var data = await res.json();
+        if (data.ok && data.message) {
+            shoutboxMessages.push(data.message);
+            shoutboxLastSeenId = data.message.id;
+            renderShoutboxMessages();
+        }
+    } catch (e) {}
+    setTimeout(function() { if (input) { input.disabled = false; input.focus(); } }, 1000);
+}
+
+async function pollShoutbox() {
+    try {
+        var res = await fetch(WORKER_URL + '/api/shoutbox?t=' + Date.now());
+        var data = await res.json();
+        if (data.messages) {
+            var newMsgs = false;
+            if (data.messages.length !== shoutboxMessages.length) newMsgs = true;
+            else if (data.messages.length > 0 && data.messages[data.messages.length - 1].id !== shoutboxLastSeenId) newMsgs = true;
+            if (newMsgs || shoutboxMessages.length === 0) {
+                shoutboxMessages = data.messages;
+                if (shoutboxMessages.length > 0) shoutboxLastSeenId = shoutboxMessages[shoutboxMessages.length - 1].id;
+                renderShoutboxMessages();
+            }
+        }
+    } catch (e) {}
+}
+
+function initShoutbox() {
+    renderShoutboxForm();
+    pollShoutbox();
+    setInterval(pollShoutbox, 3000);
+}
+
 // ===== INIT =====
 function updateStats() {
     var threads = userThreads.length;
@@ -1386,6 +1512,7 @@ fetchRemoteThreads().then(function() {
 });
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
+initShoutbox();
 document.getElementById('comment-input').addEventListener('keydown', function(e) { if (e.key === 'Enter') addComment(); });
 </script>
 
