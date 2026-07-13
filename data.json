@@ -6,11 +6,12 @@
       "global_name": "SoftGlow",
       "avatar": "https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png",
       "joinedAt": "2026-07-11T15:26:09.571Z",
-      "lastLogin": "2026-07-12T16:31:23.282Z",
+      "lastLogin": "2026-07-13T16:30:56.365Z",
       "banned": false,
       "banReason": "",
       "bannedBy": "",
-      "bannedAt": ""
+      "bannedAt": "",
+      "ip": "2a02:8308:219:de00:c8e8:97e2:735c:1fd0"
     },
     {
       "id": "1249618556505690134",
@@ -36,5 +37,6 @@
       "bannedBy": "",
       "bannedAt": ""
     }
-  ]
+  ],
+  "bannedIPs": []
 }
