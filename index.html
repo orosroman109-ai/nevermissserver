@@ -1370,6 +1370,53 @@ async function loadBannedIPs() {
 // ===== SHOUTBOX =====
 var shoutboxMessages = [];
 var shoutboxLastSeenId = 0;
+var GITHUB_SHOUTBOX_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/shoutbox.json';
+var GITHUB_SHOUTBOX_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/shoutbox.json';
+var shoutboxFileSha = null;
+
+async function fetchShoutboxSha() {
+    try {
+        var shaRes = await fetch(GITHUB_SHOUTBOX_API, { headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' } });
+        if (shaRes.ok) { var file = await shaRes.json(); shoutboxFileSha = file.sha; }
+    } catch (e) {}
+}
+
+async function fetchShoutboxMessages() {
+    try {
+        var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
+        if (res.ok) {
+            var data = await res.json();
+            shoutboxMessages = data.messages || [];
+        }
+    } catch (e) {}
+    await fetchShoutboxSha();
+    return shoutboxMessages;
+}
+
+async function saveShoutboxMessages() {
+    if (!shoutboxFileSha) await fetchShoutboxSha();
+    var content = JSON.stringify({ messages: shoutboxMessages }, null, 2);
+    var encoded = btoa(unescape(encodeURIComponent(content)));
+    var body = { message: 'Update shoutbox', content: encoded };
+    if (shoutboxFileSha) body.sha = shoutboxFileSha;
+    try {
+        var res = await fetch(GITHUB_SHOUTBOX_API, {
+            method: 'PUT',
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(body),
+        });
+        if (res.ok) { var result = await res.json(); shoutboxFileSha = result.content ? result.content.sha : shoutboxFileSha; return true; }
+        if (res.status === 422) {
+            await fetchShoutboxSha();
+            if (shoutboxFileSha) {
+                body.sha = shoutboxFileSha;
+                var retry = await fetch(GITHUB_SHOUTBOX_API, { method: 'PUT', headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify(body) });
+                if (retry.ok) { var rr = await retry.json(); shoutboxFileSha = rr.content ? rr.content.sha : shoutboxFileSha; return true; }
+            }
+        }
+    } catch (e) {}
+    return false;
+}
 
 function renderShoutboxForm() {
     var form = document.getElementById('shoutbox-form');
@@ -1396,9 +1443,9 @@ function renderShoutboxMessages() {
         html += '<li>' +
             '<img class="shout-avatar" src="' + av + '">' +
             '<div style="min-width:0;">' +
-                '<span class="shout-user">' + escapeHtml(msg.username) + '</span>' +
+                '<span class="shout-user">' + shoutboxEscapeHtml(msg.username) + '</span>' +
                 '<span class="shout-time">' + timeStr + '</span>' +
-                '<div class="shout-message">' + escapeHtml(msg.message) + '</div>' +
+                '<div class="shout-message">' + shoutboxEscapeHtml(msg.message) + '</div>' +
             '</div>' +
         '</li>';
     }
@@ -1432,32 +1479,29 @@ async function sendShout() {
     if (!msg) return;
     input.value = '';
     input.disabled = true;
-    try {
-        var res = await fetch(WORKER_URL + '/api/shoutbox', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: currentUser.id, username: currentUser.username, avatar: currentUser.avatar || '', message: msg })
-        });
-        var data = await res.json();
-        if (data.ok && data.message) {
-            shoutboxMessages.push(data.message);
-            shoutboxLastSeenId = data.message.id;
-            renderShoutboxMessages();
-        }
-    } catch (e) {}
+    // Add to local array immediately
+    var newMsg = { id: Date.now(), userId: currentUser.id, username: currentUser.username, avatar: currentUser.avatar || '', message: msg, time: new Date().toISOString() };
+    shoutboxMessages.push(newMsg);
+    if (shoutboxMessages.length > 100) shoutboxMessages = shoutboxMessages.slice(-100);
+    shoutboxLastSeenId = newMsg.id;
+    renderShoutboxMessages();
+    // Save to GitHub
+    var saved = await saveShoutboxMessages();
+    if (!saved) { alert('Failed to save message. Try again.'); }
     setTimeout(function() { if (input) { input.disabled = false; input.focus(); } }, 1000);
 }
 
 async function pollShoutbox() {
     try {
-        var res = await fetch(WORKER_URL + '/api/shoutbox?t=' + Date.now());
-        var data = await res.json();
-        if (data.messages) {
+        var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
+        if (res.ok) {
+            var data = await res.json();
+            var remote = data.messages || [];
             var newMsgs = false;
-            if (data.messages.length !== shoutboxMessages.length) newMsgs = true;
-            else if (data.messages.length > 0 && data.messages[data.messages.length - 1].id !== shoutboxLastSeenId) newMsgs = true;
+            if (remote.length !== shoutboxMessages.length) newMsgs = true;
+            else if (remote.length > 0 && remote[remote.length - 1].id !== shoutboxLastSeenId) newMsgs = true;
             if (newMsgs || shoutboxMessages.length === 0) {
-                shoutboxMessages = data.messages;
+                shoutboxMessages = remote;
                 if (shoutboxMessages.length > 0) shoutboxLastSeenId = shoutboxMessages[shoutboxMessages.length - 1].id;
                 renderShoutboxMessages();
             }
@@ -1467,8 +1511,8 @@ async function pollShoutbox() {
 
 function initShoutbox() {
     renderShoutboxForm();
-    pollShoutbox();
-    setInterval(pollShoutbox, 3000);
+    fetchShoutboxMessages().then(function() { renderShoutboxMessages(); });
+    setInterval(pollShoutbox, 5000);
 }
 
 // ===== INIT =====

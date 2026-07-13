@@ -8,8 +8,6 @@ const REDIRECT_URI = 'https://orosroman109-ai.github.io/nevermissserver/callback
 const GITHUB_REPO = 'orosroman109-ai/nevermissserver';
 const GITHUB_API = 'https://api.github.com';
 const DATA_FILE = 'data.json';
-const SHOUTBOX_FILE = 'shoutbox.json';
-
 const ADMIN_USERNAMES = ['nevermissserver_owner', 'nevermisssserver_owner', 'orosroman109'];
 
 const corsHeaders = {
@@ -17,53 +15,6 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
 };
-
-// ===== Shoutbox In-Memory Cache =====
-let shoutboxMessages = [];
-let shoutboxSha = null;
-let shoutboxCacheTime = 0;
-
-async function getShoutboxFile(token) {
-  try {
-    const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${SHOUTBOX_FILE}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-        'User-Agent': 'nevermiss-worker',
-      },
-    });
-    if (!res.ok) return { content: { messages: [] }, sha: null };
-    const file = await res.json();
-    const decoded = atob(file.content.replace(/\n/g, ''));
-    const content = JSON.parse(decoded);
-    return { content, sha: file.sha };
-  } catch (e) {
-    return { content: { messages: [] }, sha: null };
-  }
-}
-
-async function saveShoutboxFile(data, sha, token) {
-  const body = {
-    message: 'Update shoutbox',
-    content: btoa(JSON.stringify(data, null, 2)),
-  };
-  if (sha) body.sha = sha;
-  const res = await fetch(`${GITHUB_API}/repos/${GITHUB_REPO}/contents/${SHOUTBOX_FILE}`, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'nevermiss-worker',
-    },
-    body: JSON.stringify(body),
-  });
-  return res.ok;
-}
-
-function escapeHtml(str) {
-  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
 
 // ===== GitHub Data Store =====
 async function getDataFile(token) {
@@ -374,78 +325,6 @@ export default {
         return jsonResp({ banned: false, ip: clientIP });
       } catch (e) {
         return jsonResp({ banned: false, error: e.message });
-      }
-    }
-
-    // ===== GET /api/shoutbox — return cached messages =====
-    if (request.method === 'GET' && url.pathname === '/api/shoutbox') {
-      const now = Date.now();
-      if (shoutboxMessages.length === 0 || (now - shoutboxCacheTime) > 5000) {
-        const { content, sha } = await getShoutboxFile(GITHUB_TOKEN);
-        shoutboxMessages = content.messages || [];
-        shoutboxSha = sha;
-        shoutboxCacheTime = now;
-      }
-      return jsonResp({ messages: shoutboxMessages });
-    }
-
-    // ===== POST /api/shoutbox — send a message =====
-    if (request.method === 'POST' && url.pathname === '/api/shoutbox') {
-      try {
-        const { userId, username, avatar, message } = await request.json();
-        if (!userId || !username || !message || !message.trim()) {
-          return jsonResp({ error: 'Missing userId, username, or message' }, 400);
-        }
-
-        const msg = {
-          id: Date.now(),
-          userId,
-          username: escapeHtml(username),
-          avatar: avatar || '',
-          message: escapeHtml(message.trim()),
-          time: new Date().toISOString(),
-        };
-
-        shoutboxMessages.push(msg);
-        // Prune to max 100
-        if (shoutboxMessages.length > 100) {
-          shoutboxMessages = shoutboxMessages.slice(-100);
-        }
-        shoutboxCacheTime = Date.now();
-
-        // Save to GitHub async (fire and forget)
-        const now2 = Date.now();
-        if (shoutboxMessages.length === 1 || (now2 - shoutboxCacheTime) > 3000) {
-          saveShoutboxFile({ messages: shoutboxMessages }, shoutboxSha, GITHUB_TOKEN)
-            .then((ok) => { if (ok) shoutboxCacheTime = Date.now(); });
-        }
-
-        return jsonResp({ ok: true, message: msg });
-      } catch (e) {
-        return jsonResp({ error: e.message }, 500);
-      }
-    }
-
-    // ===== DELETE /api/shoutbox/:id — delete a message (admin only) =====
-    if (request.method === 'DELETE' && url.pathname.startsWith('/api/shoutbox/')) {
-      try {
-        const idMatch = url.pathname.match(/^\/api\/shoutbox\/(\d+)$/);
-        if (!idMatch) return jsonResp({ error: 'Invalid path' }, 400);
-        const msgId = parseInt(idMatch[1]);
-
-        const body = await request.json().catch(() => ({}));
-        const { userId, username } = body;
-        if (!userId || !username) return jsonResp({ error: 'Missing userId or username' }, 400);
-
-        if (!isAdminUser(userId, username)) {
-          return jsonResp({ error: 'Not authorized' }, 403);
-        }
-
-        shoutboxMessages = shoutboxMessages.filter(m => m.id !== msgId);
-        saveShoutboxFile({ messages: shoutboxMessages }, shoutboxSha, GITHUB_TOKEN);
-        return jsonResp({ ok: true });
-      } catch (e) {
-        return jsonResp({ error: e.message }, 500);
       }
     }
 
