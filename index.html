@@ -1528,15 +1528,20 @@ async function sendShout() {
     shoutboxLastSeenId = newMsg.id;
     renderShoutboxMessages();
     // Save to GitHub
+    shoutboxLastSaveTime = Date.now();
     var saved = await saveShoutboxMessages();
     if (!saved) { alert('Failed to save message. Try again.'); }
     setTimeout(function() { if (input) { input.disabled = false; input.focus(); } }, 1000);
 }
 
 // Poll via GitHub API (not raw URL — avoids CDN cache)
+// ONLY adds new messages from server, never removes local messages
+var shoutboxLastSaveTime = 0;
 async function pollShoutbox() {
+    // Skip poll right after sending (give save time to complete)
+    if (Date.now() - shoutboxLastSaveTime < 3000) return;
     try {
-        var res = await fetch(GITHUB_SHOUTBOX_API + '?t=' + Date.now(), {
+        var res = await fetch(GITHUB_SHOUTBOX_API, {
             headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
         });
         if (res.ok) {
@@ -1557,13 +1562,23 @@ async function pollShoutbox() {
             }
             if (!shoutboxSessionExpired(remoteSession)) {
                 shoutboxCleared = false;
-            }
-            var newMsgs = false;
-            if (remote.length !== shoutboxMessages.length) newMsgs = true;
-            else if (remote.length > 0 && remote[remote.length - 1].id !== shoutboxLastSeenId) newMsgs = true;
-            if (newMsgs || shoutboxMessages.length === 0) {
-                shoutboxMessages = remote;
                 shoutboxSessionStart = remoteSession;
+            }
+            // Merge: add any remote messages we don't have locally
+            var localIds = {};
+            for (var i = 0; i < shoutboxMessages.length; i++) { localIds[shoutboxMessages[i].id] = true; }
+            var added = false;
+            for (var j = 0; j < remote.length; j++) {
+                if (!localIds[remote[j].id]) {
+                    shoutboxMessages.push(remote[j]);
+                    added = true;
+                }
+            }
+            if (added) {
+                // Sort by time
+                shoutboxMessages.sort(function(a, b) { return a.id - b.id; });
+                // Prune to 100
+                if (shoutboxMessages.length > 100) shoutboxMessages = shoutboxMessages.slice(-100);
                 if (shoutboxMessages.length > 0) shoutboxLastSeenId = shoutboxMessages[shoutboxMessages.length - 1].id;
                 renderShoutboxMessages();
             }
