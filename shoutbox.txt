@@ -1,1 +1,1 @@
-{"messages":[{"id":1783952233000,"message":"Second msg","avatar":"","username":"User2","userId":"test456","time":"2026-07-13T14:17:12.8632151+00:00"},{"id":123,"message":"Save test","avatar":"","username":"TestBot","userId":"test123","time":"2026-07-13T14:17:12.8632151+00:00"}],"sessionStart":1783952233000}
+{"sessionStart":1783952670080,"messages":[]}
