@@ -23,6 +23,18 @@
       "banReason": "",
       "bannedBy": "",
       "bannedAt": ""
+    },
+    {
+      "id": "1517250333804462120",
+      "username": "stalker2280506",
+      "global_name": "stalker228",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
+      "joinedAt": "2026-07-12T16:40:50.688Z",
+      "lastLogin": "2026-07-12T16:40:50.689Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
     }
   ]
 }
