@@ -127,7 +127,7 @@
         .notice a { color: var(--accent); font-weight: 600; }
 
         /* ===== BODY LAYOUT ===== */
-        .p-body { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
+        .p-body { max-width: 1300px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 220px 1fr 300px; gap: 24px; }
 
         /* ===== BLOCK / CATEGORY (XenForo block-container + block-box) ===== */
         .block { margin-bottom: 20px; overflow: hidden; }
@@ -402,8 +402,9 @@
 
         /* ===== RESPONSIVE ===== */
         @media (max-width: 960px) {
-            .p-body { grid-template-columns: 1fr; }
-            .p-body-sidebar { order: -1; }
+        .p-body { grid-template-columns: 1fr; }
+        .p-body-sidebar { order: -1; }
+        .p-body-left-nav { display: none; }
             .p-nav-list { display: none; }
             .hamburger { display: block; }
             .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #4a2224, #6a3a3a, #7a3e40, #6a3a3a, #4a2224) 1; padding: 8px; z-index: 99; }
@@ -439,6 +440,22 @@
 
         /* ===== NODE CURSOR ===== */
         .node { cursor: pointer; }
+
+        /* ===== LEFT NAV SIDEBAR ===== */
+        .p-body-left-nav { display: flex; flex-direction: column; gap: 0; }
+        .left-nav-block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .left-nav-header { padding: 12px 16px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .left-nav-list { list-style: none; }
+        .left-nav-list li { border-bottom: 1px solid var(--border); }
+        .left-nav-list li:last-child { border-bottom: none; }
+        .left-nav-list li a { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; cursor: pointer; text-decoration: none; }
+        .left-nav-list li a:hover { background: var(--bg-node-hover); color: var(--text-bright); }
+        .left-nav-list li a.active { background: var(--accent); color: #fff; }
+        .left-nav-list li a.active i { color: #fff; }
+        .left-nav-list li a i { width: 18px; text-align: center; font-size: 0.9rem; color: var(--accent); flex-shrink: 0; }
+        .left-nav-list li a.active:hover { background: var(--accent-hover); }
+        .left-nav-count { margin-left: auto; background: var(--bg-body); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
+        .left-nav-list li a.active .left-nav-count { background: rgba(255,255,255,0.2); color: #fff; }
     </style>
 </head>
 <body>
@@ -511,6 +528,22 @@
 
     <!-- BODY -->
     <div class="p-body">
+        <!-- LEFT NAV SIDEBAR -->
+        <aside class="p-body-left-nav" id="left-nav">
+            <div class="left-nav-block">
+                <div class="left-nav-header">Navigation</div>
+                <ul class="left-nav-list" id="left-nav-list">
+                    <li><a href="#" onclick="goHome();return false;" class="active" id="lnav-home"><i class="fas fa-comments"></i> Forum</a></li>
+                    <li><a href="#cat-news" onclick="showCategoryPage('news');return false;" id="lnav-news"><i class="fas fa-bullhorn"></i> News & Updates <span class="left-nav-count" id="lnav-count-news">0</span></a></li>
+                    <li><a href="#cat-marketplace" onclick="showCategoryPage('marketplace');return false;" id="lnav-marketplace"><i class="fas fa-store"></i> Marketplace <span class="left-nav-count" id="lnav-count-marketplace">0</span></a></li>
+                    <li><a href="#cat-resellers" onclick="showCategoryPage('resellers');return false;" id="lnav-resellers"><i class="fas fa-handshake"></i> Resellers <span class="left-nav-count" id="lnav-count-resellers">0</span></a></li>
+                    <li><a href="#cat-media" onclick="showCategoryPage('media');return false;" id="lnav-media"><i class="fas fa-photo-film"></i> Media <span class="left-nav-count" id="lnav-count-media">0</span></a></li>
+                    <li><a href="#cat-reviews" onclick="showCategoryPage('reviews');return false;" id="lnav-reviews"><i class="fas fa-star"></i> Reviews <span class="left-nav-count" id="lnav-count-reviews">0</span></a></li>
+                    <li><a href="#cat-offtopic" onclick="showCategoryPage('offtopic');return false;" id="lnav-offtopic"><i class="fas fa-coffee"></i> Offtopic <span class="left-nav-count" id="lnav-count-offtopic">0</span></a></li>
+                </ul>
+            </div>
+        </aside>
+
         <main>
             <!-- SHOUTBOX (Siropu style, above Public) -->
             <div class="block siropuShoutbox" id="shoutbox-block-main">
@@ -1272,6 +1305,7 @@ function renderCategories() {
         for (var m = 0; m < t.length; m++) { totalMessages += (t[m].comments || []).length; }
     }
     document.getElementById('category-footer').innerHTML = '<div class="node-extra-footer-left"><dl class="pairs pairs--inline"><dt>Total threads</dt><dd>' + totalThreads + '</dd></dl><dl class="pairs pairs--inline"><dt>Total messages</dt><dd>' + totalMessages + '</dd></dl></div>';
+    updateLeftNav(currentCategoryView);
 }
 renderCategories();
 
@@ -1279,12 +1313,27 @@ renderCategories();
 var currentView = 'home';
 var currentCategoryView = null;
 
+function updateLeftNav(activeKey) {
+    var allLinks = document.querySelectorAll('#left-nav-list a');
+    for (var i = 0; i < allLinks.length; i++) { allLinks[i].classList.remove('active'); }
+    var target = activeKey ? document.getElementById('lnav-' + activeKey) : document.getElementById('lnav-home');
+    if (target) target.classList.add('active');
+    // Update counts
+    for (var k = 0; k < CATEGORY_KEYS.length; k++) {
+        var key = CATEGORY_KEYS[k];
+        var threads = threadsByCategory[key] || [];
+        var countEl = document.getElementById('lnav-count-' + key);
+        if (countEl) countEl.textContent = threads.length;
+    }
+}
+
 function goHome() {
     currentView = 'home';
     currentCategoryView = null;
     activeThreadId = null;
     window.location.hash = '';
     showMainPage();
+    updateLeftNav(null);
 }
 function showCategoryPage(catKey) {
     currentView = 'category';
@@ -1298,6 +1347,7 @@ function showCategoryPage(catKey) {
     renderCategoryPage(catKey);
     // Update nav
     document.getElementById('nav-home').className = 'p-navEl';
+    updateLeftNav(catKey);
 }
 function renderCategoryPage(catKey) {
     var cat = CATEGORIES[catKey];
