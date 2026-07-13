@@ -1377,20 +1377,13 @@ var shoutboxMessages = [];
 var shoutboxLastSeenId = 0;
 var shoutboxSessionStart = 0;
 var SHOUTBOX_CLEAR_MS = 5 * 60 * 1000; // 5 minutes
-var GITHUB_SHOUTBOX_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/shoutbox.txt';
 var GITHUB_SHOUTBOX_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/shoutbox.txt';
 var shoutboxFileSha = null;
+var shoutboxCleared = false; // prevents double-clear
 
-function shoutboxSessionExpired() {
-    return !shoutboxSessionStart || (Date.now() - shoutboxSessionStart > SHOUTBOX_CLEAR_MS);
-}
-
-function shoutboxTimeLeft() {
-    if (!shoutboxSessionStart) return '5:00';
-    var left = Math.max(0, SHOUTBOX_CLEAR_MS - (Date.now() - shoutboxSessionStart));
-    var m = Math.floor(left / 60000);
-    var s = Math.floor((left % 60000) / 1000);
-    return m + ':' + (s < 10 ? '0' : '') + s;
+function shoutboxSessionExpired(ts) {
+    if (!ts) return false; // no session = not expired (old format)
+    return (Date.now() - ts) > SHOUTBOX_CLEAR_MS;
 }
 
 async function fetchShoutboxSha() {
@@ -1400,26 +1393,38 @@ async function fetchShoutboxSha() {
     } catch (e) {}
 }
 
+// Read from GitHub API (NOT raw URL — avoids CDN cache)
 async function fetchShoutboxMessages() {
     try {
-        var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
+        var res = await fetch(GITHUB_SHOUTBOX_API + '?t=' + Date.now(), {
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
         if (res.ok) {
-            var text = await res.text();
-            text = text.trim();
-            if (!text) { shoutboxMessages = []; shoutboxSessionStart = 0; return shoutboxMessages; }
-            var data = JSON.parse(text);
+            var file = await res.json();
+            shoutboxFileSha = file.sha;
+            var decoded = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+            var data = JSON.parse(decoded);
             shoutboxMessages = data.messages || [];
             shoutboxSessionStart = data.sessionStart || 0;
-            // Check if session expired
-            if (shoutboxSessionExpired()) {
-                // Clear everything — start new session
+            // Check if session expired — clear only once
+            if (shoutboxSessionExpired(shoutboxSessionStart) && shoutboxMessages.length > 0 && !shoutboxCleared) {
+                shoutboxCleared = true;
                 shoutboxMessages = [];
                 shoutboxSessionStart = Date.now();
                 await saveShoutboxMessages();
             }
+            // Reset cleared flag if session is fresh
+            if (!shoutboxSessionExpired(shoutboxSessionStart)) {
+                shoutboxCleared = false;
+            }
+        } else if (res.status === 404) {
+            // File doesn't exist yet — create it
+            shoutboxMessages = [];
+            shoutboxSessionStart = 0;
+            shoutboxFileSha = null;
+            await saveShoutboxMessages();
         }
     } catch (e) {}
-    await fetchShoutboxSha();
     return shoutboxMessages;
 }
 
@@ -1510,10 +1515,11 @@ async function sendShout() {
     if (!msg) return;
     input.value = '';
     input.disabled = true;
-    // Start new session if expired
-    if (shoutboxSessionExpired()) {
+    // Start new session if expired or no session
+    if (!shoutboxSessionStart || shoutboxSessionExpired(shoutboxSessionStart)) {
         shoutboxMessages = [];
         shoutboxSessionStart = Date.now();
+        shoutboxCleared = false;
     }
     // Add to local array immediately
     var newMsg = { id: Date.now(), userId: currentUser.id, username: currentUser.username, avatar: currentUser.avatar || '', message: msg, time: new Date().toISOString() };
@@ -1527,26 +1533,30 @@ async function sendShout() {
     setTimeout(function() { if (input) { input.disabled = false; input.focus(); } }, 1000);
 }
 
+// Poll via GitHub API (not raw URL — avoids CDN cache)
 async function pollShoutbox() {
     try {
-        var res = await fetch(GITHUB_SHOUTBOX_RAW + '?t=' + Date.now());
+        var res = await fetch(GITHUB_SHOUTBOX_API + '?t=' + Date.now(), {
+            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' }
+        });
         if (res.ok) {
-            var text = await res.text();
-            text = text.trim();
-            if (!text) { shoutboxMessages = []; shoutboxSessionStart = 0; renderShoutboxMessages(); return; }
-            var data = JSON.parse(text);
+            var file = await res.json();
+            var decoded = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+            var data = JSON.parse(decoded);
             var remote = data.messages || [];
             var remoteSession = data.sessionStart || 0;
-            // Check if remote session expired
-            if (remoteSession && (Date.now() - remoteSession > SHOUTBOX_CLEAR_MS)) {
-                // Another client cleared it or we need to clear
-                if (shoutboxMessages.length > 0) {
-                    shoutboxMessages = [];
-                    shoutboxSessionStart = Date.now();
-                    await saveShoutboxMessages();
-                    renderShoutboxMessages();
-                }
+            shoutboxFileSha = file.sha;
+            // Check if remote session expired — clear once
+            if (shoutboxSessionExpired(remoteSession) && remote.length > 0 && !shoutboxCleared) {
+                shoutboxCleared = true;
+                shoutboxMessages = [];
+                shoutboxSessionStart = Date.now();
+                await saveShoutboxMessages();
+                renderShoutboxMessages();
                 return;
+            }
+            if (!shoutboxSessionExpired(remoteSession)) {
+                shoutboxCleared = false;
             }
             var newMsgs = false;
             if (remote.length !== shoutboxMessages.length) newMsgs = true;
