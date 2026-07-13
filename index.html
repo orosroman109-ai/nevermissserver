@@ -73,7 +73,7 @@
         .p-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 48px; }
         .p-nav-list { display: flex; list-style: none; gap: 0; }
         .p-navEl { position: relative; }
-        .p-navEl-link { display: flex; align-items: center; height: 48px; padding: 0 16px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -3px; }
+        .p-navEl-link { display: flex; align-items: center; height: 48px; padding: 0 11px; color: var(--text-secondary); font-size: 0.8rem; font-weight: 600; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -3px; white-space: nowrap; }
         .p-navEl-link:hover { color: var(--text-bright); }
         .p-navEl.is-selected .p-navEl-link { color: var(--text-bright); border-bottom-color: var(--accent); }
         .p-nav-opposite { margin-left: auto; display: flex; align-items: center; gap: 4px; }
@@ -127,7 +127,7 @@
         .notice a { color: var(--accent); font-weight: 600; }
 
         /* ===== BODY LAYOUT ===== */
-        .p-body { max-width: 1300px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 220px 1fr 300px; gap: 24px; }
+        .p-body { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
 
         /* ===== BLOCK / CATEGORY (XenForo block-container + block-box) ===== */
         .block { margin-bottom: 20px; overflow: hidden; }
@@ -404,7 +404,6 @@
         @media (max-width: 960px) {
         .p-body { grid-template-columns: 1fr; }
         .p-body-sidebar { order: -1; }
-        .p-body-left-nav { display: none; }
             .p-nav-list { display: none; }
             .hamburger { display: block; }
             .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #4a2224, #6a3a3a, #7a3e40, #6a3a3a, #4a2224) 1; padding: 8px; z-index: 99; }
@@ -440,22 +439,6 @@
 
         /* ===== NODE CURSOR ===== */
         .node { cursor: pointer; }
-
-        /* ===== LEFT NAV SIDEBAR ===== */
-        .p-body-left-nav { display: flex; flex-direction: column; gap: 0; }
-        .left-nav-block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .left-nav-header { padding: 12px 16px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-        .left-nav-list { list-style: none; }
-        .left-nav-list li { border-bottom: 1px solid var(--border); }
-        .left-nav-list li:last-child { border-bottom: none; }
-        .left-nav-list li a { display: flex; align-items: center; gap: 10px; padding: 10px 16px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; cursor: pointer; text-decoration: none; }
-        .left-nav-list li a:hover { background: var(--bg-node-hover); color: var(--text-bright); }
-        .left-nav-list li a.active { background: var(--accent); color: #fff; }
-        .left-nav-list li a.active i { color: #fff; }
-        .left-nav-list li a i { width: 18px; text-align: center; font-size: 0.9rem; color: var(--accent); flex-shrink: 0; }
-        .left-nav-list li a.active:hover { background: var(--accent-hover); }
-        .left-nav-count { margin-left: auto; background: var(--bg-body); color: var(--text-muted); font-size: 0.7rem; font-weight: 700; padding: 1px 7px; border-radius: 10px; min-width: 20px; text-align: center; }
-        .left-nav-list li a.active .left-nav-count { background: rgba(255,255,255,0.2); color: #fff; }
     </style>
 </head>
 <body>
@@ -486,13 +469,28 @@
                 <button class="hamburger" onclick="document.querySelector('.p-nav-list').classList.toggle('open')">&#9776;</button>
                 <ul class="p-nav-list">
                     <li class="p-navEl is-selected" id="nav-home">
-                        <a href="#" class="p-navEl-link" onclick="goHome();return false;">Forums</a>
+                        <a href="#" class="p-navEl-link" onclick="goHome();return false;">Forum</a>
+                    </li>
+                    <li class="p-navEl" id="nav-news">
+                        <a href="#cat-news" class="p-navEl-link" onclick="showCategoryPage('news');return false;">News & Updates</a>
                     </li>
                     <li class="p-navEl" id="nav-marketplace">
                         <a href="#cat-marketplace" class="p-navEl-link" onclick="showCategoryPage('marketplace');return false;">Marketplace</a>
                     </li>
-                    <li class="p-navEl">
-                        <a href="https://discord.com/invite/mS8Je49C" class="p-navEl-link" target="_blank">Discord</a>
+                    <li class="p-navEl" id="nav-resellers">
+                        <a href="#cat-resellers" class="p-navEl-link" onclick="showCategoryPage('resellers');return false;">Resellers</a>
+                    </li>
+                    <li class="p-navEl" id="nav-media">
+                        <a href="#cat-media" class="p-navEl-link" onclick="showCategoryPage('media');return false;">Media</a>
+                    </li>
+                    <li class="p-navEl" id="nav-reviews">
+                        <a href="#cat-reviews" class="p-navEl-link" onclick="showCategoryPage('reviews');return false;">Reviews</a>
+                    </li>
+                    <li class="p-navEl" id="nav-offtopic">
+                        <a href="#cat-offtopic" class="p-navEl-link" onclick="showCategoryPage('offtopic');return false;">Offtopic</a>
+                    </li>
+                    <li class="p-navEl" id="nav-discord">
+                        <a href="https://discord.com/invite/mS8Je49C" class="p-navEl-link" target="_blank" rel="noopener">Discord</a>
                     </li>
                 </ul>
                 <div class="p-nav-opposite" id="nav-right"></div>
@@ -528,22 +526,6 @@
 
     <!-- BODY -->
     <div class="p-body">
-        <!-- LEFT NAV SIDEBAR -->
-        <aside class="p-body-left-nav" id="left-nav">
-            <div class="left-nav-block">
-                <div class="left-nav-header">Navigation</div>
-                <ul class="left-nav-list" id="left-nav-list">
-                    <li><a href="#" onclick="goHome();return false;" class="active" id="lnav-home"><i class="fas fa-comments"></i> Forum</a></li>
-                    <li><a href="#cat-news" onclick="showCategoryPage('news');return false;" id="lnav-news"><i class="fas fa-bullhorn"></i> News & Updates <span class="left-nav-count" id="lnav-count-news">0</span></a></li>
-                    <li><a href="#cat-marketplace" onclick="showCategoryPage('marketplace');return false;" id="lnav-marketplace"><i class="fas fa-store"></i> Marketplace <span class="left-nav-count" id="lnav-count-marketplace">0</span></a></li>
-                    <li><a href="#cat-resellers" onclick="showCategoryPage('resellers');return false;" id="lnav-resellers"><i class="fas fa-handshake"></i> Resellers <span class="left-nav-count" id="lnav-count-resellers">0</span></a></li>
-                    <li><a href="#cat-media" onclick="showCategoryPage('media');return false;" id="lnav-media"><i class="fas fa-photo-film"></i> Media <span class="left-nav-count" id="lnav-count-media">0</span></a></li>
-                    <li><a href="#cat-reviews" onclick="showCategoryPage('reviews');return false;" id="lnav-reviews"><i class="fas fa-star"></i> Reviews <span class="left-nav-count" id="lnav-count-reviews">0</span></a></li>
-                    <li><a href="#cat-offtopic" onclick="showCategoryPage('offtopic');return false;" id="lnav-offtopic"><i class="fas fa-coffee"></i> Offtopic <span class="left-nav-count" id="lnav-count-offtopic">0</span></a></li>
-                </ul>
-            </div>
-        </aside>
-
         <main>
             <!-- SHOUTBOX (Siropu style, above Public) -->
             <div class="block siropuShoutbox" id="shoutbox-block-main">
@@ -1305,26 +1287,27 @@ function renderCategories() {
         for (var m = 0; m < t.length; m++) { totalMessages += (t[m].comments || []).length; }
     }
     document.getElementById('category-footer').innerHTML = '<div class="node-extra-footer-left"><dl class="pairs pairs--inline"><dt>Total threads</dt><dd>' + totalThreads + '</dd></dl><dl class="pairs pairs--inline"><dt>Total messages</dt><dd>' + totalMessages + '</dd></dl></div>';
-    updateLeftNav(currentCategoryView);
+    updateTopNav(currentCategoryView);
 }
 renderCategories();
 
 // ===== ROUTING =====
 var currentView = 'home';
 var currentCategoryView = null;
+var TOP_NAV_IDS = ['nav-home', 'nav-news', 'nav-marketplace', 'nav-resellers', 'nav-media', 'nav-reviews', 'nav-offtopic'];
 
-function updateLeftNav(activeKey) {
-    var allLinks = document.querySelectorAll('#left-nav-list a');
-    for (var i = 0; i < allLinks.length; i++) { allLinks[i].classList.remove('active'); }
-    var target = activeKey ? document.getElementById('lnav-' + activeKey) : document.getElementById('lnav-home');
-    if (target) target.classList.add('active');
-    // Update counts
-    for (var k = 0; k < CATEGORY_KEYS.length; k++) {
-        var key = CATEGORY_KEYS[k];
-        var threads = threadsByCategory[key] || [];
-        var countEl = document.getElementById('lnav-count-' + key);
-        if (countEl) countEl.textContent = threads.length;
+function updateTopNav(activeKey) {
+    for (var i = 0; i < TOP_NAV_IDS.length; i++) {
+        var el = document.getElementById(TOP_NAV_IDS[i]);
+        if (el) el.className = 'p-navEl';
     }
+    if (!activeKey) {
+        var home = document.getElementById('nav-home');
+        if (home) home.className = 'p-navEl is-selected';
+        return;
+    }
+    var catNav = document.getElementById('nav-' + activeKey);
+    if (catNav) catNav.className = 'p-navEl is-selected';
 }
 
 function goHome() {
@@ -1333,7 +1316,7 @@ function goHome() {
     activeThreadId = null;
     window.location.hash = '';
     showMainPage();
-    updateLeftNav(null);
+    updateTopNav(null);
 }
 function showCategoryPage(catKey) {
     currentView = 'category';
@@ -1345,9 +1328,7 @@ function showCategoryPage(catKey) {
     document.getElementById('thread-detail-page').style.display = 'none';
     window.location.hash = 'cat-' + catKey;
     renderCategoryPage(catKey);
-    // Update nav
-    document.getElementById('nav-home').className = 'p-navEl';
-    updateLeftNav(catKey);
+    updateTopNav(catKey);
 }
 function renderCategoryPage(catKey) {
     var cat = CATEGORIES[catKey];
@@ -1405,7 +1386,7 @@ function showMainPage() {
     document.getElementById('category-page').style.display = 'none';
     document.getElementById('thread-detail-page').style.display = 'none';
     renderCategories(); renderTicker(); updateStats();
-    document.getElementById('nav-home').className = 'p-navEl is-selected';
+    updateTopNav(null);
 }
 
 function handleRoute() {
