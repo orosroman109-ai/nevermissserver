@@ -6,92 +6,108 @@
     <title>Neverpost Ctrl+C</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-body: #050505;
-            --bg-page: #0a0a0a;
-            --bg-block: #0f0f0f;
-            --bg-block-header: #111;
-            --bg-node: #0c0c0c;
-            --bg-node-hover: #111;
-            --bg-input: #161616;
-            --bg-nav: #080808;
-            --bg-sidebar: #0f0f0f;
-            --text-primary: #c9c9c9;
-            --text-secondary: #888;
-            --text-muted: #555;
-            --text-bright: #e0e0e0;
-            --accent: hsl(216, 48%, 57%);
-            --accent-hover: hsl(216, 60%, 65%);
-            --gradient: linear-gradient(135deg, hsl(216,48%,57%), hsl(216,100%,72%));
-            --gradient-h: linear-gradient(to right, hsl(216,48%,57%), hsl(216,100%,72%));
-            --border: #1a1a1a;
-            --border-light: #222;
-            --red: #e74c3c;
-            --green: #2ecc71;
-            --yellow: #f1c40f;
-            --notice-bg: hsl(216, 48%, 18%);
-            --notice-border: hsl(216, 48%, 35%);
+            --bg-body: #431f20;
+            --bg-page: #4e2425;
+            --bg-block: #5c2a2c;
+            --bg-block-header: #5c2a2c;
+            --bg-node: #4e2425;
+            --bg-node-alt: #683032;
+            --bg-node-hover: #683032;
+            --bg-input: #4e2425;
+            --bg-nav: #5a3636;
+            --bg-sidebar: #5c2a2c;
+            --text-primary: #eededf;
+            --text-secondary: #ccb3b5;
+            --text-muted: #ab898a;
+            --text-bright: #fff0f1;
+            --accent: #f56363;
+            --accent-hover: #f85050;
+            --primary: #855353;
+            --gradient: linear-gradient(135deg, #855353, #f85050);
+            --gradient-h: linear-gradient(to right, #5a3636, #855353, #5a3636);
+            --border: #914245;
+            --border-light: #863d40;
+            --border-bright: #a24a4d;
+            --red: #f56363;
+            --green: #4ade80;
+            --yellow: #fbbf24;
+            --notice-bg: rgba(245,99,99,0.15);
+            --notice-border: #a24a4d;
+            --card-bg: #5c2a2c;
+            --block-container-border: #914245;
+            --block-box-pattern: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.06) 1px, rgba(0,0,0,0.06) 2px);
         }
-        body { font-family: 'Nunito', -apple-system, sans-serif; background: var(--bg-body); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
+        body { font-family: 'Open Sans', -apple-system, sans-serif; background: var(--bg-body); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
         a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
         a:hover { color: var(--accent-hover); }
 
-        /* ===== PAGE WRAPPER (XenForo style) ===== */
+        /* ===== PAGE WRAPPER ===== */
         .p-pageWrapper { max-width: 1300px; margin: 0 auto; }
 
         /* ===== HEADER ===== */
-        .p-header { background: var(--bg-page); border-bottom: 1px solid var(--border); padding: 16px 20px; }
+        .p-header { background: var(--bg-nav); background: linear-gradient(180deg, #5a3636 0%, #4e2d2d 100%); padding: 16px 20px; }
         .p-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; }
         .p-header-logo img { height: 36px; width: auto; }
         .p-header-logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; }
         .p-header-logo-text span { color: var(--accent); }
 
-        /* ===== NAV (XenForo sticky) ===== */
-        .p-nav { background: var(--bg-nav); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        /* ===== NAV (gradient bottom) ===== */
+        .p-nav { background: var(--bg-nav); background: linear-gradient(180deg, #5a3636 0%, #4e2d2d 100%); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #5a3636, #855353, #a24a4d, #855353, #5a3636) 1; position: sticky; top: 0; z-index: 100; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
         .p-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 48px; gap: 0; }
         .p-nav-list { display: flex; list-style: none; gap: 0; }
         .p-navEl { position: relative; }
-        .p-navEl-link { display: flex; align-items: center; height: 48px; padding: 0 16px; color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .p-navEl-link { display: flex; align-items: center; height: 48px; padding: 0 16px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; border-bottom: 2px solid transparent; margin-bottom: -3px; }
         .p-navEl-link:hover { color: var(--text-bright); }
         .p-navEl.is-selected .p-navEl-link { color: var(--text-bright); border-bottom-color: var(--accent); }
         .p-nav-opposite { margin-left: auto; display: flex; align-items: center; gap: 4px; }
         .p-navgroup-link { display: flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 6px; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; transition: all 0.15s; cursor: pointer; }
         .p-navgroup-link:hover { color: var(--text-bright); background: rgba(255,255,255,0.04); }
-        .p-navgroup-link--iconic { gap: 6px; }
         .avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
         .avatar-placeholder { width: 28px; height: 28px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
         .hamburger { display: none; background: none; border: none; color: var(--text-primary); font-size: 24px; cursor: pointer; }
 
         /* ===== NOTICES ===== */
         .notices { list-style: none; }
-        .notice { background: var(--notice-bg); border: 1px solid var(--notice-border); border-radius: 8px; padding: 10px 16px; margin: 12px 20px; font-size: 0.88rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
-        .notice a { color: var(--accent-hover); font-weight: 600; }
+        .notice { background: var(--notice-bg); border: 1px solid var(--notice-border); border-radius: 6px; padding: 10px 16px; margin: 12px 20px; font-size: 0.88rem; color: var(--text-primary); display: flex; align-items: center; gap: 8px; }
+        .notice a { color: var(--accent); font-weight: 600; }
 
         /* ===== BODY ===== */
         .p-body { max-width: 1200px; margin: 0 auto; padding: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; }
 
-        /* ===== BLOCK / CATEGORY (XenForo) ===== */
-        .block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
-        .block-header { padding: 12px 16px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); }
+        /* ===== BLOCK / CATEGORY (XenForo block-container style) ===== */
+        .block { background: var(--bg-block); border: 1px solid var(--block-container-border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+        .block-header { padding: 12px 16px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); position: relative; }
         .block-header h2 { font-size: 0.92rem; font-weight: 700; color: var(--text-bright); text-transform: uppercase; letter-spacing: 0.3px; }
         .block-header a { color: var(--text-bright); }
         .block-header a:hover { color: var(--accent-hover); }
 
+        /* ===== BLOCK-BOX PATTERN (XenForo node category container) ===== */
+        .block--category { background: var(--bg-block); border: 1px solid var(--block-container-border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
+        .block--category > .block-header { background: var(--bg-block-header); background-image: var(--block-box-pattern); }
+        .block--category .node-list { background: var(--bg-block); }
+
         /* ===== NODE (XenForo forum row) ===== */
-        .node { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 14px; }
+        .node { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 14px; position: relative; }
         .node:last-child { border-bottom: none; }
         .node:hover { background: var(--bg-node-hover); }
-        .node-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-muted); font-size: 18px; }
+        /* Unread indicator - red bar on right */
+        .node--unread::after { content: ''; position: absolute; right: 0; top: 10%; bottom: 10%; width: 4px; background: var(--accent); border-radius: 2px 0 0 2px; }
+        .node-icon { width: 40px; height: 40px; border-radius: 8px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-muted); font-size: 18px; }
         .node-icon .material-icons { font-size: 20px; }
         .node-main { flex: 1; min-width: 0; }
-        .node-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 1px; }
-        .node-title a { color: var(--text-bright); }
-        .node-title a:hover { color: var(--accent-hover); }
+        .node-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 1px; position: relative; }
+        .node-title a { color: var(--text-bright); transition: all 0.2s; }
+        .node-title a::before { content: '['; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; display: inline-block; transform: translateX(4px); }
+        .node-title a::after { content: ']'; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; display: inline-block; transform: translateX(-4px); }
+        .node:hover .node-title a::before { opacity: 1; transform: translateX(0); }
+        .node:hover .node-title a::after { opacity: 1; transform: translateX(0); }
+        .node-title a:hover { color: var(--accent); }
         .node-new { display: inline-block; background: var(--accent); color: white; font-size: 0.6rem; padding: 1px 5px; border-radius: 3px; margin-left: 6px; font-weight: 700; vertical-align: middle; text-transform: uppercase; }
         .node-desc { font-size: 0.8rem; color: var(--text-muted); }
         .node-meta { display: none; }
@@ -115,8 +131,8 @@
 
         /* ===== SIDEBAR ===== */
         .p-body-sidebar { display: flex; flex-direction: column; gap: 20px; }
-        .sidebar-block { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .sidebar-header { padding: 12px 16px; font-weight: 700; font-size: 0.85rem; color: var(--text-bright); border-bottom: 1px solid var(--border); background: var(--bg-block-header); }
+        .sidebar-block { background: var(--bg-block); border: 1px solid var(--block-container-border); border-radius: 8px; overflow: hidden; }
+        .sidebar-header { padding: 12px 16px; font-weight: 700; font-size: 0.85rem; color: var(--text-bright); border-bottom: 1px solid var(--border); background: var(--bg-block-header); background-image: var(--block-box-pattern); }
         .sidebar-header a { color: var(--text-bright); }
         .sidebar-body { padding: 12px 16px; }
 
@@ -134,17 +150,13 @@
 
         /* Discord widget */
         .discord-online { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-        .discord-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(46,204,113,0.5); }
+        .discord-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; box-shadow: 0 0 6px rgba(74,222,128,0.5); }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
         .discord-count { font-weight: 700; font-size: 0.88rem; color: var(--text-primary); }
         .discord-members { list-style: none; max-height: 300px; overflow-y: auto; }
         .discord-member { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
         .discord-avatar { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
         .discord-avatar-ph { width: 28px; height: 28px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; }
-        .discord-status { position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--bg-block); }
-        .discord-status.online { background: var(--green); }
-        .discord-status.dnd { background: var(--red); }
-        .discord-status.idle { background: var(--yellow); }
         .discord-name { font-size: 0.8rem; color: var(--text-primary); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .discord-game { font-size: 0.7rem; color: var(--text-muted); }
         .discord-join { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 10px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.2s; text-decoration: none; }
@@ -162,7 +174,7 @@
         .structItem--thread:last-child { border-bottom: none; }
         .structItem-cell { padding: 12px 14px; display: flex; flex-direction: column; justify-content: center; }
         .structItem-cell--icon { flex: 0 0 42px; align-items: center; }
-        .structItem-cell--icon .structItem-iconContainer { width: 36px; height: 36px; border-radius: 6px; background: rgba(255,255,255,0.04); display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .structItem-cell--icon .structItem-iconContainer { width: 36px; height: 36px; border-radius: 6px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: var(--accent); }
         .structItem-cell--main { flex: 1; min-width: 0; padding-left: 0; }
         .structItem-title { font-weight: 700; font-size: 0.93rem; color: var(--text-bright); margin-bottom: 4px; }
         .structItem-title span { color: var(--text-bright); }
@@ -220,7 +232,7 @@
         .create-title-input { width: 100%; padding: 0; border: none; background: transparent; font-size: 1.15rem; font-weight: 700; color: var(--text-bright); font-family: inherit; outline: none; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .create-title-input::placeholder { color: var(--text-muted); font-weight: 400; }
         .editorContainer { border: 1px solid var(--border-light); border-radius: 6px; overflow: hidden; }
-        .editor-toolbar { display: flex; align-items: center; gap: 2px; padding: 6px 8px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        .editor-toolbar { display: flex; align-items: center; gap: 2px; padding: 6px 8px; background: var(--bg-block-header); background-image: var(--block-box-pattern); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
         .editor-btn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 28px; border: none; background: transparent; color: var(--text-secondary); border-radius: 4px; cursor: pointer; font-family: inherit; font-size: 0.82rem; transition: all 0.1s; }
         .editor-btn:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
         .editor-sep { width: 1px; height: 18px; background: var(--border); margin: 0 4px; }
@@ -231,7 +243,7 @@
         .inputTypes-input { display: none; }
         .inputTypes-display { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border: 1px solid var(--border-light); border-radius: 6px; margin-right: 8px; transition: all 0.15s; color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; }
         .inputTypes-display:hover { border-color: var(--text-muted); color: var(--text-primary); }
-        .inputTypes-input:checked + .inputTypes-display { background: rgba(100,160,255,0.08); border-color: var(--accent); color: var(--accent); }
+        .inputTypes-input:checked + .inputTypes-display { background: rgba(245,99,99,0.08); border-color: var(--accent); color: var(--accent); }
         .inputTypes-icon { display: flex; align-items: center; }
         .inputChoice { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-secondary); cursor: pointer; }
         .inputChoice input[type="checkbox"] { accent-color: var(--accent); }
@@ -239,21 +251,21 @@
         .formSubmitRow--sticky { position: sticky; bottom: 0; background: var(--bg-page); border-top: 1px solid var(--border); padding: 12px 0; margin: 0 -14px; padding-left: 14px; padding-right: 14px; z-index: 10; }
         .formSubmitRow-main { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
 
-        /* ===== BUTTONS (XenForo style) ===== */
+        /* ===== BUTTONS (XenForo style with red accents) ===== */
         .btn-cta { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; text-decoration: none; }
         .btn-cta:hover { opacity: 0.85; color: white; }
-        .btn-primary { padding: 8px 20px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .btn-primary:hover { opacity: 0.85; }
+        .btn-primary { padding: 8px 20px; background: var(--primary); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .btn-primary:hover { background: var(--accent); }
         .btn-secondary { padding: 8px 20px; background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-light); border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
         .btn-secondary:hover { color: var(--text-primary); border-color: var(--text-muted); }
-        .create-thread-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--gradient); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-        .create-thread-btn:hover { opacity: 0.85; }
+        .create-thread-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background: var(--primary); color: white; border: none; border-radius: 6px; font-family: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+        .create-thread-btn:hover { background: var(--accent); }
         .create-thread-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* ===== MODAL ===== */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
         .modal-overlay.show { display: flex; }
-        .modal { background: var(--bg-block); border: 1px solid var(--border-light); border-radius: 10px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .modal { background: var(--bg-block); border: 1px solid var(--block-container-border); border-radius: 10px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
         .create-thread-modal { max-width: 600px; }
         .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
         .modal-header h2 { font-size: 1rem; font-weight: 700; color: var(--text-bright); }
@@ -272,19 +284,19 @@
         .form-tags { display: flex; flex-wrap: wrap; gap: 6px; }
         .form-tag { padding: 5px 12px; background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 6px; font-size: 0.82rem; cursor: pointer; transition: all 0.15s; color: var(--text-secondary); font-weight: 600; }
         .form-tag:hover { border-color: var(--accent); color: var(--text-primary); }
-        .form-tag.selected { background: var(--gradient); border-color: transparent; color: white; }
+        .form-tag.selected { background: var(--primary); border-color: transparent; color: white; }
 
         /* Tags */
         .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-        .tag-green { background: rgba(46,204,113,0.15); color: #4ade80; }
-        .tag-red { background: rgba(231,76,60,0.15); color: #f87171; }
-        .tag-blue { background: rgba(88,101,242,0.15); color: #60a5fa; }
-        .tag-orange { background: rgba(241,196,0,0.15); color: #fbbf24; }
-        .tag-purple { background: rgba(155,89,182,0.15); color: #c084fc; }
+        .tag-green { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .tag-red { background: rgba(245,99,99,0.15); color: #f56363; }
+        .tag-blue { background: rgba(133,83,83,0.2); color: #f56363; }
+        .tag-orange { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .tag-purple { background: rgba(192,132,252,0.15); color: #c084fc; }
 
         /* ===== THREAD VIEW / MESSAGE LAYOUT (XenForo) ===== */
-        .block--messages { border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .block--messages .block-header { background: var(--bg-block-header); padding: 12px 16px; border-bottom: 1px solid var(--border); }
+        .block--messages { border: 1px solid var(--block-container-border); border-radius: 8px; overflow: hidden; }
+        .block--messages .block-header { background: var(--bg-block-header); background-image: var(--block-box-pattern); padding: 12px 16px; border-bottom: 1px solid var(--border); }
         .message--post { display: flex; border-bottom: 1px solid var(--border); }
         .message--post:last-child { border-bottom: none; }
         .message-cell--user {
@@ -292,7 +304,7 @@
             padding: 16px;
             border-right: 1px solid var(--border);
             text-align: center;
-            background: rgba(255,255,255,0.01);
+            background: rgba(0,0,0,0.08);
         }
         .message-cell--main {
             flex: 1;
@@ -319,7 +331,7 @@
         .admin-badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
         .admin-badge.admin { background: var(--red); color: white; }
         .admin-badge.user { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .admin-badge.banned { background: rgba(231,76,60,0.2); color: #f87171; }
+        .admin-badge.banned { background: rgba(245,99,99,0.2); color: #f56363; }
         .ban-btn { padding: 4px 10px; border-radius: 4px; border: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
         .ban-btn.ban { background: var(--red); color: white; }
         .ban-btn.ban:hover { opacity: 0.85; }
@@ -334,7 +346,7 @@
         .admin-empty { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.85rem; }
 
         /* ===== FOOTER (XenForo style) ===== */
-        .p-footer { background: var(--bg-page); border-top: 1px solid var(--border); margin-top: 30px; padding: 20px; }
+        .p-footer { background: var(--bg-nav); background: linear-gradient(180deg, #4e2d2d 0%, #431f20 100%); border-top: 1px solid var(--border); margin-top: 30px; padding: 20px; }
         .p-footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
         .p-footer-links { display: flex; gap: 16px; list-style: none; }
         .p-footer-links a { font-size: 0.8rem; color: var(--text-muted); }
@@ -358,7 +370,7 @@
             .p-body-sidebar { order: -1; }
             .p-nav-list { display: none; }
             .hamburger { display: block; }
-            .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 2px solid transparent; border-image: var(--gradient-h) 1; padding: 8px; z-index: 99; }
+            .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #5a3636, #855353, #a24a4d, #855353, #5a3636) 1; padding: 8px; z-index: 99; }
             .node-stats { display: none !important; }
             .node-extra { display: none !important; }
         }
@@ -377,7 +389,6 @@
     <header class="p-header">
         <div class="p-header-inner">
             <a href="#" onclick="goHome();return false;" class="p-header-logo">
-                <!-- Replace src with your logo image when ready -->
                 <div class="p-header-logo-text">Never<span>post</span> Ctrl+C</div>
             </a>
         </div>
@@ -407,7 +418,7 @@
     <!-- NOTICES -->
     <ul class="notices" id="notices-bar">
         <li class="notice">
-            💥 Welcome to <strong>Neverpost Ctrl+C</strong> — the community forum. Login with Discord to participate!
+            Welcome to <strong>Neverpost Ctrl+C</strong> — the community forum. Login with Discord to participate!
         </li>
     </ul>
 
@@ -416,11 +427,11 @@
         <main>
             <!-- HOME: Forum Categories -->
             <div id="main-categories">
-                <div class="block">
+                <div class="block block--category">
                     <div class="block-header">
                         <h2><a href="#">Public</a></h2>
                     </div>
-                    <div id="node-list"></div>
+                    <div class="node-list" id="node-list"></div>
                 </div>
             </div>
 
@@ -605,7 +616,7 @@
         <div class="admin-stats-row" id="admin-stats-row"></div>
         <div class="modal-body" style="padding:0;">
             <!-- Quick Ban Section -->
-            <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(231,76,60,0.04);">
+            <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(245,99,99,0.04);">
                 <div style="font-size:0.85rem;font-weight:600;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
                     <span class="material-icons" style="font-size:16px;">gavel</span> Quick Ban
                 </div>
@@ -916,7 +927,7 @@ function renderNavAuth() {
                     '<span>' + (currentUser.global_name || currentUser.username) + '</span>' +
                     '<span class="material-icons" style="font-size:16px;color:var(--text-muted);">expand_more</span>' +
                 '</div>' +
-                '<div class="user-dropdown-menu" id="user-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg-block);border:1px solid var(--border-light);border-radius:8px;padding:6px;min-width:170px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:200;">' +
+                '<div class="user-dropdown-menu" id="user-dropdown" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg-block);border:1px solid var(--block-container-border);border-radius:8px;padding:6px;min-width:170px;box-shadow:0 12px 40px rgba(0,0,0,0.6);z-index:200;">' +
                     '<a href="https://discord.com/users/' + (currentUser.id || '') + '" target="_blank" style="display:block;padding:7px 12px;border-radius:4px;font-size:0.85rem;color:var(--text-secondary);">My Profile</a>' +
                     '<hr style="border:none;border-top:1px solid var(--border);margin:3px 0;">' +
                     '<button onclick="logout()" style="display:block;width:100%;text-align:left;padding:7px 12px;border-radius:4px;font-size:0.85rem;color:var(--text-secondary);border:none;background:none;font-family:inherit;cursor:pointer;">Logout</button>' +
@@ -924,7 +935,7 @@ function renderNavAuth() {
             '</div>';
     } else {
         navRight.innerHTML =
-            '<a href="' + DISCORD_AUTH_URL + '" class="p-navgroup-link" style="background:var(--gradient);color:white;border-radius:6px;padding:7px 14px;">' +
+            '<a href="' + DISCORD_AUTH_URL + '" class="p-navgroup-link" style="background:var(--primary);color:white;border-radius:6px;padding:7px 14px;">' +
                 '<svg viewBox="0 0 24 24" fill="currentColor" width="18" height="18"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>' +
                 'Login with Discord' +
             '</a>';
@@ -1266,7 +1277,7 @@ function renderMessage(m) {
     var initials = m.author ? m.author.charAt(0).toUpperCase() : '?';
     return '<article class="message message--post" style="display:flex;border-bottom:1px solid var(--border);">' +
         // User column
-        '<div class="message-cell message-cell--user" style="flex:0 0 160px;padding:16px;border-right:1px solid var(--border);text-align:center;">' +
+        '<div class="message-cell message-cell--user" style="flex:0 0 160px;padding:16px;border-right:1px solid var(--border);text-align:center;background:rgba(0,0,0,0.08);">' +
             '<div style="margin-bottom:8px;">' +
                 '<img src="' + m.avatar + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;">' +
             '</div>' +
