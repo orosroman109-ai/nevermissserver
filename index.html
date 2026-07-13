@@ -416,6 +416,29 @@
             .notice { margin: 8px 12px; font-size: 0.82rem; }
             .new-tickers-stairs { display: none; }
         }
+
+        /* ===== CATEGORY PAGE ===== */
+        .category-page-header { padding: 20px; margin-bottom: 16px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-block); display: flex; align-items: center; gap: 16px; }
+        .category-page-header h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-bright); }
+        .category-page-header p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.5; margin-top: 4px; }
+        .category-page-header .cat-icon { font-size: 2rem; color: var(--accent); }
+        .cat-header-text { flex: 1; }
+
+        /* ===== PERMISSION MESSAGES ===== */
+        .perm-notice { background: rgba(224,85,85,0.08); border: 1px solid rgba(224,85,85,0.2); border-radius: 6px; padding: 12px 16px; margin: 12px 0; font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+        .perm-notice i { color: var(--accent); font-size: 1rem; }
+        .perm-notice a { color: var(--accent); font-weight: 600; }
+        .perm-locked { background: rgba(122,78,78,0.1); border: 1px solid rgba(122,78,78,0.25); border-radius: 6px; padding: 20px; margin: 16px 0; text-align: center; color: var(--text-muted); font-size: 0.88rem; }
+        .perm-locked i { display: block; font-size: 1.8rem; color: var(--text-muted); margin-bottom: 8px; opacity: 0.6; }
+
+        /* ===== EMPTY CATEGORY ===== */
+        .cat-empty { text-align: center; padding: 50px 20px; color: var(--text-muted); }
+        .cat-empty i { font-size: 2.5rem; margin-bottom: 12px; display: block; color: var(--text-muted); opacity: 0.4; }
+        .cat-empty h3 { font-size: 1rem; color: var(--text-secondary); margin-bottom: 6px; }
+        .cat-empty p { font-size: 0.85rem; }
+
+        /* ===== NODE CURSOR ===== */
+        .node { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -449,7 +472,7 @@
                         <a href="#" class="p-navEl-link" onclick="goHome();return false;">Forums</a>
                     </li>
                     <li class="p-navEl" id="nav-marketplace">
-                        <a href="#marketplace" class="p-navEl-link" onclick="navigateToMarketplace();return false;">Marketplace</a>
+                        <a href="#cat-marketplace" class="p-navEl-link" onclick="showCategoryPage('marketplace');return false;">Marketplace</a>
                     </li>
                     <li class="p-navEl">
                         <a href="https://discord.com/invite/mS8Je49C" class="p-navEl-link" target="_blank">Discord</a>
@@ -530,18 +553,25 @@
                 <div class="stat-card"><div class="stat-card-title">Latest member</div><div class="stat-card-content"><i class="fas fa-user-plus text-danger"></i><span class="number-font" id="stat-latest-member">—</span></div></div>
             </div>
 
-            <!-- MARKETPLACE PAGE -->
-            <div id="marketplace-page" style="display:none;">
+            <!-- GENERIC CATEGORY PAGE (reused for ALL categories) -->
+            <div id="category-page" style="display:none;">
                 <div class="p-breadcrumbs">
-                    <a href="#" onclick="goHome();return false;">Forums</a><span class="sep">/</span><span>Marketplace</span>
+                    <a href="#" onclick="goHome();return false;">Forums</a><span class="sep">/</span>
+                    <span id="cat-breadcrumb-name"></span>
                 </div>
-                <div class="p-title">
-                    <h1>Marketplace</h1>
-                    <button class="create-thread-btn" id="mp-create-btn" onclick="openCreateThread()" style="display:none;"><i class="fas fa-pen" style="font-size:14px;"></i> Post thread</button>
+                <div class="category-page-header" id="cat-page-header">
+                    <div class="cat-header-text">
+                        <h1 id="cat-page-title"></h1>
+                        <p id="cat-page-desc"></p>
+                    </div>
                 </div>
+                <!-- Create thread button or permission notice -->
+                <div id="cat-create-area"></div>
+                <!-- Thread list container -->
                 <div class="block-container">
                     <div class="block-header"><h2 style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);">Threads</h2></div>
-                    <div id="marketplace-threads-list"></div>
+                    <div id="cat-threads-list"></div>
+                    <div id="cat-empty-state" style="display:none;"></div>
                 </div>
             </div>
 
@@ -549,7 +579,7 @@
             <div id="thread-detail-page" style="display:none;">
                 <div class="p-breadcrumbs">
                     <a href="#" onclick="goHome();return false;">Forums</a><span class="sep">/</span>
-                    <a href="#marketplace" onclick="backToMarketplace();return false;">Marketplace</a><span class="sep">/</span>
+                    <a href="#" id="detail-back-cat" onclick="return false;"></a><span class="sep">/</span>
                     <span id="detail-breadcrumb-title"></span>
                 </div>
                 <div class="p-title"><h1 id="detail-title"></h1></div>
@@ -562,7 +592,7 @@
                 </div>
                 <div class="block-container" style="margin-top:16px;" id="detail-reply-block">
                     <div class="block-header"><h2 style="font-size:0.82rem;font-weight:600;color:var(--text-secondary);">Quick reply</h2></div>
-                    <div style="padding:12px 16px;display:flex;gap:10px;align-items:flex-start;" id="detail-reply-row">
+                    <div id="detail-reply-row" style="padding:12px 16px;display:flex;gap:10px;align-items:flex-start;">
                         <input type="text" class="input" id="comment-input" placeholder="Write your reply..." style="flex:1;">
                         <button class="btn-cta" onclick="addComment()"><i class="fas fa-reply" style="font-size:14px;"></i> Reply</button>
                     </div>
@@ -633,7 +663,7 @@
 <div class="modal-overlay" id="create-thread-modal">
     <div class="modal create-thread-modal" onclick="event.stopPropagation()">
         <div class="modal-header">
-            <h2>Post thread</h2>
+            <h2 id="create-modal-title">Post thread</h2>
             <button class="modal-close" onclick="closeModal('create-thread-modal')">&times;</button>
         </div>
         <div style="display:flex;flex-direction:column;max-height:80vh;">
@@ -757,7 +787,139 @@ var remoteUsers = [];
 var dataFileSha = null;
 var pendingBanUser = null;
 
-// ===== SHARED THREADS (GitHub storage) =====
+// ===== CATEGORY SYSTEM =====
+var CATEGORY_KEYS = ['news', 'marketplace', 'resellers', 'media', 'reviews', 'offtopic'];
+var CATEGORIES = {
+    news:       { name: 'News & Updates',  desc: 'Latest news, discount information, and upcoming events. Admin-only posts.',         icon: 'far fa-bullhorn',  createPerm: 'admin',    commentPerm: 'admin',    jsonFile: 'news.json',       tags: ['Update', 'Discount', 'Event'] },
+    marketplace:{ name: 'Marketplace',     desc: 'Paid configs, Lua scripts, and digital products from the community.',               icon: 'far fa-store',     createPerm: 'loggedin', commentPerm: 'loggedin', jsonFile: 'marketplace.json', tags: ['Source', 'Crack', 'Free'] },
+    resellers:  { name: 'Resellers',       desc: 'Sales offers from our trusted partners. Admin-only posts.',                       icon: 'far fa-handshake', createPerm: 'admin',    commentPerm: 'admin',    jsonFile: 'resellers.json',   tags: ['Offer', 'Deal'] },
+    media:      { name: 'Media',           desc: 'Materials showcasing our products — videos, screenshots, demos.',                  icon: 'far fa-images',    createPerm: 'loggedin', commentPerm: 'loggedin', jsonFile: 'media.json',       tags: ['Video', 'Screenshot', 'Demo'] },
+    reviews:    { name: 'Reviews',         desc: 'Reviews and feedback from our customers.',                                       icon: 'far fa-star',      createPerm: 'loggedin', commentPerm: 'loggedin', jsonFile: 'reviews.json',     tags: ['Positive', 'Negative', 'Neutral'] },
+    offtopic:   { name: 'Offtopic',        desc: 'Free communication about anything. Have fun!',                                  icon: 'far fa-comments',  createPerm: 'loggedin', commentPerm: 'loggedin', jsonFile: 'offtopic.json',    tags: ['Chat', 'Question', 'Other'] }
+};
+
+function canCreateThread(catKey) {
+    var p = CATEGORIES[catKey].createPerm;
+    if (p === 'admin') return !!currentUser && isAdmin(currentUser);
+    if (p === 'loggedin') return !!currentUser;
+    return false;
+}
+function canComment(catKey) {
+    var p = CATEGORIES[catKey].commentPerm;
+    if (p === 'admin') return !!currentUser && isAdmin(currentUser);
+    if (p === 'loggedin') return !!currentUser;
+    return false;
+}
+
+// Per-category thread storage
+var threadsByCategory = {};
+var categoryShas = {};
+function initCategoryStorage() {
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        threadsByCategory[CATEGORY_KEYS[i]] = [];
+        categoryShas[CATEGORY_KEYS[i]] = null;
+    }
+    // Migrate old marketplace data from localStorage
+    try {
+        var oldData = localStorage.getItem('np_user_threads');
+        if (oldData) {
+            var parsed = JSON.parse(oldData);
+            if (parsed && parsed.length > 0) {
+                for (var j = 0; j < parsed.length; j++) {
+                    parsed[j].category = 'marketplace';
+                    threadsByCategory.marketplace.push(parsed[j]);
+                }
+                localStorage.removeItem('np_user_threads');
+            }
+        }
+    } catch (e) {}
+}
+function catStorageKey(k) { return 'np_threads_' + k; }
+function loadLocalCatThreads(k) {
+    try { var d = localStorage.getItem(catStorageKey(k)); if (d) threadsByCategory[k] = JSON.parse(d); } catch (e) {}
+}
+function saveLocalCatThreads(k) {
+    try { localStorage.setItem(catStorageKey(k), JSON.stringify(threadsByCategory[k])); } catch (e) {}
+}
+
+var _catJsonCache = {};
+async function fetchCategoryThreads(catKey) {
+    var cat = CATEGORIES[catKey];
+    loadLocalCatThreads(catKey);
+    try {
+        var res = await fetch('https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/' + cat.jsonFile + '?t=' + Date.now());
+        if (res.ok) {
+            var data = await res.json();
+            var remote = data.threads || [];
+            if (remote.length > 0) { threadsByCategory[catKey] = remote; saveLocalCatThreads(catKey); }
+            else if (threadsByCategory[catKey].length > 0) { await saveCategoryThreads(catKey); }
+        } else if (res.status === 404 && threadsByCategory[catKey].length > 0) {
+            await saveCategoryThreads(catKey);
+        }
+    } catch (e) {}
+    // Fetch SHA
+    try {
+        var sr = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + cat.jsonFile, { headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' } });
+        if (sr.ok) { var f = await sr.json(); categoryShas[catKey] = f.sha; }
+        else if (sr.status === 404) { categoryShas[catKey] = null; }
+    } catch (e) {}
+    return threadsByCategory[catKey];
+}
+
+async function saveCategoryThreads(catKey) {
+    var cat = CATEGORIES[catKey];
+    if (!categoryShas[catKey]) await fetchCatSha(catKey);
+    try {
+        var content = JSON.stringify({ threads: threadsByCategory[catKey] }, null, 2);
+        var encoded = btoa(unescape(encodeURIComponent(content)));
+        var body = { message: 'Update ' + cat.name + ' threads', content: encoded };
+        if (categoryShas[catKey]) body.sha = categoryShas[catKey];
+        var res = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + cat.jsonFile, {
+            method: 'PUT', headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+            body: JSON.stringify(body)
+        });
+        if (res.ok) { var r = await res.json(); categoryShas[catKey] = r.content ? r.content.sha : categoryShas[catKey]; saveLocalCatThreads(catKey); return true; }
+        if (res.status === 422) {
+            await fetchCatSha(catKey);
+            if (categoryShas[catKey]) {
+                body.sha = categoryShas[catKey];
+                var retry = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + cat.jsonFile, {
+                    method: 'PUT', headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+                    body: JSON.stringify(body)
+                });
+                if (retry.ok) { var rr = await retry.json(); categoryShas[catKey] = rr.content ? rr.content.sha : categoryShas[catKey]; saveLocalCatThreads(catKey); return true; }
+            }
+        }
+    } catch (e) {}
+    return false;
+}
+
+async function fetchCatSha(catKey) {
+    var cat = CATEGORIES[catKey];
+    try {
+        var r = await fetch('https://api.github.com/repos/' + GITHUB_REPO + '/contents/' + cat.jsonFile, { headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Accept': 'application/vnd.github.v3+json' } });
+        if (r.ok) { var f = await r.json(); categoryShas[catKey] = f.sha; }
+        else if (r.status === 404) { categoryShas[catKey] = null; }
+    } catch (e) {}
+}
+
+function getAllThreads() {
+    var all = [];
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        var t = threadsByCategory[CATEGORY_KEYS[i]] || [];
+        for (var j = 0; j < t.length; j++) all.push(t[j]);
+    }
+    return all;
+}
+function findThreadById(id) {
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        var t = threadsByCategory[CATEGORY_KEYS[i]] || [];
+        for (var j = 0; j < t.length; j++) { if (t[j].id === id) return { thread: t[j], categoryKey: CATEGORY_KEYS[i] }; }
+    }
+    return null;
+}
+
+// ===== SHARED THREADS (Legacy compat, now routed through category system) =====
 var GITHUB_THREADS_RAW = 'https://raw.githubusercontent.com/' + GITHUB_REPO + '/main/threads.json';
 var GITHUB_THREADS_API = 'https://api.github.com/repos/' + GITHUB_REPO + '/contents/threads.json';
 var threadsFileSha = null;
@@ -852,46 +1014,35 @@ async function fetchThreadsSha() {
     } catch (e) {}
 }
 
-async function fetchRemoteThreads() {
+// Fetch all category threads
+async function fetchAllCategoryThreads() {
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        await fetchCategoryThreads(CATEGORY_KEYS[i]);
+    }
+    // Legacy migration: import old threads.json into marketplace if empty
     try {
-        var res = await fetch(GITHUB_THREADS_RAW + '?t=' + Date.now());
-        if (res.ok) {
-            var data = await res.json();
-            var remote = data.threads || [];
-            if (remote.length > 0) { userThreads = remote; localStorage.setItem('np_user_threads', JSON.stringify(userThreads)); }
-            else if (userThreads.length > 0) { await saveRemoteThreads(); }
-        }
-    } catch (e) {}
-    await fetchThreadsSha();
-    return userThreads;
-}
-
-async function saveRemoteThreads() {
-    if (!threadsFileSha) await fetchThreadsSha();
-    try {
-        var content = JSON.stringify({ threads: userThreads }, null, 2);
-        var encoded = btoa(unescape(encodeURIComponent(content)));
-        var body = { message: 'Update threads', content: encoded };
-        if (threadsFileSha) body.sha = threadsFileSha;
-        var res = await fetch(GITHUB_THREADS_API, {
-            method: 'PUT',
-            headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify(body),
-        });
-        if (res.ok) { var result = await res.json(); threadsFileSha = result.content ? result.content.sha : threadsFileSha; return true; }
-        else {
-            if (res.status === 422) {
-                await fetchThreadsSha();
-                if (threadsFileSha) {
-                    body.sha = threadsFileSha;
-                    var retry = await fetch(GITHUB_THREADS_API, { method: 'PUT', headers: { 'Authorization': 'token ' + GITHUB_TOKEN, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' }, body: JSON.stringify(body) });
-                    if (retry.ok) { var retryResult = await retry.json(); threadsFileSha = retryResult.content ? retryResult.content.sha : threadsFileSha; return true; }
+        if (threadsByCategory.marketplace.length === 0) {
+            var res = await fetch(GITHUB_THREADS_RAW + '?t=' + Date.now());
+            if (res.ok) {
+                var data = await res.json();
+                var remote = data.threads || [];
+                if (remote.length > 0) {
+                    for (var j = 0; j < remote.length; j++) { remote[j].category = 'marketplace'; }
+                    threadsByCategory.marketplace = remote;
+                    saveLocalCatThreads('marketplace');
+                    await saveCategoryThreads('marketplace');
                 }
             }
-            return false;
         }
-    } catch (e) { return false; }
+    } catch (e) {}
+    return getAllThreads();
 }
+// Legacy compat aliases
+var userThreads = [];
+function syncUserThreads() { userThreads = getAllThreads(); }
+async function fetchRemoteThreads() { await fetchAllCategoryThreads(); syncUserThreads(); return userThreads; }
+async function saveRemoteThreads() { return true; }
+function fetchThreadsSha() { return fetchCatSha('marketplace'); }
 
 // ===== AUTH SYSTEM =====
 var currentUser = JSON.parse(localStorage.getItem('np_user') || 'null');
@@ -952,9 +1103,9 @@ function closeModal(id) { document.getElementById(id).classList.remove('show'); 
 document.querySelectorAll('.modal-overlay').forEach(function(overlay) { overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('show'); }); });
 
 // ===== CREATE THREAD =====
-var userThreads = JSON.parse(localStorage.getItem('np_user_threads') || '[]');
 var selectedTags = [];
 var activeThreadId = null;
+var activeCategoryKey = null;
 
 function toggleTag(el) {
     var tag = el.dataset.tag;
@@ -963,36 +1114,95 @@ function toggleTag(el) {
     else { selectedTags.push(tag); el.classList.add('selected'); }
 }
 
+function openCreateThread() {
+    // If on a category page, use that category; otherwise default to marketplace
+    var catKey = currentCategoryView || 'marketplace';
+    openCreateThreadForCategory(catKey);
+}
+
+function openCreateThreadForCategory(catKey) {
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+    if (!canCreateThread(catKey)) { alert('You do not have permission to create threads in this category.'); return; }
+    activeCategoryKey = catKey;
+    var cat = CATEGORIES[catKey];
+    document.getElementById('create-modal-title').textContent = 'Post thread in ' + cat.name;
+    // Update tags
+    var tagsContainer = document.getElementById('thread-tags');
+    var tags = cat.tags || [];
+    var tagsHtml = '';
+    for (var i = 0; i < tags.length; i++) {
+        tagsHtml += '<div class="form-tag" data-tag="' + tags[i] + '" onclick="toggleTag(this)">' + tags[i] + '</div>';
+    }
+    tagsContainer.innerHTML = tagsHtml;
+    selectedTags = [];
+    document.getElementById('thread-title-input').value = '';
+    var descEl = document.getElementById('thread-desc-input');
+    if (descEl) descEl.innerHTML = '';
+    document.getElementById('thread-link-input').value = '';
+    showModal('create-thread-modal');
+    document.getElementById('thread-title-input').focus();
+}
+
+function openCreateThreadFromQuick() {
+    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+    var catKey = currentCategoryView || 'marketplace';
+    var qt = document.getElementById('quick-thread-title');
+    var titleInput = document.getElementById('thread-title-input');
+    if (qt && qt.value.trim()) { titleInput.value = qt.value.trim(); qt.value = ''; }
+    openCreateThreadForCategory(catKey);
+}
+
 async function createThread() {
     if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
+    var catKey = activeCategoryKey || currentCategoryView || 'marketplace';
+    if (!canCreateThread(catKey)) { alert('You do not have permission to create threads in this category.'); return; }
     var title = document.getElementById('thread-title-input').value.trim();
     var descEl = document.getElementById('thread-desc-input');
     var descText = descEl.textContent.trim();
-    var desc = (descText === 'Type your message…' || descText === '<br>') ? '' : descText;
+    var desc = (descText === 'Type your message…' || descText === 'Type your message...' || descText === '<br>') ? '' : descText;
     var link = document.getElementById('thread-link-input').value.trim();
     if (!title) { document.getElementById('thread-title-input').focus(); return; }
+    var cat = CATEGORIES[catKey];
     var tagClass = 'tag-blue';
-    if (selectedTags.indexOf('Source') > -1) tagClass = 'tag-green';
-    else if (selectedTags.indexOf('Crack') > -1) tagClass = 'tag-red';
-    else if (selectedTags.indexOf('Free') > -1) tagClass = 'tag-purple';
-    var thread = { id: Date.now(), title: title, author: currentUser.username, avatar: currentUser.avatar, time: "Just now", tag: selectedTags.length > 0 ? selectedTags.join(', ') : null, tagClass: tagClass, link: link || null, description: desc, comments: [] };
-    userThreads.push(thread);
-    localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
-    var saved = await saveRemoteThreads();
+    if (selectedTags.indexOf('Source') > -1 || selectedTags.indexOf('Update') > -1 || selectedTags.indexOf('Video') > -1 || selectedTags.indexOf('Chat') > -1) tagClass = 'tag-blue';
+    else if (selectedTags.indexOf('Crack') > -1 || selectedTags.indexOf('Negative') > -1) tagClass = 'tag-red';
+    else if (selectedTags.indexOf('Free') > -1 || selectedTags.indexOf('Positive') > -1 || selectedTags.indexOf('Offer') > -1 || selectedTags.indexOf('Demo') > -1) tagClass = 'tag-green';
+    else if (selectedTags.indexOf('Event') > -1 || selectedTags.indexOf('Deal') > -1 || selectedTags.indexOf('Question') > -1) tagClass = 'tag-purple';
+    var thread = {
+        id: Date.now(), title: title, author: currentUser.username, avatar: currentUser.avatar,
+        time: "Just now", tag: selectedTags.length > 0 ? selectedTags.join(', ') : null,
+        tagClass: tagClass, link: link || null, description: desc, comments: [], category: catKey
+    };
+    if (!threadsByCategory[catKey]) threadsByCategory[catKey] = [];
+    threadsByCategory[catKey].push(thread);
+    saveLocalCatThreads(catKey);
+    var saved = await saveCategoryThreads(catKey);
     if (!saved) { alert('Failed to save thread to server.'); }
     document.getElementById('thread-title-input').value = '';
-    descEl.innerHTML = '';
+    if (descEl) descEl.innerHTML = '';
     document.getElementById('thread-link-input').value = '';
     selectedTags = [];
     document.querySelectorAll('.form-tag').forEach(function(t) { t.classList.remove('selected'); });
     closeModal('create-thread-modal');
-    renderCategories();
-    renderTicker();
-    if (window.location.hash.indexOf('marketplace') !== -1 && window.location.hash.indexOf('thread') === -1) { renderMarketplaceThreads(); }
+    activeCategoryKey = null;
+    syncUserThreads();
+    if (currentView === 'category' && currentCategoryView) {
+        renderCategoryPage(currentCategoryView);
+    } else {
+        renderCategories(); renderTicker();
+    }
+    updateStats();
 }
 
 // ===== COMMENTS =====
-function getTotalComments() { var count = 0; for (var i = 0; i < userThreads.length; i++) { count += (userThreads[i].comments || []).length; } return count; }
+function getTotalComments() {
+    var count = 0;
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        var threads = threadsByCategory[CATEGORY_KEYS[i]] || [];
+        for (var j = 0; j < threads.length; j++) { count += (threads[j].comments || []).length; }
+    }
+    return count;
+}
 
 async function addComment() {
     if (!currentUser) { alert('You need to log in with Discord to comment.'); return; }
@@ -1000,127 +1210,221 @@ async function addComment() {
     var text = input.value.trim();
     if (!text) { alert('Type a comment first.'); return; }
     if (activeThreadId === null) { alert('Error: no thread selected.'); return; }
-    var found = false;
-    for (var i = 0; i < userThreads.length; i++) {
-        if (userThreads[i].id === activeThreadId) {
-            if (!userThreads[i].comments) userThreads[i].comments = [];
-            userThreads[i].comments.push({ author: currentUser.username, avatar: currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png', text: text, time: "Just now" });
-            found = true; break;
-        }
-    }
-    if (!found) { console.error('Thread not found! activeThreadId=', activeThreadId); }
-    localStorage.setItem('np_user_threads', JSON.stringify(userThreads));
+    var found = findThreadById(activeThreadId);
+    if (!found) { alert('Thread not found.'); return; }
+    if (!canComment(found.categoryKey)) { alert('You do not have permission to comment in this category.'); return; }
+    var thread = found.thread;
+    if (!thread.comments) thread.comments = [];
+    thread.comments.push({ author: currentUser.username, avatar: currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png', text: text, time: "Just now" });
+    saveLocalCatThreads(found.categoryKey);
     input.value = '';
     renderThreadDetail(activeThreadId);
     renderCategories();
-    var saved = await saveRemoteThreads();
+    syncUserThreads();
+    var saved = await saveCategoryThreads(found.categoryKey);
     if (!saved) { alert('Failed to save comment to server.'); }
 }
 
 // ===== TICKER =====
 function renderTicker() {
     var tickerList = document.getElementById('ticker-list');
-    var items = userThreads.slice(-10).reverse().map(function(t) {
-        return '<li><a href="#" onclick="openThread(' + t.id + ');return false;">' + t.title + '</a></li>';
+    var allThreads = getAllThreads();
+    var items = allThreads.slice(-10).reverse().map(function(t) {
+        return '<li><a href="#" onclick="openThread(' + t.id + ');return false;">' + escapeHtml(t.title) + '</a></li>';
     });
     if (items.length === 0) { items = ['<li><span style="color:var(--text-muted);">No threads yet</span></li>']; }
     tickerList.innerHTML = items.join('');
 }
 
-// ===== FORUM CATEGORIES =====
+// ===== FORUM CATEGORIES (main page nodes) =====
 function renderCategories() {
-    var totalComments = getTotalComments();
-    var mpThreads = userThreads.length;
-    var latestTitle = '—';
-    var latestUser = '';
-    var latestTime = '';
-    if (userThreads.length > 0) {
-        var last = userThreads[userThreads.length - 1];
-        latestTitle = last.title; latestUser = last.author; latestTime = last.time;
-    }
-    var categories = [
-        { icon: "campaign", name: "News & Updates", desc: "Latest news, discount information, and upcoming events.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", iconType: "far fa-bullhorn" },
-        { icon: "store", name: "Marketplace", desc: "Paid configs and Lua scripts.", threads: mpThreads.toString(), messages: totalComments.toString(), latest: latestTitle, latestUser: latestUser, latestTime: latestTime, id: "marketplace", link: "#marketplace", iconType: "far fa-store" },
-        { icon: "handshake", name: "Resellers", desc: "Sales offers from our trusted partners.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", iconType: "far fa-handshake" },
-        { icon: "photo_camera", name: "Media", desc: "Materials showcasing our products.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", iconType: "far fa-images" },
-        { icon: "star", name: "Reviews", desc: "Reviews from our customers.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", iconType: "far fa-star" },
-        { icon: "forum", name: "Offtopic", desc: "Free communication.", threads: "0", messages: "0", latest: "—", latestUser: "", latestTime: "", iconType: "far fa-comments" },
-    ];
     var nodeList = document.getElementById('node-list');
-    nodeList.innerHTML = categories.map(function(cat) {
-        var nameHtml = cat.link ? '<a href="#marketplace" onclick="navigateToMarketplace();return false;">' + cat.name + '</a>' : '<a href="#">' + cat.name + '</a>';
-        var extraHtml = cat.latest !== '—'
-            ? '<div class="node-extra"><div class="node-extra-row"><a href="#" class="node-extra-title">' + cat.latest + '</a></div><div class="node-extra-row"><ul style="list-style:none;display:flex;gap:8px;font-size:0.72rem;color:var(--text-muted);"><li>' + cat.latestUser + '</li><li>' + cat.latestTime + '</li></ul></div></div>'
+    var html = '';
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        var key = CATEGORY_KEYS[i];
+        var cat = CATEGORIES[key];
+        var threads = threadsByCategory[key] || [];
+        var threadCount = threads.length;
+        var msgCount = 0;
+        for (var j = 0; j < threads.length; j++) { msgCount += (threads[j].comments || []).length; }
+        var latestTitle = '', latestUser = '', latestTime = '';
+        if (threads.length > 0) {
+            var last = threads[threads.length - 1];
+            latestTitle = last.title; latestUser = last.author; latestTime = last.time;
+        }
+        var extraHtml = latestTitle
+            ? '<div class="node-extra"><div class="node-extra-row"><a href="#" class="node-extra-title" onclick="showCategoryPage(\'' + key + '\');return false;">' + escapeHtml(latestTitle) + '</a></div><div class="node-extra-row"><ul style="list-style:none;display:flex;gap:8px;font-size:0.72rem;color:var(--text-muted);"><li>' + escapeHtml(latestUser) + '</li><li>' + escapeHtml(latestTime) + '</li></ul></div></div>'
             : '<div class="node-extra"></div>';
-        return '<div class="node' + (cat.latest !== '—' ? ' node--unread' : '') + '">' +
-            '<span class="node-icon"><i class="' + (cat.iconType || 'far fa-comments') + '"></i></span>' +
-            '<div class="node-main"><h3 class="node-title">' + nameHtml + '</h3><div class="node-desc">' + cat.desc + '</div></div>' +
-            '<div class="node-stats"><dl class="pairs pairs--rows"><dt>Threads</dt><dd>' + cat.threads + '</dd></dl><dl class="pairs pairs--rows"><dt>Messages</dt><dd>' + cat.messages + '</dd></dl></div>' +
+        var permLabel = '';
+        if (cat.createPerm === 'admin') permLabel = '<div style="margin-top:4px;font-size:0.7rem;color:var(--text-muted);"><i class="fas fa-lock" style="font-size:10px;margin-right:3px;"></i>Admin only</div>';
+        html += '<div class="node' + (latestTitle ? ' node--unread' : '') + '" onclick="showCategoryPage(\'' + key + '\')">' +
+            '<span class="node-icon"><i class="' + cat.icon + '"></i></span>' +
+            '<div class="node-main"><h3 class="node-title"><a href="#" onclick="showCategoryPage(\'' + key + '\');return false;">' + cat.name + '</a></h3><div class="node-desc">' + cat.desc + '</div>' + permLabel + '</div>' +
+            '<div class="node-stats"><dl class="pairs pairs--rows"><dt>Threads</dt><dd><strong>' + threadCount + '</strong></dd></dl><dl class="pairs pairs--rows"><dt>Messages</dt><dd><strong>' + msgCount + '</strong></dd></dl></div>' +
             extraHtml + '</div>';
-    }).join('');
-
-    // Category footer totals
-    var catFooter = document.getElementById('category-footer');
-    catFooter.innerHTML = '<div class="node-extra-footer-left"><dl class="pairs pairs--inline"><dt>Total threads</dt><dd>' + mpThreads + '</dd></dl><dl class="pairs pairs--inline"><dt>Total messages</dt><dd>' + totalComments + '</dd></dl></div>';
+    }
+    nodeList.innerHTML = html;
+    // Footer totals
+    var totalThreads = 0, totalMessages = 0;
+    for (var k = 0; k < CATEGORY_KEYS.length; k++) {
+        var t = threadsByCategory[CATEGORY_KEYS[k]] || [];
+        totalThreads += t.length;
+        for (var m = 0; m < t.length; m++) { totalMessages += (t[m].comments || []).length; }
+    }
+    document.getElementById('category-footer').innerHTML = '<div class="node-extra-footer-left"><dl class="pairs pairs--inline"><dt>Total threads</dt><dd>' + totalThreads + '</dd></dl><dl class="pairs pairs--inline"><dt>Total messages</dt><dd>' + totalMessages + '</dd></dl></div>';
 }
 renderCategories();
 
 // ===== ROUTING =====
-function navigateToMarketplace() { window.location.hash = 'marketplace'; showMarketplacePage(); }
-function backToMarketplace() { window.location.hash = 'marketplace'; document.getElementById('thread-detail-page').style.display = 'none'; document.getElementById('marketplace-page').style.display = 'block'; document.getElementById('main-categories').style.display = 'none'; document.getElementById('stats-cards').style.display = 'none'; renderMarketplaceThreads(); }
-function goHome() { window.location.hash = ''; showMainPage(); }
-function showMarketplacePage() { document.getElementById('main-categories').style.display = 'none'; document.getElementById('stats-cards').style.display = 'none'; document.getElementById('marketplace-page').style.display = 'block'; document.getElementById('thread-detail-page').style.display = 'none'; document.getElementById('mp-create-btn').style.display = currentUser ? 'flex' : 'none'; renderMarketplaceThreads(); }
-function showMainPage() { document.getElementById('main-categories').style.display = 'block'; document.getElementById('stats-cards').style.display = 'grid'; document.getElementById('marketplace-page').style.display = 'none'; document.getElementById('thread-detail-page').style.display = 'none'; renderCategories(); renderTicker(); }
+var currentView = 'home';
+var currentCategoryView = null;
 
-function renderMarketplaceThreads() {
-    var list = document.getElementById('marketplace-threads-list');
-    if (userThreads.length === 0) {
-        list.innerHTML = '<div class="mp-empty"><span class="material-icons" style="font-size:48px;display:block;margin-bottom:10px;color:var(--text-muted);">storefront</span>No threads yet<br><span style="font-size:0.82rem;">Be the first to create one!</span></div>';
+function goHome() {
+    currentView = 'home';
+    currentCategoryView = null;
+    activeThreadId = null;
+    window.location.hash = '';
+    showMainPage();
+}
+function showCategoryPage(catKey) {
+    currentView = 'category';
+    currentCategoryView = catKey;
+    activeThreadId = null;
+    document.getElementById('main-categories').style.display = 'none';
+    document.getElementById('stats-cards').style.display = 'none';
+    document.getElementById('category-page').style.display = 'block';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    window.location.hash = 'cat-' + catKey;
+    renderCategoryPage(catKey);
+    // Update nav
+    document.getElementById('nav-home').className = 'p-navEl';
+}
+function renderCategoryPage(catKey) {
+    var cat = CATEGORIES[catKey];
+    if (!cat) return;
+    document.getElementById('cat-breadcrumb-name').textContent = cat.name;
+    document.getElementById('cat-page-title').innerHTML = '<i class="' + cat.icon + ' cat-icon"></i> ' + cat.name;
+    document.getElementById('cat-page-desc').textContent = cat.desc;
+    // Create area
+    var createArea = document.getElementById('cat-create-area');
+    if (canCreateThread(catKey)) {
+        createArea.innerHTML = '<div style="margin-bottom:12px;display:flex;justify-content:flex-end;"><button class="create-thread-btn" onclick="openCreateThreadForCategory(\'' + catKey + '\')"><i class="fas fa-pen" style="font-size:14px;"></i> Post thread</button></div>';
+    } else if (!currentUser) {
+        createArea.innerHTML = '<div class="perm-notice"><i class="fas fa-lock"></i> <span>You need to <a href="' + DISCORD_AUTH_URL + '">login with Discord</a> to post threads here.</span></div>';
+    } else {
+        createArea.innerHTML = '<div class="perm-notice"><i class="fas fa-lock"></i> <span>Only <strong>administrators</strong> can create threads in this category.</span></div>';
+    }
+    renderCategoryThreads(catKey);
+}
+function renderCategoryThreads(catKey) {
+    var threads = threadsByCategory[catKey] || [];
+    var listEl = document.getElementById('cat-threads-list');
+    var emptyEl = document.getElementById('cat-empty-state');
+    if (threads.length === 0) {
+        listEl.innerHTML = '';
+        emptyEl.style.display = 'block';
+        emptyEl.innerHTML = '<div class="cat-empty"><i class="' + CATEGORIES[catKey].icon + '"></i><h3>No threads yet</h3><p>Be the first to create a thread in ' + CATEGORIES[catKey].name + '!</p></div>';
         return;
     }
-    var quickRow = '';
-    if (currentUser) {
-        quickRow = '<div class="structItem structItem--quickCreate"><div class="structItem-cell structItem-cell--icon"><div class="structItem-iconContainer"><img src="' + currentUser.avatar + '" style="width:30px;height:30px;border-radius:50%;"></div></div><div class="structItem-cell structItem-cell--main" style="padding-left:0;"><input type="text" id="quick-thread-title" placeholder="Create thread..." onkeydown="if(event.key===\'Enter\')openCreateThread()"></div></div>';
-    }
-    var html = quickRow + userThreads.slice().reverse().map(function(t) {
+    emptyEl.style.display = 'none';
+    var sorted = threads.slice().reverse();
+    var html = '';
+    for (var i = 0; i < sorted.length; i++) {
+        var t = sorted[i];
         var tagClass = t.tagClass || 'tag-blue';
-        var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + t.tag + '</span> ' : '';
+        var tagHtml = t.tag ? '<span class="tag ' + tagClass + '">' + escapeHtml(t.tag) + '</span> ' : '';
         var comments = t.comments || [];
         var commentsCount = comments.length;
         var lastComment = commentsCount > 0 ? comments[commentsCount - 1] : null;
-        var latestDateHtml = lastComment ? '<div class="structItem-latestDate">' + lastComment.time + '</div>' : '<div class="structItem-latestDate">' + t.time + '</div>';
+        var latestDateHtml = lastComment ? '<div class="structItem-latestDate">' + escapeHtml(lastComment.time) + '</div>' : '<div class="structItem-latestDate">' + escapeHtml(t.time) + '</div>';
         var latestUserHtml = lastComment
-            ? '<div class="structItem-latestUser"><img src="' + (lastComment.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + lastComment.author + '</span></div>'
-            : '<div class="structItem-latestUser"><img src="' + (t.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + t.author + '</span></div>';
-        return '<div class="structItem structItem--thread" onclick="openThread(' + t.id + ')">' +
+            ? '<div class="structItem-latestUser"><img src="' + (lastComment.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + escapeHtml(lastComment.author) + '</span></div>'
+            : '<div class="structItem-latestUser"><img src="' + (t.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '"><span>' + escapeHtml(t.author) + '</span></div>';
+        html += '<div class="structItem structItem--thread" onclick="openThread(' + t.id + ')">' +
             '<div class="structItem-cell structItem-cell--icon"><div class="structItem-iconContainer"><img src="' + (t.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:30px;height:30px;border-radius:50%;"></div></div>' +
-            '<div class="structItem-cell structItem-cell--main"><div class="structItem-title">' + tagHtml + '<span>' + t.title + '</span></div><div class="structItem-minor"><span class="author">' + t.author + '</span><span>' + t.time + '</span></div></div>' +
+            '<div class="structItem-cell structItem-cell--main"><div class="structItem-title">' + tagHtml + '<span>' + escapeHtml(t.title) + '</span></div><div class="structItem-minor"><span class="author">' + escapeHtml(t.author) + '</span><span>' + escapeHtml(t.time) + '</span></div></div>' +
             '<div class="structItem-cell structItem-cell--meta"><div class="pairs"><dt>Replies</dt><dd>' + commentsCount + '</dd></div></div>' +
             '<div class="structItem-cell structItem-cell--latest">' + latestDateHtml + latestUserHtml + '</div></div>';
-    }).join('');
-    list.innerHTML = html;
+    }
+    listEl.innerHTML = html;
+}
+
+function showMainPage() {
+    document.getElementById('main-categories').style.display = 'block';
+    document.getElementById('stats-cards').style.display = 'grid';
+    document.getElementById('category-page').style.display = 'none';
+    document.getElementById('thread-detail-page').style.display = 'none';
+    renderCategories(); renderTicker(); updateStats();
+    document.getElementById('nav-home').className = 'p-navEl is-selected';
+}
+
+function handleRoute() {
+    var h = window.location.hash;
+    if (!h || h === '#') { showMainPage(); return; }
+    if (h.indexOf('#thread-') === 0) {
+        var id = parseInt(h.replace('#thread-', ''));
+        if (!isNaN(id)) {
+            var found = findThreadById(id);
+            if (found) {
+                document.getElementById('main-categories').style.display = 'none';
+                document.getElementById('stats-cards').style.display = 'none';
+                document.getElementById('category-page').style.display = 'none';
+                document.getElementById('thread-detail-page').style.display = 'block';
+                currentView = 'thread';
+                renderThreadDetail(id);
+                return;
+            }
+        }
+    }
+    if (h.indexOf('#cat-') === 0) {
+        var catKey = h.replace('#cat-', '');
+        if (CATEGORIES[catKey]) { showCategoryPage(catKey); return; }
+    }
+    // Legacy #marketplace compat
+    if (h === '#marketplace') { showCategoryPage('marketplace'); return; }
+    showMainPage();
+}
+window.addEventListener('hashchange', function() { handleRoute(); });
+
+function renderMarketplaceThreads() {
+    // Redirect to category page
+    showCategoryPage('marketplace');
 }
 
 function openThread(id) {
+    var found = findThreadById(id);
+    if (!found) return;
     window.location.hash = 'thread-' + id;
-    document.getElementById('marketplace-page').style.display = 'none';
     document.getElementById('main-categories').style.display = 'none';
     document.getElementById('stats-cards').style.display = 'none';
+    document.getElementById('category-page').style.display = 'none';
     document.getElementById('thread-detail-page').style.display = 'block';
+    currentView = 'thread';
     renderThreadDetail(id);
 }
 
 function renderThreadDetail(id) {
+    var found = findThreadById(id);
+    if (!found) return;
     activeThreadId = id;
-    var thread = null;
-    for (var i = 0; i < userThreads.length; i++) { if (userThreads[i].id === id) { thread = userThreads[i]; break; } }
-    if (!thread) return;
-    var tagClass = thread.tagClass || 'tag-blue';
-    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + thread.tag + '</span> ' : '';
-    var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:var(--accent);font-size:0.88rem;">Open link <i class="fas fa-external-link-alt" style="font-size:12px;"></i></a>' : '';
+    var thread = found.thread;
+    var catKey = found.categoryKey;
+    var cat = CATEGORIES[catKey];
+    // Back link
+    var backLink = document.getElementById('detail-back-cat');
+    backLink.textContent = cat.name;
+    backLink.onclick = function() { showCategoryPage(catKey); return false; };
+    backLink.href = '#cat-' + catKey;
+    // Breadcrumb title
     document.getElementById('detail-breadcrumb-title').textContent = thread.title;
+    // Title
     document.getElementById('detail-title').textContent = thread.title;
-    document.getElementById('detail-description').innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);"><i class="fas fa-user" style="font-size:12px;"></i> <span style="color:var(--accent);font-weight:600;">' + thread.author + '</span><span style="margin-left:4px;">' + thread.time + '</span></div>' + (thread.description ? '<div style="margin-top:10px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + thread.description + '</div>' : '') + linkHtml;
+    // Description
+    var tagClass = thread.tagClass || 'tag-blue';
+    var tagHtml = thread.tag ? '<span class="tag ' + tagClass + '">' + escapeHtml(thread.tag) + '</span> ' : '';
+    var linkHtml = thread.link ? '<a href="' + thread.link + '" target="_blank" style="display:inline-flex;align-items:center;gap:5px;margin-top:10px;color:var(--accent);font-size:0.88rem;">Open link <i class="fas fa-external-link-alt" style="font-size:12px;"></i></a>' : '';
+    document.getElementById('detail-description').innerHTML = '<div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-muted);"><i class="fas fa-user" style="font-size:12px;"></i> <span style="color:var(--accent);font-weight:600;">' + escapeHtml(thread.author) + '</span><span style="margin-left:4px;">' + escapeHtml(thread.time) + '</span></div>' + (thread.description ? '<div style="margin-top:10px;font-size:0.9rem;color:var(--text-secondary);line-height:1.6;white-space:pre-wrap;">' + escapeHtml(thread.description) + '</div>' : '') + linkHtml;
+    // Comments
     var comments = thread.comments || [];
     document.getElementById('detail-comments-count').textContent = comments.length;
     var opAvatar = thread.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
@@ -1130,58 +1434,65 @@ function renderThreadDetail(id) {
         messagesHtml += renderMessage({ author: c.author, avatar: c.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png', time: c.time, text: c.text, num: i + 2, isOp: false });
     }
     document.getElementById('detail-messages-list').innerHTML = messagesHtml;
-    document.getElementById('detail-reply-block').style.display = currentUser ? 'block' : 'none';
+    // Reply block
+    var replyBlock = document.getElementById('detail-reply-block');
+    var replyRow = document.getElementById('detail-reply-row');
+    replyBlock.style.display = 'block';
     if (!currentUser) {
-        document.getElementById('detail-reply-row').innerHTML = '<a href="' + DISCORD_AUTH_URL + '" class="btn-cta" style="text-decoration:none;">Login with Discord to reply</a>';
+        replyRow.innerHTML = '<div class="perm-locked" style="width:100%;"><i class="fas fa-lock"></i><a href="' + DISCORD_AUTH_URL + '" style="color:var(--accent);font-weight:600;">Login with Discord</a> to reply</div>';
+    } else if (!canComment(catKey)) {
+        replyRow.innerHTML = '<div class="perm-locked" style="width:100%;"><i class="fas fa-shield-alt"></i>Only <strong>administrators</strong> can comment in this category.</div>';
     } else {
-        document.getElementById('detail-reply-row').innerHTML = '<img src="' + currentUser.avatar + '" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;"><input type="text" class="input" id="comment-input" placeholder="Write your reply..." style="flex:1;" onkeydown="if(event.key===\'Enter\')addComment()"><button class="btn-cta" onclick="addComment()"><i class="fas fa-reply" style="font-size:14px;"></i> Reply</button>';
+        replyRow.innerHTML = '<img src="' + (currentUser.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png') + '" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;"><input type="text" class="input" id="comment-input" placeholder="Write your reply..." style="flex:1;"><button class="btn-cta" onclick="addComment()"><i class="fas fa-reply" style="font-size:14px;"></i> Reply</button>';
+        // Re-attach keydown listener
+        var ci = document.getElementById('comment-input');
+        if (ci) { ci.addEventListener('keydown', function(e) { if (e.key === 'Enter') addComment(); }); }
     }
 }
 
 function renderMessage(m) {
     return '<article class="message message--post">' +
-        '<div class="message-cell message-cell--user"><div style="margin-bottom:8px;"><img src="' + m.avatar + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;"></div><div style="font-size:0.88rem;font-weight:700;color:var(--accent);word-break:break-all;">' + m.author + '</div>' + (m.isOp ? '<div style="margin-top:4px;"><span class="tag tag-blue" style="font-size:0.7rem;">OP</span></div>' : '') + '</div>' +
-        '<div class="message-cell message-cell--main"><div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><span style="font-size:0.82rem;color:var(--text-muted);">' + m.time + '</span><span style="font-size:0.78rem;color:var(--text-muted);">#' + m.num + '</span></div>' +
+        '<div class="message-cell message-cell--user"><div style="margin-bottom:8px;"><img src="' + m.avatar + '" style="width:64px;height:64px;border-radius:50%;object-fit:cover;"></div><div style="font-size:0.88rem;font-weight:700;color:var(--accent);word-break:break-all;">' + escapeHtml(m.author) + '</div>' + (m.isOp ? '<div style="margin-top:4px;"><span class="tag tag-blue" style="font-size:0.7rem;">OP</span></div>' : '') + '</div>' +
+        '<div class="message-cell message-cell--main"><div style="padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;"><span style="font-size:0.82rem;color:var(--text-muted);">' + escapeHtml(m.time) + '</span><span style="font-size:0.78rem;color:var(--text-muted);">#' + m.num + '</span></div>' +
         '<div style="padding:12px 16px;font-size:0.9rem;color:var(--text-primary);line-height:1.6;">' + (m.text || '<em style="color:var(--text-muted);">No content</em>') + '</div>' +
         '<div style="padding:6px 16px;display:flex;gap:12px;border-top:1px solid var(--border);">' +
             '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="alert(\'Coming soon\')"><i class="fas fa-thumbs-up" style="font-size:12px;"></i> Like</button>' +
-            '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="document.getElementById(\'comment-input\').focus()"><i class="fas fa-reply" style="font-size:12px;"></i> Reply</button>' +
+            '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="var ci=document.getElementById(\'comment-input\');if(ci)ci.focus();"><i class="fas fa-reply" style="font-size:12px;"></i> Reply</button>' +
             '<button style="background:none;border:none;color:var(--text-muted);font-size:0.78rem;cursor:pointer;display:flex;align-items:center;gap:4px;font-family:inherit;" onclick="alert(\'Coming soon\')"><i class="fas fa-flag" style="font-size:12px;"></i> Report</button>' +
         '</div></div></article>';
 }
 
-// Hash routing
-(function() {
-    var h = window.location.hash;
-    if (h.indexOf('thread-') !== -1) {
-        var id = parseInt(h.replace('#thread-', ''));
-        document.getElementById('main-categories').style.display = 'none';
-        document.getElementById('stats-cards').style.display = 'none';
-        document.getElementById('marketplace-page').style.display = 'none';
-        document.getElementById('thread-detail-page').style.display = 'block';
-        renderThreadDetail(id);
-    } else if (h === '#marketplace') { showMarketplacePage(); }
-})();
-window.addEventListener('hashchange', function() {
-    var h = window.location.hash;
-    if (h.indexOf('thread-') !== -1) {
-        var id = parseInt(h.replace('#thread-', ''));
-        document.getElementById('main-categories').style.display = 'none';
-        document.getElementById('stats-cards').style.display = 'none';
-        document.getElementById('marketplace-page').style.display = 'none';
-        document.getElementById('thread-detail-page').style.display = 'block';
-        renderThreadDetail(id);
-    } else if (h === '#marketplace') { showMarketplacePage(); } else { showMainPage(); }
-});
-
-function openCreateThread() {
-    if (!currentUser) { window.location.href = DISCORD_AUTH_URL; return; }
-    var qt = document.getElementById('quick-thread-title');
-    var titleInput = document.getElementById('thread-title-input');
-    if (qt && qt.value.trim()) { titleInput.value = qt.value.trim(); qt.value = ''; }
-    showModal('create-thread-modal'); titleInput.focus();
+// ===== HTML ESCAPE =====
+function escapeHtml(str) {
+    if (!str) return '';
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }
 
+// Hash routing - initial
+(function() {
+    var h = window.location.hash;
+    if (h.indexOf('#thread-') !== -1) {
+        var id = parseInt(h.replace('#thread-', ''));
+        document.getElementById('main-categories').style.display = 'none';
+        document.getElementById('stats-cards').style.display = 'none';
+        document.getElementById('category-page').style.display = 'none';
+        document.getElementById('thread-detail-page').style.display = 'block';
+        renderThreadDetail(id);
+    } else if (h.indexOf('#cat-') !== -1) {
+        var catKey = h.replace('#cat-', '');
+        if (CATEGORIES[catKey]) { showCategoryPage(catKey); }
+    } else if (h === '#marketplace') {
+        showCategoryPage('marketplace');
+    }
+})();
+
+function openCreateThread() {
+    // Legacy compat: use current category view
+    var catKey = currentCategoryView || 'marketplace';
+    openCreateThreadForCategory(catKey);
+}
 function execEditor(cmd) { document.execCommand(cmd, false, null); document.getElementById('thread-desc-input').focus(); }
 function insertLink() { var url = prompt('Enter URL:'); if (url) { document.execCommand('createLink', false, url); } }
 function insertCode() {
@@ -1203,6 +1514,21 @@ window.addEventListener('scroll', function() {
     var pct = d > 0 ? (s / d) * 100 : 0;
     document.getElementById('progress-bar').style.width = pct + '%';
 });
+
+// ===== SIDEBAR: LATEST POSTS =====
+function renderLatestPostsSidebar() {
+    var el = document.getElementById('latest-posts-sidebar');
+    var allThreads = getAllThreads();
+    if (allThreads.length === 0) { el.innerHTML = '<div style="text-align:center;padding:12px;color:var(--text-muted);font-size:0.82rem;">No posts yet</div>'; return; }
+    var recent = allThreads.slice(-5).reverse();
+    var html = '';
+    for (var i = 0; i < recent.length; i++) {
+        var t = recent[i];
+        var catName = CATEGORIES[t.category] ? CATEGORIES[t.category].name : (t.category || 'Marketplace');
+        html += '<div class="block-row"><div class="contentRow"><div class="contentRow-main contentRow-main--close"><a href="#" onclick="openThread(' + t.id + ');return false;">' + escapeHtml(t.title) + '</a><div class="contentRow-minor">' + escapeHtml(catName) + ' &middot; ' + escapeHtml(t.author) + ' &middot; ' + escapeHtml(t.time) + '</div></div></div></div>';
+    }
+    el.innerHTML = html;
+}
 
 // ===== DISCORD WIDGET =====
 var GUILD_ID = '1512530980177711325';
@@ -1229,13 +1555,7 @@ function loadDiscordWidget() {
             var onlineTotal = document.getElementById('online-total');
             if (onlineTotal) { onlineTotal.textContent = 'Total: ' + data.presence_count; }
             // Latest posts sidebar
-            var latestPosts = document.getElementById('latest-posts-sidebar');
-            if (latestPosts && userThreads.length > 0) {
-                var recentThreads = userThreads.slice(-5).reverse();
-                latestPosts.innerHTML = recentThreads.map(function(t) {
-                    return '<div class="block-row"><div class="contentRow"><div class="contentRow-main contentRow-main--close"><a href="#" onclick="openThread(' + t.id + ');return false;">' + t.title + '</a><div class="contentRow-minor">Latest: ' + t.author + ' &middot; ' + t.time + '</div></div></div></div>';
-                }).join('');
-            }
+            renderLatestPostsSidebar();
             var html = '<div class="discord-online"><div class="discord-dot"></div><span class="discord-count">' + data.presence_count + ' online</span></div>' +
                 '<ul class="discord-members">' +
                 shown.map(function(m) {
@@ -1262,7 +1582,7 @@ async function openAdminPanel() {
     document.getElementById('admin-stats-row').innerHTML =
         '<div class="admin-stat-item"><div class="admin-stat-num">' + registered + '</div><div class="admin-stat-label">Registered</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + bannedCount + '</div><div class="admin-stat-label">Banned</div></div>' +
-        '<div class="admin-stat-item"><div class="admin-stat-num">' + userThreads.length + '</div><div class="admin-stat-label">Threads</div></div>' +
+        '<div class="admin-stat-item"><div class="admin-stat-num">' + getAllThreads().length + '</div><div class="admin-stat-label">Threads</div></div>' +
         '<div class="admin-stat-item"><div class="admin-stat-num">' + getTotalComments() + '</div><div class="admin-stat-label">Comments</div></div>';
     renderAdminUsers();
     loadBannedIPs();
@@ -1340,7 +1660,7 @@ async function doQuickBan() {
     var query = input.value.trim().toLowerCase();
     if (!query) { results.innerHTML = '<div style="font-size:0.82rem;color:var(--text-muted);padding:4px 0;">Type a username</div>'; return; }
     await fetchRemoteUsers();
-    await fetchRemoteThreads();
+    await fetchAllCategoryThreads();
     var matches = remoteUsers.filter(function(u) { return (u.username || '').toLowerCase().indexOf(query) !== -1 || (u.global_name || '').toLowerCase().indexOf(query) !== -1; });
     if (matches.length === 0) { results.innerHTML = '<div style="font-size:0.82rem;color:var(--yellow);padding:4px 0;">Not found</div>'; return; }
     var banned = 0;
@@ -1635,10 +1955,14 @@ function initShoutbox() {
 
 // ===== INIT =====
 function updateStats() {
-    var threads = userThreads.length;
-    var messages = getTotalComments();
+    var threads = 0, messages = 0;
+    for (var i = 0; i < CATEGORY_KEYS.length; i++) {
+        var t = threadsByCategory[CATEGORY_KEYS[i]] || [];
+        threads += t.length;
+        for (var j = 0; j < t.length; j++) { messages += (t[j].comments || []).length; }
+    }
     var members = remoteUsers.length;
-    var latestUser = '—';
+    var latestUser = '\u2014';
     if (remoteUsers.length > 0) {
         var sorted = remoteUsers.slice().sort(function(a, b) { return new Date(b.joinedAt || 0) - new Date(a.joinedAt || 0); });
         latestUser = sorted[0].global_name || sorted[0].username;
@@ -1646,7 +1970,7 @@ function updateStats() {
     document.getElementById('stat-threads').textContent = threads;
     document.getElementById('stat-messages').textContent = messages;
     document.getElementById('stat-members').textContent = members;
-    document.getElementById('stat-latest-member').innerHTML = latestUser !== '—' ? '<a href="#" style="color:var(--accent);font-size:1.2rem;">' + latestUser + '</a>' : '—';
+    document.getElementById('stat-latest-member').innerHTML = latestUser !== '\u2014' ? '<a href="#" style="color:var(--accent);font-size:1.2rem;">' + latestUser + '</a>' : '\u2014';
     // Newest members in extra footer
     var newestList = document.getElementById('newest-members-list');
     if (newestList && remoteUsers.length > 0) {
@@ -1659,18 +1983,24 @@ function updateStats() {
             return '<li><a href="https://discord.com/users/' + u.id + '" target="_blank"><div class="avatar-placeholder-sm" style="background:' + bg + ';">' + initials + '</div></a></li>';
         }).join('');
     }
+    renderLatestPostsSidebar();
 }
 
-fetchRemoteThreads().then(function() {
-    updateStats(); renderCategories(); renderTicker(); renderMarketplaceThreads();
-    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
+// ===== BOOTSTRAP =====
+initCategoryStorage();
+fetchAllCategoryThreads().then(function() {
+    syncUserThreads();
+    updateStats(); renderCategories(); renderTicker();
+    handleRoute();
     return initAuth();
 }).then(function() {
-    updateStats(); renderCategories(); renderTicker(); renderMarketplaceThreads();
-    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
+    syncUserThreads();
+    updateStats(); renderCategories(); renderTicker();
+    handleRoute();
 }).catch(function() {
-    updateStats(); renderCategories(); renderTicker(); renderMarketplaceThreads();
-    if (activeThreadId !== null) { renderThreadDetail(activeThreadId); }
+    syncUserThreads();
+    updateStats(); renderCategories(); renderTicker();
+    handleRoute();
 });
 loadDiscordWidget();
 setInterval(loadDiscordWidget, 60000);
