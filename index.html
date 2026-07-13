@@ -13,35 +13,35 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-body: #431f20;
+            --bg-body: #3a1a1b;
             --bg-page: #4e2425;
-            --bg-block: #5c2a2c;
-            --bg-block-header: #5c2a2c;
+            --bg-block: #4a2224;
+            --bg-block-header: #4a2224;
             --bg-node: #4e2425;
-            --bg-node-alt: #683032;
-            --bg-node-hover: #5e2929;
-            --bg-input: #4e2425;
-            --bg-nav: #5a3636;
-            --bg-sidebar: #5c2a2c;
-            --text-primary: #eededf;
-            --text-secondary: #ccb3b5;
-            --text-muted: #ab898a;
-            --text-bright: #fff0f1;
-            --accent: #f56363;
-            --accent-hover: #f85050;
-            --primary: #855353;
-            --gradient: linear-gradient(135deg, #855353, #f85050);
-            --gradient-h: linear-gradient(to right, #5a3636, #855353, #5a3636);
-            --border: #914245;
-            --border-light: #863d40;
-            --border-bright: #a24a4d;
-            --red: #f56363;
+            --bg-node-alt: #542627;
+            --bg-node-hover: #542627;
+            --bg-input: #3a1a1b;
+            --bg-nav: #4a2224;
+            --bg-sidebar: #4a2224;
+            --text-primary: #d9cfcf;
+            --text-secondary: #b8a0a1;
+            --text-muted: #947677;
+            --text-bright: #f0e8e8;
+            --accent: #e05555;
+            --accent-hover: #f06060;
+            --primary: #7a4e4e;
+            --gradient: linear-gradient(180deg, #5a3636 0%, #3a1a1b 100%);
+            --gradient-h: linear-gradient(to right, #4a2224, #6a3a3a, #4a2224);
+            --border: #5e2c2e;
+            --border-light: #5e2c2e;
+            --border-bright: #7a3e40;
+            --red: #e05555;
             --green: #4ade80;
             --yellow: #fbbf24;
-            --notice-bg: rgba(245,99,99,0.15);
-            --notice-border: #a24a4d;
-            --block-container-border: #914245;
-            --block-box-bg: #4e2425;
+            --notice-bg: rgba(224,85,85,0.12);
+            --notice-border: #7a3e40;
+            --block-container-border: #5e2c2e;
+            --block-box-bg: #4a2224;
         }
         body { font-family: 'Open Sans', -apple-system, sans-serif; background: var(--bg-body); color: var(--text-primary); line-height: 1.5; min-height: 100vh; }
         a { color: var(--accent); text-decoration: none; transition: color 0.15s; }
@@ -50,17 +50,26 @@
         /* ===== PAGE WRAPPER ===== */
         .p-pageWrapper { max-width: 1300px; margin: 0 auto; }
 
-        /* ===== HEADER + NAV (gradient as in Nonagon) ===== */
-        .gradient { background: linear-gradient(180deg, #5a3636 0%, #4e2d2d 100%); }
+        /* ===== STAFF BAR ===== */
+        .p-staffBar { background: #2a1112; border-bottom: 1px solid var(--border); font-size: 0.75rem; }
+        .p-staffBar-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; min-height: 32px; }
+        .p-staffBar .p-navgroup { display: flex; align-items: center; gap: 4px; }
+        .p-staffBar .p-navgroup-link { color: var(--text-muted); font-size: 0.75rem; padding: 4px 8px; }
+        .p-staffBar .p-navgroup-link:hover { color: var(--text-primary); }
+        .p-staffBar .avatar-staff { width: 18px; height: 18px; border-radius: 50%; vertical-align: middle; margin-right: 4px; }
+
+        /* ===== HEADER + NAV (XenForo gradient) ===== */
+        .gradient { background: linear-gradient(180deg, #5a3636 0%, #3d1e1e 100%); }
         .p-header { padding: 16px 20px; }
         .p-header-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; }
+        .p-header-logo { display: flex; align-items: center; gap: 10px; }
         .p-header-logo img { height: 36px; width: auto; }
         .p-header-logo-text { font-size: 1.4rem; font-weight: 700; color: var(--text-bright); letter-spacing: -0.5px; }
         .p-header-logo-text span { color: var(--accent); }
 
         /* ===== NAV ===== */
         .p-navSticky { position: sticky; top: 0; z-index: 100; }
-        .p-nav { border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #5a3636, #855353, #a24a4d, #855353, #5a3636) 1; }
+        .p-nav { border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #4a2224, #6a3a3a, #7a3e40, #6a3a3a, #4a2224) 1; }
         .p-nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; padding: 0 20px; height: 48px; }
         .p-nav-list { display: flex; list-style: none; gap: 0; }
         .p-navEl { position: relative; }
@@ -77,7 +86,7 @@
         /* ===== PROGRESS BAR ===== */
         .xtr-progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: var(--gradient); z-index: 9999; transition: width 0.1s; width: 0%; }
 
-        /* ===== NEWS TICKER (Nonagon style with stairs) ===== */
+        /* ===== NEWS TICKER (XenForo stairs) ===== */
         .new-tickers-wrap { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; margin: 12px 20px; padding: 0; overflow: hidden; position: relative; }
         .new-tickers { display: flex; align-items: center; min-height: 40px; padding: 0; }
         .new-tickers-stairs { display: flex; flex-shrink: 0; }
@@ -123,10 +132,28 @@
         /* ===== BLOCK / CATEGORY (XenForo block-container + block-box) ===== */
         .block { margin-bottom: 20px; overflow: hidden; }
         .block-container { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .block-box { background: var(--bg-block); background-image: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0,0,0,0.04) 1px, rgba(0,0,0,0.04) 2px); }
+        .block-box { background: var(--bg-block); }
         .block-header { padding: 12px 16px; background: var(--bg-block-header); border-bottom: 1px solid var(--border); font-size: 0.92rem; font-weight: 700; color: var(--text-bright); text-transform: uppercase; letter-spacing: 0.3px; display: flex; align-items: center; justify-content: space-between; }
         .block-header a { color: var(--text-bright); }
         .block-header a:hover { color: var(--accent-hover); }
+
+        /* ===== SIROPU SHOUTBOX (XenForo style) ===== */
+        .block.siropuShoutbox .block-header { display: flex; align-items: center; justify-content: space-between; }
+        .block.siropuShoutbox .block-header .shoutbox-toggles { display: flex; gap: 6px; align-items: center; }
+        .block.siropuShoutbox .block-header .shoutbox-toggles button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 4px; transition: color 0.15s; }
+        .block.siropuShoutbox .block-header .shoutbox-toggles button:hover { color: var(--accent); }
+        .siropuShoutboxShouts { list-style: none; margin: 0; padding: 12px 16px; max-height: 400px; min-height: 150px; overflow-y: auto; background: rgba(0,0,0,0.15); counter-reset: shout; }
+        .siropuShoutboxShouts li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
+        .siropuShoutboxShouts li:last-child { border-bottom: none; }
+        .shout-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
+        .shout-user { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
+        .shout-time { color: var(--text-muted); font-size: 0.72rem; margin-left: 6px; }
+        .shout-message { font-size: 0.88rem; color: var(--text-primary); word-break: break-word; margin-top: 3px; line-height: 1.5; }
+        .siropuShoutboxForm { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--bg-block); align-items: center; }
+        .siropuShoutboxForm .input { flex: 1; padding: 10px 14px; font-size: 0.85rem; }
+        .siropuShoutboxForm .btn-cta, .siropuShoutboxForm .shout-btn { padding: 10px 14px; font-size: 0.85rem; background: none; border: none; color: var(--accent); cursor: pointer; font-size: 1.1rem; transition: color 0.15s; }
+        .siropuShoutboxForm .shout-btn:hover { color: var(--accent-hover); }
+        .siropuShoutboxEmpty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
 
         /* ===== NODE (XenForo forum row) ===== */
         .node { display: flex; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--border); transition: background 0.15s; gap: 14px; position: relative; }
@@ -137,12 +164,12 @@
         .node-main { flex: 1; min-width: 0; }
         .node-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 2px; }
         .node-title a { color: var(--text-bright); transition: all 0.2s; }
-        .node-title a::before { content: '['; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; display: inline-block; transform: translateX(4px); }
-        .node-title a::after { content: ']'; color: var(--accent); opacity: 0; transition: opacity 0.2s, transform 0.2s; display: inline-block; transform: translateX(-4px); }
-        .node:hover .node-title a::before { opacity: 1; transform: translateX(0); }
-        .node:hover .node-title a::after { opacity: 1; transform: translateX(0); }
         .node-title a:hover { color: var(--accent); }
         .node-desc { font-size: 0.8rem; color: var(--text-muted); }
+        .node-meta { margin-top: 4px; }
+        .node-meta .pairs--inline { display: flex; gap: 12px; }
+        .node-meta .pairs--inline dt { font-size: 0.72rem; color: var(--text-muted); }
+        .node-meta .pairs--inline dd { font-size: 0.78rem; color: var(--text-secondary); font-weight: 600; }
         .node-stats { display: flex; gap: 24px; flex-shrink: 0; text-align: center; }
         .node-stats dt { display: none; }
         .node-stats dd { font-size: 0.82rem; color: var(--text-secondary); }
@@ -163,7 +190,7 @@
         .node-extra-footer-left dt { color: var(--text-muted); }
         .node-extra-footer-left dd { color: var(--text-secondary); font-weight: 600; }
 
-        /* ===== STATISTICS CARDS (Bootstrap-like grid) ===== */
+        /* ===== STATISTICS CARDS (Xentr bootstrap grid) ===== */
         .xentr-main { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
         .stat-card { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; padding: 16px; text-align: center; }
         .stat-card-title { font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
@@ -172,7 +199,7 @@
         .stat-card-content .text-primary { color: #855353; }
         .stat-card-content .text-warning { color: #fbbf24; }
         .stat-card-content .text-success { color: #4ade80; }
-        .stat-card-content .text-danger { color: #f56363; }
+        .stat-card-content .text-danger { color: #e05555; }
         .stat-card-content .number-font { font-size: 1.2rem; font-weight: 700; color: var(--text-bright); }
         @media (max-width: 768px) { .xentr-main { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) { .xentr-main { grid-template-columns: 1fr; } }
@@ -274,8 +301,8 @@
         /* Tags */
         .tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
         .tag-green { background: rgba(74,222,128,0.15); color: #4ade80; }
-        .tag-red { background: rgba(245,99,99,0.15); color: #f56363; }
-        .tag-blue { background: rgba(133,83,83,0.2); color: #f56363; }
+        .tag-red { background: rgba(224,85,85,0.15); color: #e05555; }
+        .tag-blue { background: rgba(122,78,78,0.2); color: #e05555; }
         .tag-purple { background: rgba(192,132,252,0.15); color: #c084fc; }
 
         /* ===== BUTTONS ===== */
@@ -329,7 +356,7 @@
         .admin-badge { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; }
         .admin-badge.admin { background: var(--red); color: white; }
         .admin-badge.user { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .admin-badge.banned { background: rgba(245,99,99,0.2); color: #f56363; }
+        .admin-badge.banned { background: rgba(224,85,85,0.2); color: #e05555; }
         .ban-btn { padding: 4px 10px; border-radius: 4px; border: none; font-family: inherit; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.15s; text-transform: uppercase; }
         .ban-btn.ban { background: var(--red); color: white; }
         .ban-btn.ban:hover { opacity: 0.85; }
@@ -343,18 +370,9 @@
         .ban-reason-input:focus { border-color: var(--red); }
         .admin-empty { text-align: center; padding: 24px; color: var(--text-muted); font-size: 0.85rem; }
 
-        /* ===== FOOTER ===== */
-        .p-footer { background: linear-gradient(180deg, #4e2d2d 0%, #431f20 100%); border-top: 1px solid var(--border); margin-top: 30px; padding: 20px; }
-        .p-footer-inner { max-width: 1200px; margin: 0 auto; }
-        .p-footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
-        .p-footer-links { display: flex; gap: 16px; list-style: none; flex-wrap: wrap; }
-        .p-footer-links a { font-size: 0.8rem; color: var(--text-muted); }
-        .p-footer-links a:hover { color: var(--text-primary); }
-        .p-footer-copy { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
-
-        /* Extra footer (WHO WE ARE + Newest members) */
+        /* ===== EXTRA FOOTER (Xentr: WHO WE ARE + Newest members) ===== */
         .xtr-extra-footer { background: var(--bg-block); border-top: 1px solid var(--border); padding: 20px; margin-top: 0; }
-        .xtr-extra-footer .p-footer-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+        .xtr-extra-footer .p-footer-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 1200px; margin: 0 auto; }
         .xtr-extra-footer h3 { font-size: 0.85rem; font-weight: 700; color: var(--text-bright); margin-bottom: 10px; text-transform: uppercase; }
         .xtr-extra-footer .block-body { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6; }
         .newest-members-list { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
@@ -363,19 +381,14 @@
         .newest-members-list .avatar-placeholder-sm { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; }
         @media (max-width: 600px) { .xtr-extra-footer .p-footer-inner { grid-template-columns: 1fr; } }
 
-        /* ===== SHOUTBOX (big, full-width above Public) ===== */
-        #shoutbox-block-main .block-container { background: var(--bg-block); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .siropuShoutboxShouts { list-style: none; margin: 0; padding: 12px 16px; max-height: 400px; min-height: 150px; overflow-y: auto; background: var(--bg-body); }
-        .siropuShoutboxShouts li { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: flex-start; }
-        .siropuShoutboxShouts li:last-child { border-bottom: none; }
-        .shout-avatar { width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; object-fit: cover; }
-        .shout-user { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
-        .shout-time { color: var(--text-muted); font-size: 0.72rem; margin-left: 6px; }
-        .shout-message { font-size: 0.88rem; color: var(--text-primary); word-break: break-word; margin-top: 3px; line-height: 1.5; }
-        .siropuShoutboxForm { padding: 12px 16px; border-top: 1px solid var(--border); display: flex; gap: 10px; background: var(--bg-block); }
-        .siropuShoutboxForm .input { flex: 1; padding: 10px 14px; font-size: 0.85rem; }
-        .siropuShoutboxForm .btn-cta { padding: 10px 18px; font-size: 0.82rem; }
-        .siropuShoutboxEmpty { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85rem; }
+        /* ===== FOOTER ===== */
+        .p-footer { background: linear-gradient(180deg, #3d1e1e 0%, #2a1112 100%); border-top: 1px solid var(--border); margin-top: 30px; padding: 20px; }
+        .p-footer-inner { max-width: 1200px; margin: 0 auto; }
+        .p-footer-row { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .p-footer-links { display: flex; gap: 16px; list-style: none; flex-wrap: wrap; }
+        .p-footer-links a { font-size: 0.8rem; color: var(--text-muted); }
+        .p-footer-links a:hover { color: var(--text-primary); }
+        .p-footer-copy { font-size: 0.78rem; color: var(--text-muted); text-align: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.05); }
 
         /* ===== LOADING ===== */
         .loading-spinner { width: 20px; height: 20px; border: 2px solid var(--border-light); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 16px auto; }
@@ -393,7 +406,7 @@
             .p-body-sidebar { order: -1; }
             .p-nav-list { display: none; }
             .hamburger { display: block; }
-            .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #5a3636, #855353, #a24a4d, #855353, #5a3636) 1; padding: 8px; z-index: 99; }
+            .p-nav-list.open { display: flex; flex-direction: column; position: absolute; top: 48px; left: 0; right: 0; background: var(--bg-nav); border-bottom: 3px solid transparent; border-image: linear-gradient(to right, #4a2224, #6a3a3a, #7a3e40, #6a3a3a, #4a2224) 1; padding: 8px; z-index: 99; }
             .node-stats { display: none !important; }
             .node-extra { display: none !important; }
         }
@@ -408,6 +421,14 @@
 <body>
 
 <div class="p-pageWrapper" id="top">
+
+    <!-- STAFF BAR -->
+    <div class="p-staffBar" id="staff-bar">
+        <div class="p-staffBar-inner">
+            <div></div>
+            <div class="p-navgroup" id="staff-bar-right"></div>
+        </div>
+    </div>
 
     <!-- HEADER -->
     <header class="p-header gradient" id="header">
@@ -468,16 +489,23 @@
     <!-- BODY -->
     <div class="p-body">
         <main>
-            <!-- SHOUTBOX (big, above Public) -->
-            <div class="block" id="shoutbox-block-main">
-                <div class="block-container block-box">
+            <!-- SHOUTBOX (Siropu style, above Public) -->
+            <div class="block siropuShoutbox" id="shoutbox-block-main">
+                <div class="block-container">
                     <div class="block-header">
-                        <h2><i class="fas fa-comments" style="margin-right:8px;color:var(--accent);"></i> Shoutbox <span id="shoutbox-countdown" style="font-size:0.7rem;font-weight:400;color:var(--text-muted);margin-left:8px;"></span></h2>
+                        <span><i class="fas fa-bullhorn" style="margin-right:8px;color:var(--accent);"></i> Shoutbox <span id="shoutbox-countdown" style="font-size:0.7rem;font-weight:400;color:var(--text-muted);margin-left:8px;"></span></span>
+                        <span class="shoutbox-toggles">
+                            <button title="Toggle sound" onclick="return false;"><i class="fas fa-volume-up"></i></button>
+                            <button title="Toggle direction" onclick="return false;"><i class="fas fa-arrow-up"></i></button>
+                            <button title="Toggle visibility" onclick="var sb=document.getElementById('shoutbox-body');sb.style.display=sb.style.display==='none'?'block':'none';return false;"><i class="fas fa-minus"></i></button>
+                        </span>
                     </div>
-                    <ul class="siropuShoutboxShouts" id="shoutbox-messages">
-                        <li class="siropuShoutboxEmpty">Loading...</li>
-                    </ul>
-                    <div class="siropuShoutboxForm" id="shoutbox-form"></div>
+                    <div class="block-body" id="shoutbox-body">
+                        <ol class="siropuShoutboxShouts" id="shoutbox-messages">
+                            <li class="siropuShoutboxEmpty">Loading...</li>
+                        </ol>
+                        <form class="siropuShoutboxForm" id="shoutbox-form" onsubmit="return false;"></form>
+                    </div>
                 </div>
             </div>
 
@@ -648,54 +676,46 @@
                     <input type="text" class="input" id="thread-link-input" placeholder="https://...">
                 </div>
             </div>
-            <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:var(--bg-block);border-radius:0 0 10px 10px;">
-                <button type="button" class="btn-secondary" onclick="closeModal('create-thread-modal')">Cancel</button>
-                <button type="button" class="btn-cta" onclick="createThread()"><i class="fas fa-pen" style="font-size:14px;"></i> Post thread</button>
+            <div style="padding:14px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;">
+                <button class="btn-secondary" onclick="closeModal('create-thread-modal')">Cancel</button>
+                <button class="btn-cta" onclick="createThread()">Post thread</button>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Admin Panel Modal -->
+<!-- Admin Panel MODAL -->
 <div class="modal-overlay" id="admin-panel-modal">
-    <div class="modal admin-modal">
+    <div class="modal admin-modal" onclick="event.stopPropagation()">
         <div class="modal-header">
-            <h2><span class="material-icons" style="font-size:18px;vertical-align:middle;margin-right:4px;">admin_panel_settings</span>Admin Panel</h2>
+            <h2><i class="fas fa-shield-alt" style="margin-right:6px;"></i> Admin Panel</h2>
             <button class="modal-close" onclick="closeModal('admin-panel-modal')">&times;</button>
         </div>
         <div class="admin-stats-row" id="admin-stats-row"></div>
-        <div class="modal-body" style="padding:0;">
-            <div style="padding:12px 20px;border-bottom:1px solid var(--border);background:rgba(245,99,99,0.04);">
-                <div style="font-size:0.85rem;font-weight:600;color:var(--red);margin-bottom:8px;display:flex;align-items:center;gap:6px;">
-                    <span class="material-icons" style="font-size:16px;">gavel</span> Quick Ban
-                </div>
-                <div style="display:flex;gap:8px;align-items:center;">
-                    <input type="text" class="input" id="admin-quickban-input" placeholder="Type username..." style="flex:1;padding:8px 12px;font-size:0.88rem;" onkeydown="if(event.key==='Enter')doQuickBan()">
-                    <button class="ban-btn ban" onclick="doQuickBan()" style="padding:8px 16px;font-size:0.82rem;">Ban</button>
-                </div>
-                <div id="admin-quickban-results" style="margin-top:6px;max-height:120px;overflow-y:auto;"></div>
-            </div>
-            <div style="padding:12px 20px;border-bottom:1px solid var(--border);">
-                <div style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:8px;">IP Ban</div>
-                <div style="display:flex;gap:8px;align-items:center;">
-                    <input type="text" class="input" id="admin-ip-input" placeholder="IP address (e.g. 192.168.1.1)" style="flex:1;padding:6px 10px;font-size:0.82rem;">
-                    <button class="ban-btn ban" onclick="doBanIP()" style="padding:6px 12px;font-size:0.78rem;">Ban IP</button>
-                </div>
-                <div id="admin-banned-ips-list" style="margin-top:8px;"></div>
-            </div>
-            <div style="padding:12px 20px 6px;display:flex;align-items:center;justify-content:space-between;">
-                <span style="font-size:0.85rem;font-weight:600;color:var(--text-secondary);">Registered Users</span>
-                <input type="text" class="input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()" style="width:180px;padding:6px 10px;font-size:0.82rem;">
-            </div>
-            <div id="admin-users-list"></div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+            <input type="text" class="input" id="admin-search" placeholder="Search users..." oninput="renderAdminUsers()">
         </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="closeModal('admin-panel-modal')">Close</button>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+            <label class="formRow-label" style="margin-bottom:6px;">Quick Ban</label>
+            <div style="display:flex;gap:8px;">
+                <input type="text" class="input" id="admin-quickban-input" placeholder="Username to ban..." onkeydown="if(event.key==='Enter')doQuickBan()">
+                <button class="btn-cta" style="background:var(--red);" onclick="doQuickBan()">Ban</button>
+            </div>
+            <div id="admin-quickban-results" style="margin-top:6px;"></div>
         </div>
+        <div style="padding:14px 20px;border-bottom:1px solid var(--border);">
+            <label class="formRow-label" style="margin-bottom:6px;">IP Ban</label>
+            <div style="display:flex;gap:8px;">
+                <input type="text" class="input" id="admin-ip-input" placeholder="IP address..." onkeydown="if(event.key==='Enter')doBanIP()">
+                <button class="btn-cta" style="background:var(--red);" onclick="doBanIP()">Ban IP</button>
+            </div>
+            <div id="admin-banned-ips-list" style="margin-top:6px;"></div>
+        </div>
+        <div style="overflow-x:auto;" id="admin-users-list"></div>
     </div>
 </div>
 
-<!-- Ban confirmation modal -->
+<!-- Ban Confirm MODAL -->
 <div class="modal-overlay" id="ban-confirm-modal">
     <div class="modal" style="max-width:400px;">
         <div class="modal-header">
@@ -1458,7 +1478,7 @@ function renderShoutboxForm() {
     var form = document.getElementById('shoutbox-form');
     if (!form) return;
     if (currentUser) {
-        form.innerHTML = '<input type="text" id="shoutbox-input" class="input" placeholder="Type a message..." onkeydown="if(event.key===\'Enter\')sendShout()"><button class="btn-cta" onclick="sendShout()"><i class="fas fa-paper-plane" style="font-size:12px;"></i></button>';
+        form.innerHTML = '<input type="text" id="shoutbox-input" class="input" placeholder="What\'s on your mind?" onkeydown="if(event.key===\'Enter\')sendShout()"><button class="shout-btn" onclick="sendShout()" title="Shout!"><i class="fas fa-bullhorn"></i></button>';
     } else {
         form.innerHTML = '<a href="' + DISCORD_AUTH_URL + '" style="display:block;width:100%;text-align:center;padding:8px;color:var(--accent);font-size:0.82rem;font-weight:600;text-decoration:none;">Login with Discord to chat</a>';
     }
@@ -1468,7 +1488,7 @@ function renderShoutboxMessages() {
     var list = document.getElementById('shoutbox-messages');
     if (!list) return;
     if (shoutboxMessages.length === 0) {
-        list.innerHTML = '<li class="siropuShoutboxEmpty">No messages yet. Be the first!</li>';
+        list.innerHTML = '<li class="siropuShoutboxEmpty">No shouts have been posted yet.</li>';
         return;
     }
     var html = '';
