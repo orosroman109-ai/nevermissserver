@@ -31,11 +31,12 @@
       "global_name": "stalker228",
       "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
       "joinedAt": "2026-07-12T16:40:50.688Z",
-      "lastLogin": "2026-07-12T16:40:50.689Z",
+      "lastLogin": "2026-07-17T20:31:20.326Z",
       "banned": false,
       "banReason": "",
       "bannedBy": "",
-      "bannedAt": ""
+      "bannedAt": "",
+      "ip": "2a02:8308:219:de00:c0c7:c5b1:279:4d01"
     }
   ],
   "bannedIPs": []
