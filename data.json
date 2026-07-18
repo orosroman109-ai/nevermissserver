@@ -72,13 +72,11 @@
       "ip": "212.127.91.16",
       "joinedAt": "2026-07-18T12:18:30.207Z",
       "lastLogin": "2026-07-18T12:18:32.928Z",
-      "banned": true,
+      "banned": false,
       "banReason": "",
-      "bannedBy": "nevermissserver_owner",
-      "bannedAt": "2026-07-18T12:18:40.556Z"
+      "bannedBy": "",
+      "bannedAt": ""
     }
   ],
-  "bannedIPs": [
-    "212.127.91.16"
-  ]
+  "bannedIPs": []
 }
