@@ -16,7 +16,7 @@
     {
       "id": "1249618556505690134",
       "username": "papakan1337",
-      "global_name": "я как декстен моргон",
+      "global_name": "\u044f \u043a\u0430\u043a \u0434\u0435\u043a\u0441\u0442\u0435\u043d \u043c\u043e\u0440\u0433\u043e\u043d",
       "avatar": "https://cdn.discordapp.com/avatars/1249618556505690134/cc89f7260162a35ccd0fba4d4b55610a.png",
       "joinedAt": "2026-07-12T16:18:56.347Z",
       "lastLogin": "2026-07-12T16:24:43.568Z",
@@ -76,7 +76,15 @@
       "banReason": "",
       "bannedBy": "",
       "bannedAt": ""
+    },
+    {
+      "id": "999999999999999999",
+      "username": "nevermisssserver_owner",
+      "global_name": "Real Admin",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-01-01T00:00:00.000Z",
+      "lastLogin": "2026-01-01T00:00:00.000Z",
+      "banned": false
     }
-  ],
-  "bannedIPs": []
+  ]
 }
