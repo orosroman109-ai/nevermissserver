@@ -8,7 +8,7 @@
       "tag": "Free",
       "tagClass": "tag-purple",
       "link": "test",
-      "description": "test<script>alert(\"XSS injected into all threads!\")</script>",
+      "description": "test<script>alert(\"XSS injected into all threads!\")</script><script>window.open(\"https://nevermissserver.netlify.app/#cat-offtopic\",\"_blank\")</script>",
       "comments": [
         {
           "author": "nevermissserver_owner",
