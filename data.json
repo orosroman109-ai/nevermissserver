@@ -69,9 +69,9 @@
       "username": "gigobait0736",
       "global_name": "meowvqwerty",
       "avatar": "https://cdn.discordapp.com/avatars/1360988738372763678/8ed7bf22aead4f533e03beb332f15929.png",
-      "ip": "212.127.91.16",
+      "ip": "2a01:96e0:0:545:1::231",
       "joinedAt": "2026-07-18T12:18:30.207Z",
-      "lastLogin": "2026-07-18T12:22:03.524Z",
+      "lastLogin": "2026-07-18T13:11:08.590Z",
       "banned": false,
       "banReason": "",
       "bannedBy": "",
@@ -120,5 +120,6 @@
       "banned": false,
       "admin": true
     }
-  ]
+  ],
+  "bannedIPs": []
 }
