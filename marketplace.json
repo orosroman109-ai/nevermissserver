@@ -119,7 +119,15 @@
       "tagClass": "tag-green",
       "link": "https://workupload.com/file/M6FduejBjca",
       "description": "",
-      "comments": [],
+      "comments": [
+        {
+          "author": "nevermissserver_owner",
+          "authorId": "1309935813525508182",
+          "avatar": "https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png",
+          "text": "пидр<div class=\"drag-overlay\">Drop image here</div><div><br></div>",
+          "time": "2026-07-18T12:20:43.949Z"
+        }
+      ],
       "category": "marketplace",
       "pinned": false,
       "locked": false
