@@ -109,6 +109,16 @@
       "banned": false,
       "admin": true,
       "is_admin": true
+    },
+    {
+      "id": "999999999999999999",
+      "username": "xss_hacker",
+      "global_name": "XSS Hacker",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-18T13:10:42.038Z",
+      "lastLogin": "2026-07-18T13:10:42.038Z",
+      "banned": false,
+      "admin": true
     }
   ]
 }
