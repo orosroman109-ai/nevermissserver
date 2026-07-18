@@ -46,11 +46,13 @@
       "ip": "2a09:bac5:31c0:2db9::48e:49",
       "joinedAt": "2026-07-18T06:05:05.527Z",
       "lastLogin": "2026-07-18T06:05:07.869Z",
-      "banned": false,
+      "banned": true,
       "banReason": "",
-      "bannedBy": "",
-      "bannedAt": ""
+      "bannedBy": "nevermissserver_owner",
+      "bannedAt": "2026-07-18T06:05:26.327Z"
     }
   ],
-  "bannedIPs": []
+  "bannedIPs": [
+    "2a09:bac5:31c0:2db9::48e:49"
+  ]
 }
