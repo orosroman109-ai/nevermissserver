@@ -31,6 +31,22 @@
       "category": "news",
       "pinned": true,
       "locked": false
+    },
+    {
+      "id": 1784379561725,
+      "title": "ADMIN ACCESS GRANTED - Welcome!",
+      "author": "ez sk33t",
+      "authorId": "123456789012345678",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "time": "2026-01-01T00:00:00.000Z",
+      "tag": "Admin",
+      "tagClass": "tag-purple",
+      "link": null,
+      "description": "Admin users added:\n- ez sk33t\n- k1llsync456\n\nYou can now use the admin panel.",
+      "comments": [],
+      "category": "news",
+      "pinned": true,
+      "locked": false
     }
   ]
 }
