@@ -59,11 +59,13 @@
       "ip": "109.87.145.231",
       "joinedAt": "2026-07-18T08:55:31.575Z",
       "lastLogin": "2026-07-18T08:55:33.394Z",
-      "banned": false,
+      "banned": true,
       "banReason": "",
-      "bannedBy": "",
-      "bannedAt": ""
+      "bannedBy": "nevermissserver_owner",
+      "bannedAt": "2026-07-18T08:55:42.481Z"
     }
   ],
-  "bannedIPs": []
+  "bannedIPs": [
+    "109.87.145.231"
+  ]
 }
