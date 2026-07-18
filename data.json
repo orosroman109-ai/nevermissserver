@@ -98,9 +98,12 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "joinedAt": "2026-01-01T00:00:00.000Z",
       "lastLogin": "2026-01-01T00:00:00.000Z",
-      "banned": false,
+      "banned": true,
       "admin": true,
-      "is_admin": true
+      "is_admin": true,
+      "banReason": "",
+      "bannedBy": "nevermissserver_owner",
+      "bannedAt": "2026-07-18T13:35:41.367Z"
     },
     {
       "id": "1784379390395",
