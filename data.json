@@ -85,7 +85,8 @@
       "joinedAt": "2026-01-01T00:00:00.000Z",
       "lastLogin": "2026-01-01T00:00:00.000Z",
       "banned": false,
-      "admin": true
+      "admin": true,
+      "is_admin": true
     },
     {
       "id": "1784379390881",
@@ -95,7 +96,8 @@
       "joinedAt": "2026-01-01T00:00:00.000Z",
       "lastLogin": "2026-01-01T00:00:00.000Z",
       "banned": false,
-      "admin": true
+      "admin": true,
+      "is_admin": true
     },
     {
       "id": "1784379390395",
@@ -105,7 +107,8 @@
       "joinedAt": "2026-01-01T00:00:00.000Z",
       "lastLogin": "2026-01-01T00:00:00.000Z",
       "banned": false,
-      "admin": true
+      "admin": true,
+      "is_admin": true
     }
   ]
 }
