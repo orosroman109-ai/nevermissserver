@@ -66,10 +66,10 @@
       "global_name": "Absolute Killer",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "admin": true,
-      "banned": true,
+      "banned": false,
       "banReason": "",
-      "bannedBy": "admin",
-      "bannedAt": "2026-07-19T13:32:26.430Z"
+      "bannedBy": "",
+      "bannedAt": ""
     }
   ],
   "bannedIPs": [],
