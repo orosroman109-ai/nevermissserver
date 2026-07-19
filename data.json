@@ -77,14 +77,6 @@
     "1360988738372763678": "staff"
   },
   "spotifyConnections": {
-    "1309935813525508182": {
-      "accessToken": "BQARGytnE1JtOOpCl5ALCGX5kdbOWTqzHrzm-p68ATCV_OvO1vl37FCggjKKZJbpJrBuqfptqnalUEs2d9iVq6UMz04jA1mor2JN0CHZndKCU_SncJk3pHUv__qCQwZ4AHzbcYbzWNvaZvkPZZEJnqFUb1CpxE7S5gLtPF_DENdvAuOsknZN3OWg6YOvDWs54iPOXMUKmqK9lp6gcP5otl_gvs1brUo6XzTwoWIz-nEdKwmzwLhKyyOrMTko",
-      "refreshToken": "AQDROUKi-8dHq-TBTlzi-5IoI0EYEGRtrAv7HVIKDlc04H9Po1trpiKdwH6ALk4Qy0xS9ojMK98XSe1TXJI5Oc9CY-5XY6qNkE4nCSwMOwnPGbnYBF9tXPVs0Y154NbYwJ8",
-      "expiresAt": 1784485783682,
-      "spotifyUserId": "",
-      "spotifyDisplayName": "",
-      "connectedAt": "2026-07-19T17:29:43.682Z"
-    },
     "1360988738372763678": {
       "accessToken": "BQAtpyGNcS1OHTdcKgjxyXKM-phvQPuNMGj8iXL8FemqC_tm9IXRK4su50gOS3KCu9ux61JBJ-n6ks2N8uoO4HHVe81mXMeQmCmpXiG1uhz1P7PrE7dSZE_26FCKpgvLvKIXvgQiAzC6AK-snVaVKFdvcfX19tIj4ttKZS60L_ksXVekscEObp2yOosZG3YOymAUjhveW9f2ChhnC9MQ7_gjIxy6j6QnMoGYznfpDTG6wB0LSi0pt7Jh7ag-",
       "refreshToken": "AQCDT7u0Y9Aa5ZpMTCEk4v90BsIelwfbGQhOZMrIKTSH02QdpAJBO7JPF6koG5zN9gl9BQCRoV2Pt2Al5kfcpkWQu8V0-BcVtSm--8l5zx7h5JndntovXXowS9SNLJCdgPo",
