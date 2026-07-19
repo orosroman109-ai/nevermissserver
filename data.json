@@ -84,14 +84,6 @@
       "spotifyUserId": "",
       "spotifyDisplayName": "",
       "connectedAt": "2026-07-19T17:31:36.476Z"
-    },
-    "1309935813525508182": {
-      "accessToken": "BQAJr_Dn_xvuU8IzljcbgkJQBwx8yoFflkmmvotzyUSo0FLdyRZp4P7GhpFMrGCiQZ73tYyQS2IBTxQlezoDFnJMP2Cn-rIDrfHO9Uds3uHv1lKZifGImuJOZF0-5Be7pR_vlgCmfyd37fz7ulu9QVDYNjr2zVkdE51wIB_zTmVqbakHcy2jWfFVVzcQfgXZAkWiyKtfhU1epz7tG3wibHklJ68JFkhpOeOzUL3rmB5fbA88wV5Or8DjuSofiFc",
-      "refreshToken": "AQBkvpeg94VLbur5WNZ4cGfJmLcR_DoWZkp9f0gElneYeyFlFgoSpbfgj3WaC4G-fZd0zzlSB0cmPncJdugc5gg60ibYa6sVGoUF6_rc1cK2gygIa-xNT2k83WiqmXn1l9M",
-      "expiresAt": 1784487323855,
-      "spotifyUserId": "",
-      "spotifyDisplayName": "",
-      "connectedAt": "2026-07-19T17:55:23.855Z"
     }
   }
 }
