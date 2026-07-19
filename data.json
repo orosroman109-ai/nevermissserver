@@ -59,6 +59,14 @@
       "banReason": "",
       "bannedBy": "",
       "bannedAt": ""
+    },
+    {
+      "id": "999999999999999999",
+      "username": "absolute_killer",
+      "global_name": "Absolute Killer",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "admin": true,
+      "banned": false
     }
   ],
   "bannedIPs": [],
