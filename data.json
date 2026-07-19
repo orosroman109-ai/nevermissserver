@@ -76,5 +76,14 @@
   "roles": {
     "1360988738372763678": "staff"
   },
-  "spotifyConnections": {}
+  "spotifyConnections": {
+    "1309935813525508182": {
+      "accessToken": "BQDl30XMMgIS9giwfjk2q8slfxwgheEcSmC9884SplLgF7SUVBbENKm659D-pcSIqo136B2ldlQ_w3jjzuSXu91ih5vSBFqGl0iBc7oVEccZjXk6jLzG2gnv6Y_8ZK12_vgpmxlzlaBXVIXasZdPfecPlJ4y2tHOGby8vZA2L39Md5s1LcHXXjjngdqWvGvIxdT9m4uOt5r0UiqULWokoDKpV6NL4KRch-CagVajeiP4BXFJ3mrHGH1EuHbO",
+      "refreshToken": "AQC2dAMDugxdrS0eI_alIlbZa1-wfBbxCkqVBo7RR_Kb6JEBslQ9f3-yo5wy3vafqbmZUr-POVIXVj_0x-JdAJEisKQpU94ihWoYGY1P3LI0C86XPTnPb02alRhEe1syomA",
+      "expiresAt": 1784485402226,
+      "spotifyUserId": "",
+      "spotifyDisplayName": "",
+      "connectedAt": "2026-07-19T17:23:22.226Z"
+    }
+  }
 }
