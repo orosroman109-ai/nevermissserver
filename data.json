@@ -49,5 +49,8 @@
       "bannedAt": ""
     }
   ],
-  "bannedIPs": []
+  "bannedIPs": [],
+  "roles": {
+    "12345": "staff"
+  }
 }
