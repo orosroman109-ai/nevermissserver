@@ -1,1 +1,68 @@
-"{\"users\":[{\"id\":\"1360988738372763678\",\"username\":\"gigobait0736\",\"global_name\":\"meowvqwerty\",\"avatar\":\"https://cdn.discordapp.com/avatars/1360988738372763678/8ed7bf22aead4f533e03beb332f15929.png\",\"joinedAt\":\"2026-07-18T14:19:16.985Z\",\"lastLogin\":\"2026-07-19T11:37:31.442Z\",\"banned\":false,\"banReason\":\"\",\"bannedBy\":\"\",\"bannedAt\":\"\"},{\"id\":\"1309935813525508182\",\"username\":\"nevermissserver_owner\",\"global_name\":\"SoftGlow\",\"avatar\":\"https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png\",\"joinedAt\":\"2026-07-18T14:23:32.728Z\",\"lastLogin\":\"2026-07-19T13:16:15.247Z\",\"banned\":false,\"banReason\":\"\",\"bannedBy\":\"\",\"bannedAt\":\"\"},{\"id\":\"1505088623740194847\",\"username\":\"celerityratrat\",\"global_name\":\"regor\",\"avatar\":\"https://cdn.discordapp.com/avatars/1505088623740194847/9bff2ba31dd0e87732633b11cb437ed0.png\",\"joinedAt\":\"2026-07-19T10:39:46.574Z\",\"lastLogin\":\"2026-07-19T11:06:47.210Z\",\"banned\":false,\"banReason\":\"\",\"bannedBy\":\"\",\"bannedAt\":\"\"},{\"id\":\"1517250333804462120\",\"username\":\"stalker2280506\",\"global_name\":\"stalker228\",\"avatar\":\"https://cdn.discordapp.com/embed/avatars/3.png\",\"joinedAt\":\"2026-07-19T11:04:26.094Z\",\"lastLogin\":\"2026-07-19T11:04:43.528Z\",\"banned\":false,\"banReason\":\"\",\"bannedBy\":\"\",\"bannedAt\":\"\"},{\"id\":\"651874525293838336\",\"username\":\"kyrylld3\",\"global_name\":\"\",\"avatar\":\"https://cdn.discordapp.com/avatars/651874525293838336/a365886c00ee19519701085715a76d5f.png\",\"joinedAt\":\"2026-07-19T13:07:49.990Z\",\"lastLogin\":\"2026-07-19T13:07:49.990Z\",\"banned\":false,\"banReason\":\"\",\"bannedBy\":\"\",\"bannedAt\":\"\"}],\"bannedIPs\":[],\"roles\":{\"1360988738372763678\":\"staff\"}}"
+{
+  "users": [
+    {
+      "id": "1360988738372763678",
+      "username": "gigobait0736",
+      "global_name": "meowvqwerty",
+      "avatar": "https://cdn.discordapp.com/avatars/1360988738372763678/8ed7bf22aead4f533e03beb332f15929.png",
+      "joinedAt": "2026-07-18T14:19:16.985Z",
+      "lastLogin": "2026-07-19T11:37:31.442Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
+    },
+    {
+      "id": "1309935813525508182",
+      "username": "nevermissserver_owner",
+      "global_name": "SoftGlow",
+      "avatar": "https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png",
+      "joinedAt": "2026-07-18T14:23:32.728Z",
+      "lastLogin": "2026-07-19T13:16:15.247Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
+    },
+    {
+      "id": "1505088623740194847",
+      "username": "celerityratrat",
+      "global_name": "regor",
+      "avatar": "https://cdn.discordapp.com/avatars/1505088623740194847/9bff2ba31dd0e87732633b11cb437ed0.png",
+      "joinedAt": "2026-07-19T10:39:46.574Z",
+      "lastLogin": "2026-07-19T11:06:47.210Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
+    },
+    {
+      "id": "1517250333804462120",
+      "username": "stalker2280506",
+      "global_name": "stalker228",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/3.png",
+      "joinedAt": "2026-07-19T11:04:26.094Z",
+      "lastLogin": "2026-07-19T11:04:43.528Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
+    },
+    {
+      "id": "651874525293838336",
+      "username": "kyrylld3",
+      "global_name": "",
+      "avatar": "https://cdn.discordapp.com/avatars/651874525293838336/a365886c00ee19519701085715a76d5f.png",
+      "joinedAt": "2026-07-19T13:07:49.990Z",
+      "lastLogin": "2026-07-19T13:07:49.990Z",
+      "banned": false,
+      "banReason": "",
+      "bannedBy": "",
+      "bannedAt": ""
+    }
+  ],
+  "bannedIPs": [],
+  "roles": {
+    "1360988738372763678": "staff"
+  }
+}
