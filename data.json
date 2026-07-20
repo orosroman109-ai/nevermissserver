@@ -11,6 +11,96 @@
       "banReason": "",
       "bannedBy": "",
       "bannedAt": ""
+    },
+    {
+      "id": "spam_1784588576967_0",
+      "username": "spam_0_1784588576967",
+      "global_name": "Spammer 0",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_1",
+      "username": "spam_1_1784588576967",
+      "global_name": "Spammer 1",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_2",
+      "username": "spam_2_1784588576967",
+      "global_name": "Spammer 2",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_3",
+      "username": "spam_3_1784588576967",
+      "global_name": "Spammer 3",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_4",
+      "username": "spam_4_1784588576967",
+      "global_name": "Spammer 4",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_5",
+      "username": "spam_5_1784588576967",
+      "global_name": "Spammer 5",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_6",
+      "username": "spam_6_1784588576967",
+      "global_name": "Spammer 6",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_7",
+      "username": "spam_7_1784588576967",
+      "global_name": "Spammer 7",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_8",
+      "username": "spam_8_1784588576967",
+      "global_name": "Spammer 8",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
+    },
+    {
+      "id": "spam_1784588576967_9",
+      "username": "spam_9_1784588576967",
+      "global_name": "Spammer 9",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "joinedAt": "2026-07-20T23:02:56.967Z",
+      "lastLogin": "2026-07-20T23:02:56.967Z",
+      "banned": false
     }
   ],
   "bannedIPs": [],
