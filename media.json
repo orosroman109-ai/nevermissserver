@@ -1,36 +1,3 @@
 {
-  "threads": [
-    {
-      "id": 1784466469990,
-      "title": "Gamesense 1-2k clip | with enderphobia lua",
-      "author": "kyrylld3",
-      "authorId": "651874525293838336",
-      "avatar": "https://cdn.discordapp.com/avatars/651874525293838336/a365886c00ee19519701085715a76d5f.png",
-      "time": "2026-07-19T13:07:49.990Z",
-      "tag": null,
-      "tagClass": "tag-blue",
-      "link": "https://youtu.be/PAc6QXV-8Dk?si=8kSk3UK-VRnG5cEe",
-      "description": "Skeet skeet number 1 cheat",
-      "comments": [],
-      "category": "media",
-      "pinned": false,
-      "locked": false
-    },
-    {
-      "id": 1784467569181,
-      "title": "Plaguecheat.cc hvh | Highlights & Custom model dll #cs2 №3",
-      "author": "nevermissserver_owner",
-      "authorId": "1309935813525508182",
-      "avatar": "https://cdn.discordapp.com/avatars/1309935813525508182/cc7dbe53922c6a99f63f0547da745a77.png",
-      "time": "2026-07-19T13:26:09.181Z",
-      "tag": "Video",
-      "tagClass": "tag-blue",
-      "link": "https://www.youtube.com/watch?v=ZMDI7ZZ86GY&t=4s",
-      "description": "https://www.youtube.com/watch?v=ZMDI7ZZ86GY&t=4s",
-      "comments": [],
-      "category": "media",
-      "pinned": false,
-      "locked": false
-    }
-  ]
+  "threads": []
 }
